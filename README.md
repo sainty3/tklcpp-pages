@@ -8,7 +8,7 @@
 - 设计：Negotiation Arena v1.7 —— tk 连字标记与滚动粒子重组、FluxLines ink 背景、Anthropic Serif / Mono
 - 完全静态：无广告、无跟踪、无后端，所有字体、图片、脚本都在本地
 
-在线地址：<https://sainty3.github.io/tklcpp/>
+在线地址：<https://sainty3.github.io/tklcpp-pages/>
 
 ## 目录
 
@@ -38,7 +38,11 @@ node serve.js
 
 ## 部署
 
-仓库为私有仓库，页面通过 GitHub Pages 从 `main` 分支根目录发布；站点添加了 `noindex` 与 `robots.txt`，不会进入搜索引擎索引。页面 URL 本身是公开可访问的，请不要在此放置私密内容。
+- 私有源码与构建仓库：<https://github.com/sainty3/tklcpp>（私有）
+- 公开部署镜像：<https://github.com/sainty3/tklcpp-pages>（仅含构建产物，用于 GitHub Pages）
+- 页面通过 GitHub Pages 从部署镜像的 `main` 分支根目录发布
+
+站点添加了 `noindex` 与 `robots.txt`，不会进入搜索引擎索引。页面 URL 本身是公开可访问的，请不要在此放置私密内容。
 
 ## 内容说明
 

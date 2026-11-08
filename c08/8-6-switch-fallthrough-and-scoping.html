@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.6 · switch fallthrough属性和作用域 · tklcpp</title>
+<meta name="description" content="本节课继续探索switch语句。在前面的课程中（8.5 - switch 语句基础）我们提到每个分支标签下的语句都应该以或 结尾。 在这节课中，我们将探索其中的原因，并讨论一些开关作用域的问题，这些问题有时会绊倒新程序员…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c08/8-5-switch-statement-basics.html">
+<link rel="next" href="../c08/8-7-goto-statements.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c08/8-6-switch-fallthrough-and-scoping.html" data-type="lesson" data-chapter="08" data-chapter-title="第 08 章 · 控制流" data-title="switch fallthrough属性和作用域" data-num="8.6">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c08/index.html">第 08 章 · 控制流</a><span class="sep">/</span><span class="current">8.6 · switch fallthrough属性和作用域</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c08/index.html">第 08 章 · 控制流</a>
+        <h1><span class="h1-num">8.6</span>switch fallthrough属性和作用域</h1>
+        <div class="article-meta"><span>6 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">switch</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">5 节</span></summary>
+    <ul><li class="lv2"><a href="#%E8%B4%AF%E7%A9%BF">贯穿</a></li><li class="lv2"><a href="#%E8%B4%AF%E7%A9%BF-fallthrough-%E5%B1%9E%E6%80%A7">贯穿 [[fallthrough]] 属性</a></li><li class="lv2"><a href="#%E9%A1%BA%E5%BA%8F%E5%88%86%E6%94%AF%E6%A0%87%E7%AD%BE">顺序分支标签</a></li><li class="lv2"><a href="#switch-case-%E4%BD%9C%E7%94%A8%E5%9F%9F">switch-case 作用域</a></li><li class="lv2"><a href="#case-%E8%AF%AD%E5%8F%A5%E4%B8%AD%E5%A3%B0%E6%98%8E%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8F%98%E9%87%8F">case 语句中声明和初始化变量</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body">
+<p>本节课继续探索switch语句。在前面的课程中（<a href="../c08/8-5-switch-statement-basics.html" class="internal alias" data-slug="08-控制流/8-5-Switch-statement-basics">8.5 - switch 语句基础</a>）我们提到每个分支标签下的语句都应该以<code>break </code>或&nbsp;<code>return </code>结尾。</p>
+<p>在这节课中，我们将探索其中的原因，并讨论一些开关作用域的问题，这些问题有时会绊倒新程序员。</p>
+<h2 id="贯穿">贯穿<a class="anchor" aria-label="本节链接" href="#贯穿">#</a></h2>
+<p>当一个switch表达式匹配一个case标签或可选的默认标签时，从匹配标签后面的第一个语句开始执行。然后继续执行，直到以下终止条件之一发生：</p>
+<ol>
+<li>到达switch末尾；</li>
+<li>遇到其他控制流语句（一般来说是<code>break</code>或者<code>return</code>）导致switch退出；</li>
+<li>其他中断导致程序的正常流程被打断(例如，操作系统停止程序、宇宙大爆炸等等)。</li>
+</ol>
+<p>注意，另一个case标签的出现不是这些终止条件之一——因此，如果没有<code>break</code> 或<code>return</code> ，执行将继续执行后续的case。</p>
+<p>例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // Does not match</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 跳过</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // Match!</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 从这里开始执行</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 也会被执行</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 也会被执行</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    default</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 也会被执行</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>输出结果：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>2
+3
+4
+5
+</code></pre></div>
+<p>这可能不是我们想要的!当执行从标签下面的语句流到后续标签下面的语句时，这称为贯穿。</p>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>一旦case或default标签下的语句开始执行，它们默认会贯穿到后续的case中。<code>break</code>或 <code>return</code> 可以防止这种情况。</p>
+</div></aside>
+<p>由于人们很少会主动使用贯穿特性，因此许多编译器和代码分析工具会将贯穿标记为警告。</p>
+<h2 id="贯穿-fallthrough-属性">贯穿 <code>[[fallthrough]]</code> 属性<a class="anchor" aria-label="本节链接" href="#贯穿-fallthrough-属性">#</a></h2>
+<p>通过注释告诉其他开发人员故意实现的贯穿是一种常见惯例。虽然其他开发人员可以理解，但编译器和代码分析工具不知道如何解释注释，因此它无法消除警告。</p>
+<p>为了解决这个问题，C++17添加了一个新的属性 <code>[[fallthrough]]</code>。</p>
+<p>属性是现代C++的一个特性，它允许程序员向编译器提供一些关于代码的附加数据。要指定属性，属性名要放在双大括号之间。属性不是语句——相反，它们几乎可以在与上下文相关的任何地方使用。</p>
+<p><code>[[fallthrough]]</code>&nbsp;会修改一个空语句，表明有意而为之的贯穿操作（避免触发告警）：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 从这里开始执行</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#79B8FF;">        [[</span><span style="--shiki-light:#4C4F69;--shiki-dark:#B392F0;">fallthrough</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#79B8FF;">]]</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 有意地贯穿操作——注意分号创建的空语句</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 同样会执行</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>输出：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>2
+3
+</code></pre></div>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>使用 <code>[[fallthrough]]</code> 属性(和空语句)表明有意而为之的贯穿操作。</p>
+</div></aside>
+<h2 id="顺序分支标签">顺序分支标签<a class="anchor" aria-label="本节链接" href="#顺序分支标签">#</a></h2>
+<p>我们可以使用逻辑或运算符来连接多个测试条件：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'a'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'e'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'i'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'o'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'u'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">        c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'A'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'E'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'I'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'O'</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'U'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在switch语句中也有类似的场景：c 被多次求值并测试，此时读代码的人必须确保每次被求值和比较的是c。</p>
+<p>我们可以通过顺序排列的多个分支标签来解决这个问题：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // if c is 'a'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'e'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'e'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'i'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'i'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'o'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'o'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'u'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'u'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'A'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'A'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'E'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'E'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'I'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'I'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'O'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'O'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'U'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // or if c is 'U'</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">            return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        default</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">            return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>记住，执行从匹配的case标签后的第一个语句开始。case标签不是语句(它们是标签)，所以它们不算数。</p>
+<p>在上述程序中，能够匹配的<em>所有</em>标签后面第一个语句是 <code>return true</code> ，因此，如果任何标签匹配，函数将返回 <code>true</code> 。</p>
+<p>因此，我们可以通过“堆叠”标签，使所有这些标签共享相同的语句。这不属于贯穿，所以不必注释或标记“<code>[[fallthrough]]</code>”。</p>
+<h2 id="switch-case-作用域">switch-case 作用域<a class="anchor" aria-label="本节链接" href="#switch-case-作用域">#</a></h2>
+<p>对于 if 语句来说，条件后面只能有一条语句（或语句块），该语句被认为隐式地属于某个语句块：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 10</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is greater than 10</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // this line implicitly considered to be inside a block</span></span></code></pre></div></figure>
+<p>但是，对于 switch 语句来说，<span class="text-highlight">某个标签后面的语句都属于switch语句块，并没有创建任何的隐式语句块。</span></p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 并不会创建隐式地语句块</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">        foo</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">();</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 属于switch语句块，而不是case1（的隐式语句块）</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 属于switch语句块，而不是case1（的隐式语句块）</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    default</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "default case</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在上面的例子中，case 1 后面的两条语句和 default 后面的语句都属于 switch 语句块。</p>
+<h2 id="case-语句中声明和初始化变量">case 语句中声明和初始化变量<a class="anchor" aria-label="本节链接" href="#case-语句中声明和初始化变量">#</a></h2>
+<p>我们可以在 switch 中声明变量 (但不能初始化)，在标签的前后进行都可以：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // okay: declaration is allowed before the case labels</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // illegal: initialization is not allowed before the case labels</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // okay but bad practice: declaration is allowed within a case</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">        y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // okay: assignment is allowed</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> z</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 非法操作: 如果后续还有分支，则不允许初始化</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">        y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // okay: y was declared above, so we can use it here too</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>尽管变量&nbsp;<code>y</code>&nbsp;是在&nbsp;<code>case 1</code> 中声明的，但是在&nbsp;<code>case 2</code>&nbsp;中仍然可以使用它。因为所有的这些语句都不属于某个隐式的作用域而是属于switch语句块，所以它们都在同一个作用域中，前面定义的变量自然可以在后面使用，即使定义它的分支从没被执行过也没有问题。</p>
+<p>换句话说，定义一个没有初始化值的变量只是告诉编译器在这个作用域内，从此时起，这个变量有定义了。这一切都发生在<a href="../glossary/compile-time.html" class="internal alias glossary-link" data-slug="词汇表/compile-time" title="词汇表：编译时">编译时</a>，它并不要该定义在<a href="../glossary/runtime.html" class="internal alias glossary-link" data-slug="词汇表/runtime" title="词汇表：运行时">运行时</a>被实际执行。</p>
+<p>不过，变量的初始化是必须在<a href="../glossary/runtime.html" class="internal alias glossary-link" data-slug="词汇表/runtime" title="词汇表：运行时">运行时</a>执行才有效的。变量的初始化只能在最后一个分支进行（否则该初始化可能被跳过导致变量没有被初始化）。同时，变量的初始化也不能在第一个分支之前进行，因为这部分代码永远不会被执行。</p>
+<p>如果case需要定义和/或初始化一个新变量，最佳做法是在case语句下面的显式块中完成:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // note addition of explicit block here</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // okay, variables can be initialized inside a block inside a case</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    default</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "default case</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        break</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>COPY</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>如果需要定义和/或初始化一个新变量，最佳做法是在case语句下面的显式块中完成</p>
+</div></aside></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c08/8-5-switch-statement-basics.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">8.5 · switch 语句基础</span>
+      <span class="pn-chapter">第 08 章 · 控制流</span>
+    </a><a class="pn-card next" href="../c08/8-7-goto-statements.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">8.7 · goto 语句</span>
+      <span class="pn-chapter">第 08 章 · 控制流</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/08-%E6%8E%A7%E5%88%B6%E6%B5%81/8-6-Switch-fallthrough-and-scoping" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c08/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E8%B4%AF%E7%A9%BF">贯穿</a></li><li class="lv2"><a href="#%E8%B4%AF%E7%A9%BF-fallthrough-%E5%B1%9E%E6%80%A7">贯穿 [[fallthrough]] 属性</a></li><li class="lv2"><a href="#%E9%A1%BA%E5%BA%8F%E5%88%86%E6%94%AF%E6%A0%87%E7%AD%BE">顺序分支标签</a></li><li class="lv2"><a href="#switch-case-%E4%BD%9C%E7%94%A8%E5%9F%9F">switch-case 作用域</a></li><li class="lv2"><a href="#case-%E8%AF%AD%E5%8F%A5%E4%B8%AD%E5%A3%B0%E6%98%8E%E5%92%8C%E5%88%9D%E5%A7%8B%E5%8C%96%E5%8F%98%E9%87%8F">case 语句中声明和初始化变量</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

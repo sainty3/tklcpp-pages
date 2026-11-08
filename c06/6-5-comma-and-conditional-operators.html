@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.5 · 逗号和条件运算符 · tklcpp</title>
+<meta name="description" content="Split：此文章内容会被分拆至以下文章： 6-6-the-conditional-operator Key Takeaway 逗号表达式首先对它左侧的操作数求值，然后对右侧操作数求值，然后返回右侧操作数的结果。 避免使…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c06/6-4-increment-decrement-operators-and-side-effects.html">
+<link rel="next" href="../c06/6-6-the-conditional-operator.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c06/6-5-comma-and-conditional-operators.html" data-type="lesson" data-chapter="06" data-chapter-title="第 06 章 · 运算符" data-title="逗号和条件运算符" data-num="6.5">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c06/index.html">第 06 章 · 运算符</a><span class="sep">/</span><span class="current">6.5 · 逗号和条件运算符</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c06/index.html">第 06 章 · 运算符</a>
+        <h1><span class="h1-num">6.5</span>逗号和条件运算符</h1>
+        <div class="article-meta"><span>8 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">operator</span> <span class="tag">split</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">7 节</span></summary>
+    <ul><li class="lv2"><a href="#%E9%80%97%E5%8F%B7%E8%BF%90%E7%AE%97%E7%AC%A6">逗号运算符</a></li><li class="lv2"><a href="#%E9%80%97%E5%8F%B7%E4%BD%9C%E4%B8%BA%E5%88%86%E9%9A%94%E7%AC%A6">逗号作为分隔符</a></li><li class="lv2"><a href="#%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6">条件运算符</a></li><li class="lv2"><a href="#%E4%B8%BA%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6%E6%B7%BB%E5%8A%A0%E6%8B%AC%E5%8F%B7">为条件运算符添加括号</a></li><li class="lv2"><a href="#%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6%E4%BD%9C%E4%B8%BA%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC">条件运算符作为表达式求值</a></li><li class="lv2"><a href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%BF%85%E9%A1%BB%E5%8C%B9%E9%85%8D%E6%88%96%E8%80%85%E5%8F%AF%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%8C%B9%E9%85%8D%E7%9A%84%E7%B1%BB%E5%9E%8B">表达式的类型必须匹配或者可转换为匹配的类型</a></li><li class="lv2"><a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%BA%94%E8%AF%A5%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6">什么时候应该使用条件操作符？</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Split：此文章内容会被分拆至以下文章：</span></div><div class="callout-body">
+<ul>
+<li><a href="https://hanxiaomax.github.io/Learncpp_CN/6-6-the-conditional-operator" class="internal external unresolved" data-slug="6-6-the-conditional-operator" target="_blank" rel="noopener noreferrer">6-6-the-conditional-operator</a></li>
+</ul>
+</div></aside>
+<aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>逗号表达式首先对它左侧的操作数求值，然后对右侧操作数求值，然后返回右侧操作数的结果。</li>
+<li>避免使用逗号运算符，除非是在 for 循环中。</li>
+<li>条件表达式的整个表达式都要放在括号中，此外，条件部分也要放在括号中。</li>
+<li>条件运算符可以作为表达式求值，这样便可以用于初始化、赋值和传参</li>
+<li>if/else 语句块中定义的变量在 if/else 结束后就销毁了</li>
+<li>条件语句中的两个表达式类型需要匹配或者可以转变为共同的类型，否则无法编译，必须是 if/else 完成。</li>
+<li>仅在面对简单条件且你使用其结果，同时能够增强可读性的条件下，使用条件运算符</li>
+</ul>
+</div></aside>
+<h2 id="逗号运算符">逗号运算符<a class="anchor" aria-label="本节链接" href="#逗号运算符">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>运算符</th><th>符号</th><th>形式</th><th>操作</th></tr></thead><tbody><tr><td>逗号运算符</td><td>,</td><td>x, y</td><td>先对 x 求值，再对 y 求值，然后返回 y 求值结果</td></tr></tbody></table></div>
+<p>逗号运算符 (<code>,</code>)&nbsp;允许你在允许单独表达式的地方，对多个表达式求值。逗号表达式首先对它左侧的操作数求值，然后对右侧操作数求值，然后返回右侧操作数的结果。</p>
+<p>例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 对 x 和 y 递增， 对右侧操作数求值</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>首先，逗号运算符左侧操作数求值，将 x 递增为 2。然后逗号运算符右侧操作数求值，将 y 递增为 3。然后逗号表达式返回的是右侧求值的结果（3），并打印在屏幕上。</p>
+<p>注意，逗号运算符的优先级是最低的，甚至比赋值表达式还低。因此，下面两行代码的效果是不同的。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">z </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">a</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 先对 (a, b) 求值得到 b 的结果，然后赋值给 z</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">z </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 等价于 "(z = a), b"，所以 z 首先被赋值为 a，然后 b 求值，结果丢弃。</span></span></code></pre></div></figure>
+<p>这也使得逗号运算符用起来存在危险。</p>
+<p>几乎任何使用逗号运算符编写的语句都可以用多个单独的语句来替换。例如，上述代码可以改写成下面的形式：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">    ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>大多数程序员几乎从来不会使用逗号运算符，只有在 for 循环中存在例外，我们会在&nbsp;<a href="../c08/8-10-for-statements.html" class="internal alias" data-slug="08-控制流/8-10-For-statements">8.10 - for 语句</a>中详细讨论：</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>避免使用逗号运算符，除非是在 for 循环中。</p>
+</div></aside>
+<h2 id="逗号作为分隔符">逗号作为分隔符<a class="anchor" aria-label="本节链接" href="#逗号作为分隔符">#</a></h2>
+<p>在 C++，逗号常用作分隔符，这种情况下和逗号运算符并没有关系，也不具备逗号运算符的功能，例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> foo</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 在函数中逗号用于分割参数</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">    add</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // Comma used to separate arguments in function call</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> z</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> },</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> w</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 逗号用于分割同一行中定义的多个变量（不要这么做）</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>不需要避免使用逗号作为分隔符（除非是声明多个变量时，不要这么做）。</p>
+<h2 id="条件运算符">条件运算符<a class="anchor" aria-label="本节链接" href="#条件运算符">#</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>运算符</th><th>符号</th><th>形式</th><th>操作</th></tr></thead><tbody><tr><td>条件运算符</td><td>?:</td><td>c ? x : y</td><td>如果 c 非零（真）则对 x 其中，否则对 y 求值</td></tr></tbody></table></div>
+<p>条件运算符 (<code>?:</code>) (有时也称为 ”算数 if “运算符) 是一个三元运算符（有三个操作数）。因为它是 C++ 中唯一的三元运算符，因此有使用也称它为”那个三元运算符“。</p>
+<p><code>?:</code> 运算符提供了一种快捷的条件语句功能。如果你对条件语句还有疑问，请参考<a href="../c04/4-10-introduction-to-if-statements.html" class="internal alias" data-slug="04-基础数据类型/4-10-Introduction-to-if-statements">4.10 - if 语句简介</a>。</p>
+<p>if/else 语句的形式如下：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">condition</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    statement1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    statement2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>如果&nbsp;<code>condition</code>&nbsp;求值结果为&nbsp;<code>true</code> ，则&nbsp;<code>statement1</code> 会被执行，否则执行 <code>statement2</code>。</p>
+<p><code>?:</code> 运算符的形式如下：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>(condition) ? expression1 : expression2;
+</code></pre></div>
+<p>如果&nbsp;<code>condition</code>&nbsp;求值结果为&nbsp;<code>true</code> ，则&nbsp;<code>statement1</code> 会被执行，否则执行 <code>statement2</code>。注意，这里的 <code>expression2</code> 是必须要有的。</p>
+<p>下面这个 if/else 语句：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    larger </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    larger </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>可以改写成如下形式：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">larger </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ?</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">:</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>这样可以在不牺牲可读性的前提下，让代码变得更加紧凑。</p>
+<h2 id="为条件运算符添加括号">为条件运算符添加括号<a class="anchor" aria-label="本节链接" href="#为条件运算符添加括号">#</a></h2>
+<p>根据惯例，我们一般会把条件运算符的<strong>条件</strong>部分放在括号里，这样不仅可读性更好，而且可以确保运算优先级是正确的。其他操作数的求值优先级，加不加括号都是一样的，所以就没必要显示地添加括号了。</p>
+<p>注意，<code>?:</code> 运算符的优先级非常低。除非是和赋值操作符在一个表达式里，不然整个条件运算符表达式也要放在括号中。</p>
+<p>例如，为了打印 x 和 y 中较大的值，可以这样做：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>或者也可以使用条件运算符：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> ((</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ?</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">:</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span></code></pre></div></figure>
+<p>让我们测试一下，上面代码中，如果不把条件运算符表达式放在一个括号中会怎样。</p>
+<p>因 <code>&lt;&lt; operator</code> 的优先级高于 <code>?:</code> 运算符，因此下面语句：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ?</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">:</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>等价于：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">))</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ?</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">:</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>因此，如果 x&gt;y 则结果会打印 1(true)，否则打印0。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>总是把条件表达式的条件部分放在括号里，同时也可以考虑把整个部分都放在括号里。</p>
+</div></aside>
+<h2 id="条件运算符作为表达式求值">条件运算符作为表达式求值<a class="anchor" aria-label="本节链接" href="#条件运算符作为表达式求值">#</a></h2>
+<p>因为条件运算符是一个表达式，而不是一个语句，所以条件运算符可以被用在无法使用 if/else 的地方。</p>
+<p>例如，可以用它来初始化一个常量：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> bool</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> inBigClassroom </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> inBigClassroom </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">?</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 30</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> :</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 20</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "The class size is: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>使用 if/else 并不能用于这种常见，你可能会觉得下面这种方法是可行的：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> bool</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> inBigClassroom </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">inBigClassroom</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 30</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 20</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "The class size is: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>实际上，上述代码是不能编译的，你会被告知 <code>claseSize</code> 没有定义。正如定义在函数中的变量会在函数结束时销毁一样，定义在 if/else 语句块中的变量也会在 if/else 结束时销毁。因此，当我们打印 <code>classSize</code> 时，该变量实际上已经被销毁了。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>如果你没有一眼看出上面的问题，可能和它的表现形式有关，我们都知道，通过大括号可以限制变量的作用域，如果修改为下面这样的形式，你应该就能够看出了：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">inBigClassroom</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 30</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 20</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>参考<a href="../c07/7-1-compound-statements-blocks.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-1-Compound-statements-blocks">7.1 - 复合语句（语句块）</a>和<a href="../c07/7-3-local-variables.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-3-Local-variables">7.3 - 局部变量</a></p>
+</div></aside>
+<p>因此，如果你希望使用 if/else 完成和条件表达式一样的效果，你可能需要这样做；</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> getClassSize</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> inBigClassroom</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">inBigClassroom</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 30</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 20</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> getClassSize</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "The class size is: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> classSize</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>这种方法是可行的因为它没有在 if/else 中定义变量，我们是把值返回给了主调函数，然后该值被用于初始化。</p>
+<p>但这么做显然需要很多额外的步骤。</p>
+<h2 id="表达式的类型必须匹配或者可转换为匹配的类型">表达式的类型必须匹配或者可转换为匹配的类型<a class="anchor" aria-label="本节链接" href="#表达式的类型必须匹配或者可转换为匹配的类型">#</a></h2>
+<p>为了符合 C++ 类型检查的要求，条件语句中的两个表达式类型需要匹配或者可以转变为共同的类型。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">扩展阅读</span></div><div class="callout-body">
+<p>当类型不匹配时，使用的转换规则非常复杂，你可以在<a href="https://en.cppreference.com/w/cpp/language/operator_other" class="external alias" target="_blank" rel="noopener noreferrer">这里</a>找到详细信息</p>
+</div></aside>
+<p>也许你觉得下面这样做是可行：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">	std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ?</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">:</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x is 5"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 不能编译</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>其实上面的代码并不能编译。因为其中一个表达式类型是整型，而另外一个是字符串字面量。编译器不能够确定这些类型公共的类型是什么，这种情况下，你必须使用 if/else 语句。</p>
+<h2 id="什么时候应该使用条件操作符">什么时候应该使用条件操作符？<a class="anchor" aria-label="本节链接" href="#什么时候应该使用条件操作符">#</a></h2>
+<p>条件表达式为我们提供了一种更加精简的类似 if/else 语句的功能。它在需要进行条件初始化（或赋值）或传参时尤为有效。</p>
+<p>请不要尝试利用它来代替复杂的 if/else 语句，否则很快会变得复杂的难以维护。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>仅在面对简单条件且你使用其结果，同时能够增强可读性的条件下，使用条件运算符</p>
+</div></aside></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c06/6-4-increment-decrement-operators-and-side-effects.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">6.4 · 自增自减运算符及其副作用</span>
+      <span class="pn-chapter">第 06 章 · 运算符</span>
+    </a><a class="pn-card next" href="../c06/6-6-the-conditional-operator.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">6.6 · The conditional operator</span>
+      <span class="pn-chapter">第 06 章 · 运算符</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/06-%E8%BF%90%E7%AE%97%E7%AC%A6/6-5-Comma-and-conditional-operators" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c06/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E9%80%97%E5%8F%B7%E8%BF%90%E7%AE%97%E7%AC%A6">逗号运算符</a></li><li class="lv2"><a href="#%E9%80%97%E5%8F%B7%E4%BD%9C%E4%B8%BA%E5%88%86%E9%9A%94%E7%AC%A6">逗号作为分隔符</a></li><li class="lv2"><a href="#%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6">条件运算符</a></li><li class="lv2"><a href="#%E4%B8%BA%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6%E6%B7%BB%E5%8A%A0%E6%8B%AC%E5%8F%B7">为条件运算符添加括号</a></li><li class="lv2"><a href="#%E6%9D%A1%E4%BB%B6%E8%BF%90%E7%AE%97%E7%AC%A6%E4%BD%9C%E4%B8%BA%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC">条件运算符作为表达式求值</a></li><li class="lv2"><a href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%BF%85%E9%A1%BB%E5%8C%B9%E9%85%8D%E6%88%96%E8%80%85%E5%8F%AF%E8%BD%AC%E6%8D%A2%E4%B8%BA%E5%8C%B9%E9%85%8D%E7%9A%84%E7%B1%BB%E5%9E%8B">表达式的类型必须匹配或者可转换为匹配的类型</a></li><li class="lv2"><a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%BA%94%E8%AF%A5%E4%BD%BF%E7%94%A8%E6%9D%A1%E4%BB%B6%E6%93%8D%E4%BD%9C%E7%AC%A6">什么时候应该使用条件操作符？</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

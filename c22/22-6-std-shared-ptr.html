@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22.6 · std::shared_ptr · tklcpp</title>
+<meta name="description" content="Key Takeaway 如果你需要为相同的资源创建额外的 ，请从已有的 复制一份。 被设计出来独占它所管理的资源，与此不同的是 则是为了解决多个指针共同管理同一个资源的情况。 这也意味着，多个 指向同一个资源是可以的。…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c22/22-5-std-unique-ptr.html">
+<link rel="next" href="../c22/22-7-circular-dependency-issues-with-std-shared-ptr-and-std-weak-ptr.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c22/22-6-std-shared-ptr.html" data-type="lesson" data-chapter="22" data-chapter-title="第 22 章 · 移动语义与智能指针" data-title="std::shared_ptr" data-num="22.6">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c22/index.html">第 22 章 · 移动语义与智能指针</a><span class="sep">/</span><span class="current">22.6 · std::shared_ptr</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c22/index.html">第 22 章 · 移动语义与智能指针</a>
+        <h1><span class="h1-num">22.6</span>std::shared_ptr</h1>
+        <div class="article-meta"><span>5 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">shared_ptr</span> <span class="tag">C++11</span> <span class="tag">C++14</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">6 节</span></summary>
+    <ul><li class="lv2"><a href="#stdmake_shared">std::make_shared</a></li><li class="lv2"><a href="#stdshared_ptr-%E5%86%85%E5%B9%95">std::shared_ptr 内幕</a></li><li class="lv2"><a href="#stdshared_ptr-%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87-stdunique_ptr--%E5%88%9B%E5%BB%BA">std::shared_ptr 可以通过 std::unique_ptr 创建</a></li><li class="lv2"><a href="#stdshared_ptr-%E7%9A%84%E9%99%B7%E9%98%B1">std::shared_ptr 的陷阱</a></li><li class="lv2"><a href="#stdshared_ptr-%E5%92%8C%E6%95%B0%E7%BB%84">std::shared_ptr 和数组</a></li><li class="lv2"><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>如果你需要为相同的资源创建额外的 <code>std::shared_ptr</code> ，请从已有的 <code>std::shared_ptr</code> 复制一份。</li>
+</ul>
+</div></aside>
+<p><code>std::unique_ptr</code> 被设计出来独占它所管理的资源，与此不同的是 <code>std::shared_ptr</code> 则是为了解决多个指针共同管理同一个资源的情况。</p>
+<p>这也意味着，多个 <code>std::shared_ptr</code> 指向同一个资源是可以的。<code>std::shared_ptr</code>内部会自动追踪当前共享该资源的 <code>std::shared_ptr</code> 的个数。只有还有一个<code>std::shared_ptr</code> 还指向资源，该资源就不会被释放，即使任意一个<code>std::shared_ptr</code> 被销毁。当最后一个指向该资源的 <code>std::shared_ptr</code> 离开作用域时（或不再指向该资源），资源才会被释放。</p>
+<p>和 <code>std::unique_ptr</code> 一样<code>std::shared_ptr</code> 也被定义在 <code>&lt;memory&gt;</code> 头文件中。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;memory&gt;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // for std::shared_ptr</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Resource</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#F97583;">:</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">	Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> {</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Resource acquired</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> }</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">	~Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> {</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Resource destroyed</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">	// 分配一个 Resource 对象并让 std::shared_ptr 拥有它</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">	Resource</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> res </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#8839EF;--shiki-light-font-weight:bold;--shiki-dark:#F97583;--shiki-dark-font-weight:inherit;"> new</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> Resource </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">	std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">shared_ptr</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Resource</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> res </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">	{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">		std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">shared_ptr</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Resource</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 创建另外一个 std::shared_ptr 也指向该资源</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">		std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Killing one shared pointer</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">	}</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ptr2 离开作用域，什么都没有发生</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">	std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Killing another shared pointer</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ptr1 离开作用域，资源被释放</span></span></code></pre></div></figure>
+<p>打印：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>Resource acquired
+Killing one shared pointer
+Killing another shared pointer
+Resource destroyed
+</code></pre></div>
+<p>在上面的例子中，我们首先创建了一个动态  <code>Resource</code> 对象，然后将 <code>std::shared_ptr</code>类型的 <code>ptr1</code>指向它，对资源进行管理。在嵌套的语句块中，我们通过拷贝构造函数创建了第二个 <code>std::shared_ptr</code> (<code>ptr2</code>)也指向同一个 <code>Resource</code>。当 <code>ptr2</code> 离开作用域时，<code>Resource</code> 并没有被释放，因为<code>ptr1</code>仍然指向该资源。当<code>ptr1</code>离开作用域时，<code>ptr1</code>会意识到此时没有 <code>std::shared_ptr</code> 管理该资源了，所以它会释放 <code>Resource</code>。</p>
+<p>注意，我们是从第一个指针创建的第二个指针，这一点非常重要，考虑下面的代码：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;memory&gt;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // for std::shared_ptr</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Resource</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#F97583;">:</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">	Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> {</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Resource acquired</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> }</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">	~Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> {</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Resource destroyed</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">	Resource</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> res </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#8839EF;--shiki-light-font-weight:bold;--shiki-dark:#F97583;--shiki-dark-font-weight:inherit;"> new</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> Resource </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">	std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">shared_ptr</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Resource</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> res </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">	{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">		std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">shared_ptr</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Resource</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> res </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 直接通过res创建 ptr2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">		std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Killing one shared pointer</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">	}</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ptr2 离开作用域 Resource 被销毁</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">	std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Killing another shared pointer</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ptr1 离开作用域，Resource 再次被销毁</span></span></code></pre></div></figure>
+<p>程序输出：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>Resource acquired
+Killing one shared pointer
+Resource destroyed
+Killing another shared pointer
+Resource destroyed
+</code></pre></div>
+<p>紧接着就崩溃了（至少在笔者的机器上会崩溃）。</p>
+<p>和上一个程序不同的是，这里创建的两个 <code>std::shared_ptr</code> 是相互独立的。其结果就是它们并不知道对方和自己指向了同一个 <code>Resource</code>，它们也互相不知道对方的存在。当 <code>ptr2</code> 离开作用域时，它认为只有自己在管理该资源，所以就会释放它。而当<code>ptr1</code>离开作用域时，它也认为只有自己在管理该资源，所以会再次释放。问题就此发生了！</p>
+<p>幸好，这个问题很容易避免：如果你需要为一个资源再创建一个 <code>std::shared_ptr</code>，请从一个已经存在的 <code>std::shared_ptr</code> 克隆。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>如果你需要为相同的资源创建额外的 <code>std::shared_ptr</code> ，请从已有的 <code>std::shared_ptr</code> 复制一份。</p>
+</div></aside>
+<h2 id="stdmake_shared"><code>std::make_shared</code><a class="anchor" aria-label="本节链接" href="#stdmake_shared">#</a></h2>
+<p>类似C++14中的 <code>std::make_unique()</code>可以用来创建 <code>std::unique_ptr</code>，<code>std::make_shared()</code> 也可以（应该）被用来创建 <code>std::shared_ptr</code>。<code>std::make_shared()</code> 可以在 C++11 中使用。</p>
+<p>这个例子使用 <code>std::make_shared()</code> 对原来的程序进行了修改：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;memory&gt;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // for std::shared_ptr</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Resource</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">public</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#F97583;">:</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">	Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> {</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Resource acquired</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> }</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">	~Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> {</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Resource destroyed</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">	// 分配一个 Resource 对象并将其交给 std::shared_ptr 管理</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	auto</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">make_shared</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">Resource</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&gt;()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">	{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">		auto</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ptr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 复制 ptr1 创建 ptr2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">		std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Killing one shared pointer</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">	}</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ptr2 离开作用域但是什么都没有发生</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">	std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Killing another shared pointer</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ptr1 离开作用域，资源被销毁</span></span></code></pre></div></figure>
+<p>使用 <code>std::make_shared()</code> 的理由和使用 <code>std::make_unique()</code>的理由类似—— <code>std::make_shared()</code>更简洁也更安全(使用该方法的情况下，不可能创建两个指向头一个资源的 <code>std::shared_ptr</code> )。<code>std::make_shared()</code> 效率也更高，它会跟踪指向特定资源的指针的个数。</p>
+<h2 id="stdshared_ptr-内幕"><code>std::shared_ptr</code> 内幕<a class="anchor" aria-label="本节链接" href="#stdshared_ptr-内幕">#</a></h2>
+<p>和 <code>std::unique_ptr</code>内部使用了一个指针不同，==<code>std::shared_ptr</code> 内部使用了两个指针。其中一个指针指向被管理的资源。另外一个指针则指向一个“控制块”，控制块是一个动态分配的对象，用于追踪一系列的信息，其中就包括有多少 <code>std::shared_ptr</code> 指向了该对象==。当 <code>std::shared_ptr</code> 通过 <code>std::shared_ptr</code>构造函数创建时，被管理对象的内存（通常是传入的）和控制块（通常由构造函数创建）的内存会被分别分配。 但是，当使用 <code>std::make_shared()</code> 创建时，两个内存的分配可以被优化为一次内存分配，从而提升性能。</p>
+<p>这也解释了为什么分配创建两个指向相同资源的 <code>std::shared_ptr</code> 时会有问题。每个 <code>std::shared_ptr</code> 都会有一个指向该资源的指针，但同时，每个 <code>std::shared_ptr</code> 也都会独立分配自己的控制块，因此控制块中都只会显示有一个指针指向被管理的资源。当 <code>std::shared_ptr</code> 离开作用域时，它就会释放资源，而不会意识到还有其他的 <code>std::shared_ptr</code> 也在管理着该资源。</p>
+<p>但是，当 <code>std::shared_ptr</code> 通过<a href="../glossary/copy-assignment-operator.html" class="internal alias glossary-link" data-slug="词汇表/copy-assignment-operator" title="词汇表：拷贝赋值运算符">拷贝赋值运算符</a>被创建时，控制块会被正确地更新，使其能够显示又有另外一个 <code>std::shared_ptr</code> 开始管理这个资源了。</p>
+<h2 id="stdshared_ptr-可以通过-stdunique_ptr--创建"><code>std::shared_ptr</code> 可以通过 <code>std::unique_ptr</code>  创建<a class="anchor" aria-label="本节链接" href="#stdshared_ptr-可以通过-stdunique_ptr--创建">#</a></h2>
+<p><code>std::unique_ptr</code> 可以通过特殊的构造函数（接受一个<code>std::unique_ptr</code>右值）被转换为 <code>std::shared_ptr</code>。<code>std::unique_ptr</code> 的内容会被移动到 <code>std::shared_ptr</code>。</p>
+<p>但是，<code>std::shared_ptr</code> 并不能被安全地转换为 <code>std::unique_ptr</code>。这意味着当你创建的函数需要返回一个智能指针时，所以你最好返回 <code>std::unique_ptr</code> 并将其赋值给<code>std::shared_ptr</code> 。</p>
+<h2 id="stdshared_ptr-的陷阱"><code>std::shared_ptr</code> 的陷阱<a class="anchor" aria-label="本节链接" href="#stdshared_ptr-的陷阱">#</a></h2>
+<p><code>std::shared_ptr</code> 也存在<code>std::unique_ptr</code>所具有的一些问题——如果<code>std::shared_ptr</code> 没有被正常地销毁（可能是因为动态内存没有被释放或部分对象没有被释放）则其管理的资源也不会被释放。使用 <code>std::unique_ptr</code> 时，你只需要关心一个智能指针是否被正常的销毁。但是在使用<code>std::shared_ptr</code>时，你需要关注管理该对象的所有指针。如果它们中任何一个没有被销毁，则资源也不会被正常销毁。</p>
+<h2 id="stdshared_ptr-和数组"><code>std::shared_ptr</code> 和数组<a class="anchor" aria-label="本节链接" href="#stdshared_ptr-和数组">#</a></h2>
+<p>在 C++17 及之前的版本中，<code>std::shared_ptr</code> 并不支持管理数组，而且也不应该被用来管理C语言风格的数组。在 C++20 中 <code>std::shared_ptr</code> 已经可以支持数组了。</p>
+<h2 id="小结">小结<a class="anchor" aria-label="本节链接" href="#小结">#</a></h2>
+<p>设计 <code>std::shared_ptr</code> 的初衷，是为了支持多个指针能够共同管理一个资源。当最后一个 <code>std::shared_ptr</code> 被销毁时，被管理的资源也就会被销毁了。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c22/22-5-std-unique-ptr.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">22.5 · std::unique_ptr</span>
+      <span class="pn-chapter">第 22 章 · 移动语义与智能指针</span>
+    </a><a class="pn-card next" href="../c22/22-7-circular-dependency-issues-with-std-shared-ptr-and-std-weak-ptr.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">22.7 · 智能指针带来的循环依赖问题</span>
+      <span class="pn-chapter">第 22 章 · 移动语义与智能指针</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/22-%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E5%92%8C%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/22-6-std-shared-ptr" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c22/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#stdmake_shared">std::make_shared</a></li><li class="lv2"><a href="#stdshared_ptr-%E5%86%85%E5%B9%95">std::shared_ptr 内幕</a></li><li class="lv2"><a href="#stdshared_ptr-%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87-stdunique_ptr--%E5%88%9B%E5%BB%BA">std::shared_ptr 可以通过 std::unique_ptr 创建</a></li><li class="lv2"><a href="#stdshared_ptr-%E7%9A%84%E9%99%B7%E9%98%B1">std::shared_ptr 的陷阱</a></li><li class="lv2"><a href="#stdshared_ptr-%E5%92%8C%E6%95%B0%E7%BB%84">std::shared_ptr 和数组</a></li><li class="lv2"><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

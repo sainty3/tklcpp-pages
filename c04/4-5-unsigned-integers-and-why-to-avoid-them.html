@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.5 · 无符号整型以及为什么要避免使用它 · tklcpp</title>
+<meta name="description" content="Key Takeaway 无符号整型表示超过范围的数时，实际存储的值为原值除以范围最大值加 1 后的余数。例如，。称为无符号的反转。 无符号会翻转，有符号会溢出 无符号反转可以向0反转也可以向最大值反转 无符号整型表示超…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/katex/katex.min.css">
+<link rel="prev" href="../c04/4-4-signed-integers.html">
+<link rel="next" href="../c04/4-6-fixed-width-integers-and-size-t.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c04/4-5-unsigned-integers-and-why-to-avoid-them.html" data-type="lesson" data-chapter="04" data-chapter-title="第 04 章 · 基础数据类型" data-title="无符号整型以及为什么要避免使用它" data-num="4.5">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c04/index.html">第 04 章 · 基础数据类型</a><span class="sep">/</span><span class="current">4.5 · 无符号整型以及为什么要避免使用它</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c04/index.html">第 04 章 · 基础数据类型</a>
+        <h1><span class="h1-num">4.5</span>无符号整型以及为什么要避免使用它</h1>
+        <div class="article-meta"><span>8 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">data-type</span> <span class="tag">integer</span> <span class="tag">overflow</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">7 节</span></summary>
+    <ul><li class="lv2"><a href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B">无符号整型</a></li><li class="lv2"><a href="#%E5%AE%9A%E4%B9%89%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B">定义无符号整型</a></li><li class="lv2"><a href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B%E7%9A%84%E8%8C%83%E5%9B%B4">无符号整型的范围</a></li><li class="lv2"><a href="#%E5%88%86%E6%B8%85%E6%9C%89%E7%AC%A6%E5%8F%B7signed-%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7unsigned">分清有符号(signed) 和无符号(unsigned)</a></li><li class="lv2"><a href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B%E6%BA%A2%E5%87%BA">无符号整型溢出</a></li><li class="lv2"><a href="#%E6%9C%89%E5%85%B3%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B%E7%9A%84%E4%BA%89%E8%AE%BA">有关无符号整型的争论</a></li><li class="lv2"><a href="#%E9%82%A3%E4%B9%88%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E6%89%8D%E4%BD%BF%E7%94%A8%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E5%91%A2">那么什么时候才使用无符号数呢？</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>无符号整型表示超过范围的数时，实际存储的值为原值除以范围最大值加 1 后的余数。例如，<code>value mod 2^32</code>。称为无符号的反转。</li>
+<li>无符号会翻转，有符号会溢出</li>
+<li>无符号反转可以向0反转也可以向最大值反转</li>
+<li>无符号整型表示超过范围的数时不会产生<a href="../glossary/undefined-behavior.html" class="internal alias glossary-link" data-slug="词汇表/undefined-behavior" title="词汇表：未定义行为">未定义行为</a>，它的行为是确定的，因此 C++ 标准明确说明无符号整型不会”溢出”</li>
+<li>混用无符号和有符号类型时可能产生问题，因为有符号数会被隐式转换为无符号数，此时可能发生反转。</li>
+<li>尽量使用有符号数保存数量值和进行数学运算，无符号+有符号会发生转换导致有负的符号数溢出（<a href="../c10/10-5-arithmetic-conversions.html" class="internal alias" data-slug="10-类型转换、类型别名和类型推导/10-5-Arithmetic-conversions">10.5 - 算术转换</a>）</li>
+<li>进行位运算的时候可以使用无符号整型</li>
+</ul>
+</div></aside>
+<h2 id="无符号整型">无符号整型<a class="anchor" aria-label="本节链接" href="#无符号整型">#</a></h2>
+<p>在上节课 (<a href="../c04/4-4-signed-integers.html" class="internal alias" data-slug="04-基础数据类型/4-4-Signed-integers">4.4 - 有符号整型</a>) 中，我们介绍了有符号整型，这些整型可以保存正负整数和 0。</p>
+<p>C++ 还支持无符号整型。无符号整型只能表示非符整数。</p>
+<h2 id="定义无符号整型">定义无符号整型<a class="anchor" aria-label="本节链接" href="#定义无符号整型">#</a></h2>
+<p>定义无符号整型，需要使用 <code>unsigned</code> 关键字。通常来讲，该关键字应该写在类型前：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> short</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> us</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ui</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> long</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ul</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> long</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> long</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ull</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<h2 id="无符号整型的范围">无符号整型的范围<a class="anchor" aria-label="本节链接" href="#无符号整型的范围">#</a></h2>
+<p>1 字节(8 位)无符号整型的范围为 0 和 255，而 1 字节有符号整型的范围是 -128 到 127。它们都能够存放 256 个不同的值，但是有符号整型的一半范围被用来表示负数，而无符号整型则全部用来存放整数，因此能够表示的正数范围是有符号整型的两倍。</p>
+<p>下表展示了不同有符号整型可以表示的范围：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>大小/类型</th><th>范围</th></tr></thead><tbody><tr><td>1 byte unsigned</td><td>0 到 255</td></tr><tr><td>2 byte unsigned</td><td>0 到 65,535</td></tr><tr><td>4 byte unsigned</td><td>0 到 4,294,967,295</td></tr><tr><td>8 byte unsigned</td><td>0 到 18,446,744,073,709,551,615</td></tr></tbody></table></div>
+<p>一个 n 为的无符号整型可表示的范围为 0 到 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.6644em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>。</p>
+<p>如果不需要表示负数，那么无符号整型更适合在内存比较小的网络和系统上使用，因为它可以在不占用更多内存的前提下保存更多的正整数。</p>
+<h2 id="分清有符号signed-和无符号unsigned">分清有符号(signed) 和无符号(unsigned)<a class="anchor" aria-label="本节链接" href="#分清有符号signed-和无符号unsigned">#</a></h2>
+<p>很多新手程序员经常把有符号(signed) 和无符号(unsigned)这两个术语搞混。以下介绍一种简单的方法来记忆它们的不同：为了区分负数和正数，我们需要负号。如果没有指定符号，我们假定该数为正数。这样一来，具有符号的整型（有符号整型）可以区分正负。而不具有符号的整型（有符号整型）则全部为正数。</p>
+<h2 id="无符号整型溢出">无符号整型溢出<a class="anchor" aria-label="本节链接" href="#无符号整型溢出">#</a></h2>
+<p>如果我们尝试把 280 （需要 9 个位来表示）赋值给一个 8 位无符号整型会发生什么呢？答案是——溢出。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>奇怪的是，C++标准中明确写道，无符号操作数参与的运算永远不会溢出。这和我们的编程常识（无符号和有符号整型都会溢出）是矛盾的。( <a href="https://en.wikipedia.org/wiki/Integer_overflow#Definition_variations_and_ambiguity" class="external alias" target="_blank" rel="noopener noreferrer">参考文献</a> )。由于大多数的程序员都会考虑该溢出，我们这里也沿用了该说法，尽管和C++标准有所矛盾。</p>
+</div></aside>
+<p>当无符号值超过范围时，它会被除以该类型的最大值加 1，且只保留余数。</p>
+<p>280 不在 0 到 255 的范围内。该范围的最大值+1 是 256，所以 280 会除以 256，余数为 24。最终 24 会被存放到内存中。</p>
+<p>这个问题还可以这样理解。比最大值还大的数在存放时会被“wraps around” (有时候也称为“modulo wrapping”)，即从 0 开始重新计算。255 在 1 字节整型的表示范围内，所以 255 没问题。而 256 则超过了范围，因此它会被归为 0。257 则会归为 1。280 则归为 24.</p>
+<p>这里是一个 2 字节无符号短整型（ <code>unsigned short</code>） 的例子：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> short</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 65535</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // largest 16-bit unsigned value possible</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x was: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 65536</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 65536 is out of our range, so we get wrap-around</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x is now: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 65537</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 65537 is out of our range, so we get wrap-around</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x is now: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>!!! note “译者注”</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>无符号不会溢出，的确是 C++标准，不溢出这个说法也是合理的，因为无符号在遇到超过表示范围的情况时并不会表现出[[undefined-behavior|未定义行为]]，结果也不是简单的丢弃，而是对原值进行求模运算。英文叫 warp around，即从 0 开始重新计算。例如，对于 32 位无符号，超出范围时结果等于 `value mod 2^32`
+</code></pre></div>
+<p>你觉得程序的结果会是什么呢？</p>
+<p>(注意，如果你编译上述程序的话，编译器可能会产生关于溢出或截断的告警——你需要关闭”将告警看做错误“功能，才能运行该程序）</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>x was: 65535
+x is now: 0
+x is now: 1
+</code></pre></div>
+<p>向另一个方向 wrap 也是可以的，0 可以被 2 字节大小的无符号整型表示，但是-1 不可以，因此它会被 wrap 到最大值，结果为 65535。-2 的结果是 65534。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> short</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // smallest 2-byte unsigned value possible</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x was: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // -1 is out of our range, so we get wrap-around</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x is now: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // -2 is out of our range, so we get wrap-around</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x is now: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>x was: 0
+x is now: 65535
+x is now: 65534
+</code></pre></div>
+<p>上述代码会引起某些编译器产生告警，因为编译器检测到整型字面量超过了表示它的类型的范围。如果你希望编译上述代码，请暂时关闭”将告警看做错误“功能。</p>
+<aside class="callout callout-quote" data-callout="quote"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 3-1 5-4 5zM14 21c3 0 7-1 7-8V5h-7v8h4c0 3-1 5-4 5z"></path></svg></span><span class="callout-label">题外话</span></div><div class="callout-body">
+<p>很多电子游戏史上的著名的 bug 都和无符号数反转有关。街机游戏《大金刚》中，你不可能通过22关，因为溢出bug导致用户在这一关中不可能有足够的时间。</p>
+<p>电脑游戏《文明》中，甘地通常是第一个使用核武器的，这和他本应该有的保守的属性非常矛盾。玩家认为这是由于甘地的攻击性被初始化成1，但是如果他走民主路线的话，其攻击性会-2。进而导致了数值被反转成了255，使其变得非常好斗。不过，最近席德梅尔对此进行了澄清，他说这并不是引起上述问题的原因。</p>
+</div></aside>
+<h2 id="有关无符号整型的争论">有关无符号整型的争论<a class="anchor" aria-label="本节链接" href="#有关无符号整型的争论">#</a></h2>
+<p>很多程序员 (以及一些大厂，例如谷歌）认为程序也应该避免使用无符号整型。</p>
+<p>这主要是因为无符号整型有两种行为可能会导致问题。</p>
+<p>首先，将两个无符号整型相减，例如3-5等于-2，但是-2不能被无符号整型表示。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在笔者的机器上，尽管上面的代码看上去人畜无害，实际上结果却令人吃惊：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">4294967294</span></span></code></pre></div></figure>
+<p>这是因为 -2 被反转到了一个接近 4自己整型最大值的数。另外一个可能产生反转的情况是，对无符号整型使用递减运算符(<code>--</code>)。那么当变量循环递减时，最终可能会发生于上述例子中同样的问题。
+.
+此外，当将有符号整型和无符号整型混用时，也可能产生意外。在C++进行数学运算时（例如算数或比较），如果两个操作数分别为有符号和无符号整型，那么有符号的一方会被转换为无符号。然后，因为无符号整型不可以保存负数，这就有可能造成数据丢失的情况。</p>
+<p>考虑下面代码：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    signed</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> s </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> u </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">s </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> u</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // -1 被隐式转换成了 4294967295, 而 4294967295 &lt; 1 是错误的</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "-1 is less than 1</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "1 is less than -1</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 这句语句会被执行</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>这个程序可以正常编译，看上去也符合逻辑。但是它打印的结果却是错误的。尽管编译器在检查到有符号/无符号不匹配时，会发出一个警告。但是由于还有很多其他情况下编译器也会报告完全一样的警告（例如两个数都是正数时），这会让我们很难判断真正的问题在哪里。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">相关内容</span></div><div class="callout-body">
+<p>我们会在<a href="../c04/4-10-introduction-to-if-statements.html" class="internal alias" data-slug="04-基础数据类型/4-10-Introduction-to-if-statements">4.10 - if 语句简介</a>中介绍<code>if</code>语句。</p>
+</div></aside>
+<p>此外，还有一些可能有问题的情况，是根本无法被检查到的。考虑下面这个例子：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> doSomething</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">unsigned</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // Run some code x times</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "x is "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">    doSomething</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">-</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p><code>doSomething()</code>函数的作者期望用户只传递正数给该函数。但是调用者犯了一个错误，它传了-1。这是个很显然的错误，但是人们仍然难免会犯。那么此时会发生什么呢？</p>
+<p><a href="../glossary/arguments.html" class="internal alias glossary-link" data-slug="词汇表/arguments" title="词汇表：实参">实参</a> -1 被隐式转换成了一个无符号<a href="../glossary/parameters.html" class="internal alias glossary-link" data-slug="词汇表/parameters" title="词汇表：形参">形参</a>。-1 不在无符号整型的表示范围，因此必然被反转成一个非常大的数(可能是 4294967295)。然后你的程序就会出现问题。 更糟糕的是，并没有一种方法能够避免上述问题的发生。C++ 可以自由地转换有符号和无符号数，但是它并不会在转换时进行任何的范围检查以确保不发生溢出。</p>
+<p>上述这些问题都是经常会遇到的，它们产生意料之外的行为，并且难以被发现。即使使用一些被专用于查找此类问题的工具有很难发现。</p>
+<p>因此，一些有争议的最佳实践认为，我们应该避免使用无符号类型，除非确实有特殊的需求。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>尽量使用有符号数来存放数量值（尽管数量可能都是非负的）和进行数学运算。避免混用有符号和无符号类型。</p>
+</div></aside>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">相关内容</span></div><div class="callout-body">
+<p>支持上述建议的一些材料(同时也驳斥了一些常见的反对意见）：</p>
+<ol>
+<li><a href="https://www.youtube.com/watch?v=_nrly6PH6NU" class="external alias" target="_blank" rel="noopener noreferrer">Interactive C++ panel</a> (see 12:12-13:08,42:40-45:26, and 1:02:50-1:03:15)</li>
+<li><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1428r0.pdf" class="external alias" target="_blank" rel="noopener noreferrer">Subscripts and sizes should be signed</a></li>
+<li><a href="https://blog.libtorrent.org/2016/05/unsigned-integers/" class="external alias" target="_blank" rel="noopener noreferrer">Unsigned integers from the libtorrent blog</a></li>
+</ol>
+</div></aside>
+<h2 id="那么什么时候才使用无符号数呢">那么什么时候才使用无符号数呢？<a class="anchor" aria-label="本节链接" href="#那么什么时候才使用无符号数呢">#</a></h2>
+<p>还是有一些场合是需要或者可以使用无符号数的。</p>
+<p>首先，无符号数在进行位运算时是推荐使用的（在章节O中介绍）。在一些确实需要反转行为的场合，无符号数也是有用的（例如一些加密算法和随机数生成）。</p>
+<p>其次，在有些时候无符号数是无法避免的（很多与数组进行索引有关）。我们会在有关数组的课程中进行详细介绍。在这些情况下，无符号数可以被转换为有符号数。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">相关内容</span></div><div class="callout-body">
+<p>我们会在<a href="../c04/4-12-introduction-to-type-conversion-and-static-cast.html" class="internal alias" data-slug="04-基础数据类型/4-12-Introduction-to-type-conversion-and-static_cast">4.12 - 类型转换和 static_cast</a>中介绍如何将无符号数转换为有符号数。</p>
+</div></aside>
+<p>同时请注意，如果你在开发嵌入式系统（例如 Arduino）或者其他处理器/内存比较吃紧的环境，出于性能的原因而使用无符号数是非常常见的，同时也是可以被接受的（在有些场景下也是无法避免的）。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c04/4-4-signed-integers.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">4.4 · 有符号整型</span>
+      <span class="pn-chapter">第 04 章 · 基础数据类型</span>
+    </a><a class="pn-card next" href="../c04/4-6-fixed-width-integers-and-size-t.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">4.6 · 固定宽度整型和 size_t</span>
+      <span class="pn-chapter">第 04 章 · 基础数据类型</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/04-%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/4-5-Unsigned-integers-and-why-to-avoid-them" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c04/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B">无符号整型</a></li><li class="lv2"><a href="#%E5%AE%9A%E4%B9%89%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B">定义无符号整型</a></li><li class="lv2"><a href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B%E7%9A%84%E8%8C%83%E5%9B%B4">无符号整型的范围</a></li><li class="lv2"><a href="#%E5%88%86%E6%B8%85%E6%9C%89%E7%AC%A6%E5%8F%B7signed-%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7unsigned">分清有符号(signed) 和无符号(unsigned)</a></li><li class="lv2"><a href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B%E6%BA%A2%E5%87%BA">无符号整型溢出</a></li><li class="lv2"><a href="#%E6%9C%89%E5%85%B3%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E5%9E%8B%E7%9A%84%E4%BA%89%E8%AE%BA">有关无符号整型的争论</a></li><li class="lv2"><a href="#%E9%82%A3%E4%B9%88%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E6%89%8D%E4%BD%BF%E7%94%A8%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B0%E5%91%A2">那么什么时候才使用无符号数呢？</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

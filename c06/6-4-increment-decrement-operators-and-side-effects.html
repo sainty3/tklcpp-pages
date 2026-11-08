@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.4 · 自增自减运算符及其副作用 · tklcpp</title>
+<meta name="description" content="Key Takeaway 后缀版本的运算符多了很多步骤（需要创建一个副本），因此它的性能不如前缀版本 强烈推荐使用前缀版本的递增递减运算符，因为它们性能更好，而且也不容易带来问题 因为 C++ 标准没有规定函数参数的求值…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c06/6-3-modulus-and-exponentiation.html">
+<link rel="next" href="../c06/6-5-comma-and-conditional-operators.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c06/6-4-increment-decrement-operators-and-side-effects.html" data-type="lesson" data-chapter="06" data-chapter-title="第 06 章 · 运算符" data-title="自增自减运算符及其副作用" data-num="6.4">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c06/index.html">第 06 章 · 运算符</a><span class="sep">/</span><span class="current">6.4 · 自增自减运算符及其副作用</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c06/index.html">第 06 章 · 运算符</a>
+        <h1><span class="h1-num">6.4</span>自增自减运算符及其副作用</h1>
+        <div class="article-meta"><span>5 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">operator</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">2 节</span></summary>
+    <ul><li class="lv2"><a href="#%E5%8F%98%E9%87%8F%E7%9A%84%E8%87%AA%E5%A2%9E%E8%87%AA%E5%87%8F">变量的自增自减</a></li><li class="lv2"><a href="#%E5%89%AF%E4%BD%9C%E7%94%A8">副作用</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>后缀版本的运算符多了很多步骤（需要创建一个副本），因此它的性能不如前缀版本</li>
+<li>强烈推荐使用前缀版本的递增递减运算符，因为它们性能更好，而且也不容易带来问题</li>
+<li>因为 C++ 标准没有规定函数参数的求值顺序。所以 <code>add(x, ++x)</code>这样的函数调用结果是不确定的，因为函数 <code>add</code>的其中一个参数具有副作用。</li>
+<li>C++ 没有定义函数参数或运算符操作数的求值顺序。</li>
+</ul>
+</div></aside>
+<h2 id="变量的自增自减">变量的自增自减<a class="anchor" aria-label="本节链接" href="#变量的自增自减">#</a></h2>
+<p>将一个变量递增（加1）和递减（减1）都是非常常见的操作，因此它们有专门的运算符。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>运算符</th><th>符号</th><th>形式</th><th>操作</th></tr></thead><tbody><tr><td>Prefix increment (pre-increment)</td><td>++</td><td>++x</td><td>Increment x, then return x</td></tr><tr><td>Prefix decrement (pre-decrement)</td><td>––</td><td>––x</td><td>Decrement x, then return x</td></tr><tr><td>Postfix increment (post-increment)</td><td>++</td><td>x++</td><td>Copy x, then increment x, then return the copy</td></tr><tr><td>Postfix decrement (post-decrement)</td><td>––</td><td>x––</td><td>Copy x, then decrement x, then return the copy</td></tr></tbody></table></div>
+<p>注意，每种操作符都有两个版本，一个是前缀形式（运算符在操作符前面），一个是后缀形式（运算符在操作符后面）。</p>
+<p>前缀递增/递减操作符非常简单，即操作数先递增或递减，然后表达式再求值。例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // x is incremented to 6, x is evaluated to the value 6, and 6 is assigned to y</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>打印结果：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>6 6
+</code></pre></div>
+<p>后缀自增/自减稍微有点复杂。首先，它拷贝了一份操作数，然后对操作数（而不是它的拷贝）进行递增或递减。最后对拷贝的值（而非原始值）进行求值，例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // x 自增为</span><mark data-highlighted-chars=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">6</span></mark><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">，拷贝的最初的值为5,5被赋值给了y</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>打印结果：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>6 5
+</code></pre></div>
+<p>让我们介绍一下第六行是如何工作的。首先，创建一个 <code>x</code> 的临时拷贝，值和x一样（5）。随后，这个拷贝被返回然后赋值给 <code>y</code>。然后，这个临时的拷贝就被丢弃了。</p>
+<p>因此，<code>y</code> 最终的值就是 5（递增前的值），然后 x 的值变成了 6（递增后的值）。</p>
+<p>注意，后缀版本的运算符多了很多步骤，因此它的性能不如前缀版本。</p>
+<p>下面的例子演示了前缀递增递减和后缀递增递减的不同：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> --</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // prefix</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">--</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // postfix</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> ' '</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>输出结果如下：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>5 5
+6 4
+6 4
+6 4
+7 3
+</code></pre></div>
+<p>在第八行中，我们使用了前缀递增递减。因此这一行中 x 和 y 先递增，再打印，因此它们更新后的值被打印了出来。</p>
+<p>在第十行中，我们使用的是后缀递增递减。因此这一行中，x 和 y 先被拷贝，然后打印。所以我们没有看到递增后的结果被打印出来。递增的结果只有再下一次打印时才能有所体现。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>强烈推荐使用前缀版本的递增递减运算符，因为它们性能更好，而且也不容易带来问题。</p>
+</div></aside>
+<h2 id="副作用">副作用<a class="anchor" aria-label="本节链接" href="#副作用">#</a></h2>
+<p>如果我们说一个函数或表达式具有副作用，则意味着它执行后带来了某些影响且这些影响在函数或表达式的生命周期结束后还存在。</p>
+<p>副作用的典型例子包括对象的值被改变、进行了输入输出或者更新了图形用户界面（例如打开或关闭某个按钮）。</p>
+<p>很多时候，副作用是有用的：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // the assignment operator modifies the state of x</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // operator++ modifies the state of x</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // operator&lt;&lt; modifies the state of the console</span></span></code></pre></div></figure>
+<p>上面赋值号的副作用是永久地改变了 <code>x</code> 的值，即使在赋值语句结束执行后，<code>x</code> 的值也还是 5。同样的，<code>++</code>运算符也有副作用，<code>++x</code>执行后 <code>x</code> 的值就递增了。打印 <code>x</code> 同样有副作用，它改变了控制台的状态，因为你可以看到 <code>x</code> 的值被打印到了控制台。</p>
+<p>不过，副作用有时候也会带来意想不到的结果：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> add</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> add</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 究竟是 5 + 6 还是 6 + 6?</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // 这取决于你的编译器如何选择函数参数的求值顺序</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // value 可能是 11 或者 12，取决于编译器</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>因为 C++ 标准没有规定函数参数的求值顺序。如果左边的参数先求值，则实际调用为<code>add(5,6)</code>，结果为 11。如果右边的参数先求值，则实际调用为<code>add(6,6)</code>，结果为 12。造成这个问题的原因，是因为函数 <code>add</code>的其中一个参数具有副作用。</p>
+<aside class="callout callout-quote" data-callout="quote"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 3-1 5-4 5zM14 21c3 0 7-1 7-8V5h-7v8h4c0 3-1 5-4 5z"></path></svg></span><span class="callout-label">题外话</span></div><div class="callout-body">
+<p>C++ 标准故意没有定义这些事情，这样编译器可以根据计算机的体系结构选择最自然（一般也是最高效）的方式来处理。</p>
+</div></aside>
+<p>C++ 标准没有规定求值顺序的场景还有一些（例如操作数的求值顺序），所以不同的编译器行为也可能是不一样的。即使C++标准能够明确这些问题，由于历史原因，这里也是编译器bug多发之地。通常，这些问题是可以避免的，只要你避免不要让副作用多次作用在一个变量上。</p>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>C++ 没有定义函数参数或运算符操作数的求值顺序。</p>
+</div></aside>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>在一个语句中，不要让副作用多次作用在一个变量上。如果这么做的话，结果可能是不确定的。</p>
+</div></aside></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c06/6-3-modulus-and-exponentiation.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">6.3 · 求模和指数运算</span>
+      <span class="pn-chapter">第 06 章 · 运算符</span>
+    </a><a class="pn-card next" href="../c06/6-5-comma-and-conditional-operators.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">6.5 · 逗号和条件运算符</span>
+      <span class="pn-chapter">第 06 章 · 运算符</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/06-%E8%BF%90%E7%AE%97%E7%AC%A6/6-4-Increment-decrement-operators-and-side-effects" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c06/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E5%8F%98%E9%87%8F%E7%9A%84%E8%87%AA%E5%A2%9E%E8%87%AA%E5%87%8F">变量的自增自减</a></li><li class="lv2"><a href="#%E5%89%AF%E4%BD%9C%E7%94%A8">副作用</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

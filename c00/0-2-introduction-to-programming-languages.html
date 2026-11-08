@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.2 · Introduction to programs and programming languages · tklcpp</title>
+<meta name="description" content="Modern computers are incredibly fast, and getting faster all the time. However, computers also have some signi…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c00/0-1-introduction-to-these-tutorials.html">
+<link rel="next" href="../c00/0-3-introduction-to-cplusplus.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c00/0-2-introduction-to-programming-languages.html" data-type="lesson" data-chapter="00" data-chapter-title="第 00 章 · 简介与入门" data-title="Introduction to programs and programming languages" data-num="0.2">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c00/index.html">第 00 章 · 简介与入门</a><span class="sep">/</span><span class="current">0.2 · Introduction to programs and programming languages</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c00/index.html">第 00 章 · 简介与入门</a>
+        <h1><span class="h1-num">0.2</span>Introduction to programs and programming languages</h1>
+        <div class="article-meta"><span>12 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/00-%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/0-2-introduction-to-programming-languages" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+
+<p>Modern computers are incredibly fast, and getting faster all the time. However, computers also have some significant constraints: they only natively understand a limited set of instructions, and must be told exactly what to do.</p>
+<p>A <strong>computer program</strong> is a sequence of instructions that directs a computer to perform certain actions in a specified order. Computer programs are typically written in a <strong>programming language</strong>, which is a language designed to facilitate the writing of instructions for computers. There are many different programming languages available, each of which caters to a different set of needs. The act (and art) of writing a program is called <strong>programming</strong>. We’ll talk more specifically about how to create programs in C++ in upcoming lessons in this chapter.</p>
+<p>When a computer is performing the actions described by the instructions in a computer program, we say it is <strong>running</strong> or <strong>executing</strong> the program. A computer will not begin execution of a program until told to do so. That typically requires the user to <strong>launch</strong> (or <strong>run</strong> or <strong>execute</strong>) the program, although programs may also be launched by other programs.</p>
+<p>Programs are executed on the computer’s <strong>hardware</strong>, which consists of the physical components that make up a computer. Notable hardware found on a typical computing device includes:</p>
+<ul>
+<li>A CPU (central processing unit, often called the “brain” of the computer), which actually executes the instructions.</li>
+<li>Memory, where computer programs are loaded prior to execution.</li>
+<li>Interactive devices (e.g. a monitor, touch screen, keyboard, or mouse), which allow a person to interact with a computer.</li>
+<li>Storage devices (e.g. a hard drive, SSD, or flash memory), which retain information (including installed programs) even when the computer is turned off.</li>
+</ul>
+<p>In contrast, the term <strong>software</strong> broadly refers to the programs on a system that are designed to be executed on hardware.</p>
+<p>In modern computing, programs often interact with more than just hardware — they also interact with other software on the system (particularly the operating system). The term <strong>platform</strong> refers to a compatible set of hardware and software (OS, browser, etc…) that provides an environment for software to run. For example, the term “PC” is used colloquially to mean the platform consisting of a Windows OS running on an x86-family CPU.</p>
+<p>Platforms often provide useful services for the programs running on them. For example, a desktop application might request the operating system give them a chunk of free memory, create a file over there, or play a sound. The running program doesn’t have to know how this is actually facilitated. If a program uses capabilities or services provided by the platform, it becomes dependent on that platform, and cannot be run on other platforms without modification. A program that can be easily transferred from one platform to another is said to be <strong>portable</strong>. The act of modifying a program so that it runs on a different platform is called <strong>porting</strong>.</p>
+<p>Now that we’ve talked about programs, let’s discuss programming languages. This isn’t just a history lesson, we’ll also be introducing terminology that will come up in future lessons.</p>
+<p>Machine Language</p>
+<p>A computer’s CPU is incapable of understanding C++. Instead, CPUs are only capable of processing instructions written in <strong>machine language</strong> (or <strong>machine code</strong>). The set of all possible machine language instructions that a given CPU can understand is called an <strong>instruction set</strong>.</p>
+<p>Here is a sample machine language instruction: <code>10110000 01100001</code>.</p>
+<p>Each instruction is understood by the CPU as a command to do a very specific job, such as “compare these two numbers”, or “copy this number into that memory location”. Back when computers were first invented, programmers had to write programs directly in machine language, which was a very difficult and time-consuming thing to do.</p>
+<p>How these instructions are organized and interpreted is beyond the scope of this tutorial series, but it is worth noting a few things.</p>
+<p>First, each instruction is composed of a sequence of 1s and 0s. Each individual 0 or 1 is called a <strong>binary digit</strong>, or <strong>bit</strong> for short. The number of bits in a machine language instruction varies — for example, some CPUs process instructions that are always 32 bits long, whereas some other CPUs (such as those from the x86 family, which you may be using) have instructions that can be a variable length.</p>
+<p>Second, each family of compatible CPUs (e.g. x86, Arm64) has its own machine language, and this machine language is not compatible with the machine language of other CPU families. This means machine language programs written for one CPU family cannot be run on CPUs from a different family!</p>
+<p>Related content</p>
+<p>A “CPU family” is formally called an “instruction set architecture” (“ISA” for short). Wikipedia has a list of different CPU families <a href="https://en.wikipedia.org/wiki/Comparison_of_instruction_set_architectures#Instruction_sets" class="external alias" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<p>Assembly Languages</p>
+<p>Machine language instructions (like <code>10110000 01100001</code>) are ideal for a CPU, but are difficult for humans to understand. Since programs (at least historically) have been written and maintained by humans, it makes sense that programming languages should be designed with human needs in mind.</p>
+<p>An <strong>assembly language</strong> (often called <strong>assembly</strong> for short) is a programming language that essentially functions as a more human-readable machine language. Here is the same instruction as above in x86 assembly language: <code>mov al, 0x61</code>.</p>
+<p>Optional reading</p>
+<p>This instruction illustrates many of the capabilities that make assembly more readable than machine language.</p>
+<ul>
+<li>The operation (what the instruction does) is identified by a short mnemonic (typically a 3-5 letter name). <code>mov</code> is easily understood to be a mnemonic for “move”, which is an operation that copies bits from one location to another.</li>
+<li>Registers (fast memory locations that are part of the CPU itself) are accessed by a name. <code>al</code> is the name of a specific register on an x86 CPU.</li>
+<li>Numbers can be specified in a more convenient format. Assembly languages typically support both decimal numbers (e.g. <code>97</code>) and hexadecimal numbers (e.g. <code>0x61</code>).</li>
+</ul>
+<p>It is fairly easy to understand that the assembly instruction <code>mov al, 0x61</code> copies hexadecimal number <code>0x61</code> into the <code>al</code> CPU register.</p>
+<p>Since CPUs do not understand assembly language, assembly programs must be translated into machine language before they can be executed. This translation is done by a program called an <strong>assembler</strong>. Because each assembly language instruction is typically designed to mirror an equivalent machine language instruction, the translation process is typically straightforward.</p>
+<p>Just like each CPU family has its own machine language, each CPU family also has its own assembly language (which is designed to be assembled into machine language for that same CPU family). This means there are many different assembly languages. Although conceptually similar, different assembly languages support different instructions, use different naming conventions, etc…</p>
+<p>Introduction to low-level languages</p>
+<p>Machine languages and assembly languages are considered low-level languages, as these languages provide minimal abstraction from the architecture of the machine. In other words, the programming language itself is tailored to the specific instruction set architecture it will be run on.</p>
+<p>Low-level languages have a number of notable downsides:</p>
+<ul>
+<li>Programs written in a low-level language are not portable. Since a low-level language is tailored to a specific instruction set architecture, the programs written in the language are too. Porting such programs to other architectures is typically non-trivial.</li>
+<li>Writing a program in a low-level language requires detailed knowledge of the architecture itself. For instance, the instruction <code>mov al, 061h</code> requires knowing that <code>al</code> refers to a CPU register available on this specific platform, and understanding how to work with that register. On a different architecture, this register might be named something different, have different limitations, or not exist at all.</li>
+<li>Low-level programs are hard to understand. While individual assembly instructions can be quite understandable, it can still be hard to deduce what a section of assembly code is actually doing. And since assembly programs require many instructions to do even simple tasks, they tend to be quite long</li>
+<li>It is hard to write assembly programs of significant complexity because the language only provides primitive capabilities. The programmer is left to implement everything they need themselves.</li>
+</ul>
+<p>The primary benefit of low-level languages is that they are fast. Assembly is still used today when there are sections of code that are performance critical. And it’s also used in a few other cases, one of which we’ll discuss in a moment.</p>
+<p>Introduction to high-level Languages</p>
+<p>To address many of the above downsides, new “high-level” programming languages such as C, C++, Pascal (and later, languages such as Java, Javascript, and Perl) were developed.</p>
+<p>Here is the same instruction as above in C/C++: <code>a = 97;</code>.</p>
+<p>Much like assembly programs (which must be assembled to machine language), programs written in a high-level language must be translated into machine language before they can be run. There are two primary ways this is done: compiling and interpreting.</p>
+<p>C++ programs are usually compiled. A <strong>compiler</strong> is a program (or collection of programs) that reads the source code of one language (usually a high-level language) and translates it into another language (usually a low-level language). For example, a C++ compiler translates C++ source code into machine code.</p>
+<p>Optional reading</p>
+<p>Most C++ compilers can also be configured to generate assembly code. This is useful when a programmer wants to see what specific instructions the compiler is generating for a section of the program.</p>
+<p>The machine code output by the compiler can then be packaged into an executable file (containing machine language instructions) that can distributed to others and launched by the operating system. Notably, running the executable file does not require the compiler to be installed.</p>
+<p>In the beginning, compilers were primitive and produced slow, unoptimized assembly or machine code. However, over the years, compilers have become very good at producing fast, optimized code, and in some cases can do a better job than humans can!</p>
+<p>Here is a simplified representation of the compiling process:</p>
+<p><img src="../assets/img/bd121845eec1.png" alt="Example of compiling" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<p>Alternatively, an <strong>interpreter</strong> is a program that directly executes the instructions in the source code without requiring them to be compiled first. Interpreters tend to be more flexible than compilers, but are less efficient when running programs because the interpreting process needs to be done every time the program is run. This also means the interpreter must be installed on every machine where an interpreted program will be run.</p>
+<p>Here is a simplified representation of the interpretation process:</p>
+<p><img src="../assets/img/9dc2a43e2f2f.png" alt="Example of interpreting" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<p>Optional reading</p>
+<p>A good comparison of the advantages of compilers vs interpreters can be found <a href="https://stackoverflow.com/a/38491646" class="external alias" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<p>Another advantage of compiled programs is that distributing a compiled program does not require distributing the source code. In a non-open-source environment, this is important for intellectual property (IP) protection purposes.</p>
+<p>Most high-level languages can be either compiled or interpreted. Traditionally, high-level languages like C, C++, and Pascal are compiled, whereas “scripting” languages like Perl and Javascript tend to be interpreted. Some languages, like Java, use a mix of the two. We’ll explore C++ compilers in more detail shortly.</p>
+<p>The benefits of high-level languages</p>
+<p>High-level languages are named as such because they provide a high level of abstraction from the underlying architecture.</p>
+<p>Consider the instruction <code>a = 97;</code>. This instruction lets us store the value <code>97</code> somewhere in memory, without needing to know exactly where that value will be placed, or what specific machine code instruction is needed by the CPU to store that value. In fact, there is nothing platform-specific about this instruction at all. The compiler does all the work to figure out how this C++ instruction translates into platform-specific machine code.</p>
+<p>High-level languages allow programmers to write programs without knowing much about the platform it will be run on. This not only makes programs easier to write, it also makes them significantly more portable. If we’re careful, we can write a single C++ that will compile on every platform that has a C++ compiler! A program that is designed to run on multiple platforms is said to be <strong>cross-platform</strong>.</p>
+<p><img src="../assets/img/bf279357fa15.png" alt="Example of portability" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<p>For advanced readers</p>
+<p>The following is a partial list of things that can inhibit the portability of your C++ code:</p>
+<ul>
+<li>Many operating systems, such as Microsoft Windows, offer platform-specific capabilities that you can use in your code. These can make it much easier to write a program for a specific operating system, or provide deeper integration with that operating system than would otherwise be possible.</li>
+<li>Many third-party libraries are only available on certain platforms. If you use one of these, you will be limited to the platforms for which that library is supported.</li>
+<li>Some compilers support compiler-specific extensions, which are capabilities that are only available in that compiler. If you use these, your programs won’t be able to be compiled by other compilers that don’t support the same extensions without modification. We’ll talk more about these later, once you’ve installed a compiler.</li>
+<li>In certain cases, the C++ language allows the compiler to determine how something should behave. We discuss this further in lesson <a href="https://www.learncpp.com/cpp-tutorial/uninitialized-variables-and-undefined-behavior/" class="external alias" target="_blank" rel="noopener noreferrer">1.6 — Uninitialized variables and undefined behavior</a> under “implementation-defined behavior”.</li>
+</ul>
+<p>If you’re only targeting a single platform, then portability may not matter that much. But many applications these days target multiple platforms in order to widen their reach. For example, a mobile app will probably want to target both iOS and Android.</p>
+<p>Even if portability doesn’t seem useful initially, many applications that initially targeted a single platform (e.g. PC) decided to port to other platforms (e.g. Mac and various consoles) after seeing some level of success and interest. If you don’t start with portability in mind, it will be more work to port your application later.</p>
+<p>In these tutorials, we will avoid platform-specific code as much as possible, so that our programs will run on any platform that has a modern C++ compiler.</p>
+<p>High-level languages have other benefits as well:</p>
+<ul>
+<li>Programs written in a high-level language are easier to read, write, and learn because their instructions more closely resemble the natural language and mathematics that we use every day. In many cases, high-level languages require fewer instructions to perform the same tasks as low-level languages. For example, in C++ you can write <code>a = b * 2 + 5;</code> in one line. In assembly language, this would take 4 to 6 different instructions. This makes programs written using high-level languages more concise, which makes them easier to understand.</li>
+<li>High-level languages typically include additional capabilities that make it easier to perform common programming tasks, such as requesting a block of memory or manipulating text. For example, it only takes a single instruction to determine whether the characters “abc” exist within a large block of text (and if so, how many characters has to be examined until “abc” was found). This can dramatically reduce complexity and development times.</li>
+</ul>
+<p>Nomenclature</p>
+<p>Although C++ is technically considered a high-level language, newer programming languages (e.g. scripting languages) provide an even higher level of abstraction. As such, C++ is sometimes inaccurately called a “low-level language” in comparison.</p>
+<p>Author’s note</p>
+<p>Today, C++ would probably be more accurately described as a mid-level language. However, this also highlights one of C++’s key strengths: it often provides the ability to work at different levels of abstraction. You can choose to operate at a lower level for better performance and precision, or at a higher level for greater convenience and simplicity.</p>
+<p>Rules, Best practices, and warnings</p>
+<p>As we proceed through these tutorials, we’ll highlight many important points under the following three categories:</p>
+<p>Rule</p>
+<p>Rules are instructions that you <em>must</em> do, as required by the language. Failure to abide by a rule will generally result in your program not working.</p>
+<p>Best practice</p>
+<p>Best practices are things that you <em>should</em> do, because that way of doing things is either conventional (idiomatic) or recommended. That is, either everybody does it that way (and if you do otherwise, you’ll be doing something people don’t expect), or it is generally superior to the alternatives.</p>
+<p>Warning</p>
+<p>Warnings are things that you <em>should not</em> do, because they will generally lead to unexpected results.</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c00/0-1-introduction-to-these-tutorials.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">0.1 · Introduction to these tutorials</span>
+      <span class="pn-chapter">第 00 章 · 简介与入门</span>
+    </a><a class="pn-card next" href="../c00/0-3-introduction-to-cplusplus.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">0.3 · Introduction to C/C++</span>
+      <span class="pn-chapter">第 00 章 · 简介与入门</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/00-%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/0-2-introduction-to-programming-languages" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c00/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

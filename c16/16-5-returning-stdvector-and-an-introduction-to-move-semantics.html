@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16.5 · Returning std::vector, and an introduction to move semantics · tklcpp</title>
+<meta name="description" content="When we need to pass a to a function, we pass it by (const) reference so that we do not make an expensive copy…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c16/16-4-passing-stdvector.html">
+<link rel="next" href="../c16/16-6-arrays-and-loops.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c16/16-5-returning-stdvector-and-an-introduction-to-move-semantics.html" data-type="lesson" data-chapter="16" data-chapter-title="第 16 章 · std::vector 动态数组" data-title="Returning std::vector, and an introduction to move semantics" data-num="16.5">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c16/index.html">第 16 章 · std::vector 动态数组</a><span class="sep">/</span><span class="current">16.5 · Returning std::vector, and an introduction to move semantics</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c16/index.html">第 16 章 · std::vector 动态数组</a>
+        <h1><span class="h1-num">16.5</span>Returning std::vector, and an introduction to move semantics</h1>
+        <div class="article-meta"><span>10 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/16-%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84Vector/16-5-returning-stdvector-and-an-introduction-to-move-semantics" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+<p>When we need to pass a <code>std::vector</code> to a function, we pass it by (const) reference so that we do not make an expensive copy of the array data.</p>
+<p>Therefore, you will probably be surprised to find that it is okay to return a <code>std::vector</code> by value.</p>
+<p>Say whaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaat?</p>
+<p>Copy semantics</p>
+<p>Consider the following program:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;vector&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector arr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // copies { 1, 2, 3, 4, 5 } into arr1</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector arr2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">          // copies arr1 into arr2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    arr1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // We can continue to use arr1</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    arr2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 7</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // and we can continue to use arr2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>When <code>arr2</code> is initialized with <code>arr1</code>, the copy constructor of <code>std::vector</code> is called, which copies <code>arr1</code> into <code>arr2</code>.</p>
+<p>Making a copy is the only reasonable thing to do in this case, as we need both <code>arr1</code> and <code>arr2</code> to live on independently. This example ends up making two copies, one for each initialization.</p>
+<p>The term <strong>copy semantics</strong> refers to the rules that determine how copies of objects are made. When we say a type supports copy semantics, we mean that objects of that type are copyable, because the rules for making such copies have been defined. When we say copy semantics are being invoked, that means we’ve done something that will make a copy of an object.</p>
+<p>For class types, copy semantics are typically implemented via the copy constructor (and copy assignment operator), which defines how objects of that type are copied. Typically this results in each data member of the class type being copied. In the prior example, the statement <code>std::vector arr2 { arr1 };</code> invokes copy semantics, resulting in a call to the copy constructor of <code>std::vector</code>, which then makes a copy of each data member of <code>arr1</code> into <code>arr2</code>. The end result is that <code>arr1</code> is equivalent to (but independent from) <code>arr2</code>.</p>
+<p>When copy semantics is not optimal</p>
+<p>Now consider this related example:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;vector&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">vector</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&gt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> generate</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // return by value</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // We're intentionally using a named object here so mandatory copy elision doesn't apply</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector arr1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // copies { 1, 2, 3, 4, 5 } into arr1</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector arr2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> generate</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // the return value of generate() dies at the end of the expression</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // There is no way to use the return value of generate() here</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    arr2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 7</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // we only have access to arr2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>When <code>arr2</code> is initialized this time, it is being initialized using a temporary object returned from function <code>generate()</code>. Unlike the prior case, where the initializer was an lvalue that could be used in future statements, in this case, the temporary object is an rvalue will be destroyed at the end of the initialization expression. The temporary object can’t be used beyond that point. Because the temporary (and its data) will be destroyed at the end of the expression, we need some way to get the data out of the temporary and into <code>arr2</code>.</p>
+<p>The usual thing to do here is the same as in the previous example: use copy semantics and make a potentially expensive copy. That way <code>arr2</code> gets its own copy of the data that can be used even after the temporary (and its data) is destroyed.</p>
+<p>However, what makes this case different than the previous example is that the temporary is going to be destroyed anyway. After initialization is complete, the temporary doesn’t need its data any more (which is why we can destroy it). We don’t need two sets of data to exist simultaneously. In such cases, making a potentially expensive copy and then destroying the original data is suboptimal.</p>
+<p>Introduction to move semantics</p>
+<p>Instead, what if there was a way for <code>arr2</code> to “steal” the temporary’s data instead of copying it? <code>arr2</code> would then be the new owner of the data, and no copy of the data would need to be made. When ownership of data is transferred from one object to another, we say that data has been <strong>moved</strong>. The cost of such a move is typically trivial (usually just two or three pointer assignments, which is way faster than copying an array of data!).</p>
+<p>As an added benefit, when the temporary was then destroyed at the end of the expression, it would no longer have any data to destroy, so we wouldn’t have to pay that cost either.</p>
+<p>This is the essence of <strong>move semantics</strong>, which refers to the rules that determine how the data from one object is moved to another object. When move semantics is invoked, any data member that can be moved is moved, and any data member that can’t be moved is copied. The ability to move data instead of copying it can make move semantics more efficient than copy semantics, especially when we can replace an expensive copy with an inexpensive move.</p>
+<p>Key insight</p>
+<p>Move semantics is an optimization that allows us, under certain circumstances, to inexpensively transfer ownership of some data members from one object to another object (rather than making a more expensive copy).</p>
+<p>Data members that can’t be moved are copied instead.</p>
+<p>How move semantics is invoked</p>
+<p>Normally, when an object is being initialized with (or assigned) an object of the same type, copy semantics will be used (assuming the copy isn’t elided).</p>
+<p>Related content</p>
+<p>We covered copy elision in lesson <a href="https://www.learncpp.com/cpp-tutorial/class-initialization-and-copy-elision/" class="external alias" target="_blank" rel="noopener noreferrer">14.15 — Class initialization and copy elision</a>.</p>
+<p>However, when all of the following are true, move semantics will be invoked instead:</p>
+<ul>
+<li>The type of the object supports move semantics.</li>
+<li>The object is being initialized with (or assigned) an rvalue (temporary) object of the same type.</li>
+<li>The move isn’t elided.</li>
+</ul>
+<p>Here’s the sad news: not that many types support move semantics. However, <code>std::vector</code> and <code>std::string</code> both do!</p>
+<p>We’ll dig into how move semantics works in more detail in <a href="https://www.learncpp.com/#Chapter22" class="external alias" target="_blank" rel="noopener noreferrer">chapter 22</a>. For now, it’s enough to know what move semantics is, and which types are move-capable.</p>
+<p>We can return move-capable types like <code>std::vector</code> by value</p>
+<p>Because return by value returns an rvalue, if the returned type supports move semantics, then the returned value can be moved instead of copied into the destination object. This makes return by value extremely inexpensive for these types!</p>
+<p>Key insight</p>
+<p>We can return move-capable types (like <code>std::vector</code> and <code>std::string</code>) by value. Such types will inexpensively move their values instead of making an expensive copy.</p>
+<p>Such types should still be passed by const reference.</p>
+<p>Wait, wait, wait. Expensive-to-copy types shouldn’t be passed by value, but if they are move-capable they can be returned by value?</p>
+<p>Correct.</p>
+<p>This following discussion is optional, but may help you understand why this is the case.</p>
+<p>One of the most common things we do in C++ is pass a value to some function, and get a different value back. When the passed values are class types, that process involves 4 steps:</p>
+<ol>
+<li>Construct the value to be passed.</li>
+<li>Actually pass the value to the function.</li>
+<li>Construct the value to be returned.</li>
+<li>Actually pass the return value back to the caller.</li>
+</ol>
+<p>Here’s an example of the above process using <code>std::vector</code>:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;vector&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">vector</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&gt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> doSomething</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">vector</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&gt;</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> v2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector v3 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> v2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> v2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 3 -- construct value to be returned to caller</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> v3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 4 -- actually return value</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector v1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 1 -- construct value to be passed to function</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> doSomething</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">v1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 2 -- actually pass value</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> v1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>First, let’s assume <code>std::vector</code> is not move-capable. In that case, the above program makes 4 copies:</p>
+<ol>
+<li>Constructing the value to be passed copies the initializer list into <code>v1</code></li>
+<li>Actually passing the value to the function copies argument <code>v1</code> into function parameter <code>v2</code>.</li>
+<li>Constructing the value to be returned copies the initializer into <code>v3</code></li>
+<li>Actually returning the value to the caller copies <code>v3</code> back to the caller.</li>
+</ol>
+<p>Now let’s talk about how we might optimize the above. We have many tools at our disposal here: pass by reference or address, elision, move semantics, and out parameters.</p>
+<p>We can’t optimize copies 1 and 3 at all. We need a <code>std::vector</code> to pass to the function, and we need a <code>std::vector</code> to return — these objects have to be constructed. <code>std::vector</code> is an owner of its data, so it necessarily makes a copy of its initializer.</p>
+<p>What we can affect is copies 2 and 4.</p>
+<p>Copy 2 is made because we’re passing by value from the caller to the called function. What other options do we have?</p>
+<ul>
+<li>Can we pass by reference or address? Yes. We are guaranteed that the argument will exist for the entire function call — the caller does not have to worry about the passed object unexpectedly going out of scope.</li>
+<li>Can this copy be elided? No. Elision only works when we’re making a redundant copy or move. There’s no redundant copy or move here.</li>
+<li>Can we use an out parameter here? No. We’re passing a value to the function, not getting a value back.</li>
+<li>Can we use move semantics here? No. The argument is an lvalue. If we moved data from <code>v1</code> to <code>v2</code>, <code>v1</code> would become an empty vector, and subsequently printing <code>v1[0]</code> would lead to undefined behavior.</li>
+</ul>
+<p>Clearly pass by const reference is our best option here, as it avoids the copy, avoids null pointer issues, and works with both lvalue and rvalue arguments.</p>
+<p>Copy 4 is made because we’re passing by value from the called function back to the caller. What other options do we have here?</p>
+<ul>
+<li>Can we return by reference or address? No. The object we’re returning is created as a local variable inside the function, and will be destroyed when the function returns. Returning a reference or pointer will result in the caller receiving a dangling pointer or reference.</li>
+<li>Can this copy be elided? Yes, possibly. If the compiler is smart, it will realize that we’re constructing an object in the scope of the called function and returning it. By rewriting the code (under the as-if rule) so that <code>v3</code> is constructed in the scope of the caller instead, we can avoid the copy that would otherwise be made when returning. However, we are reliant upon the compiler realizing it can do this, so it is not guaranteed.</li>
+<li>Can we use an out parameter here? Yes. Instead of constructing <code>v3</code> as a local variable, we can construct an empty <code>std::vector</code> object in the scope of the caller, and pass it to the function by non-const reference. The function can then fill this parameter with data. When the function returns, this object will still exist. This avoids the copy, but also has some significant downsides and constraints: ugly calling semantics, doesn’t work with objects that don’t support assignment, and it is challenging to write such functions that can work with both lvalue and rvalue arguments.</li>
+<li>Can we use move semantics here? Yes. <code>v3</code> is going to be destroyed when the function returns, so instead of copying <code>v3</code> back to the caller, we can use move semantics to move its data to the caller, avoiding the copy.</li>
+</ul>
+<p>Elision is the best option here, but whether it happens is out of our control. The next best option for move-capable types is move semantics, which can be used in cases where the compiler doesn’t elide the copy. And for move-capable types, move semantics is invoked automatically when returning by value.</p>
+<p>To summarize, for move-capable types, we prefer to pass by const reference, and return by value.</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c16/16-4-passing-stdvector.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">16.4 · Passing std::vector</span>
+      <span class="pn-chapter">第 16 章 · std::vector 动态数组</span>
+    </a><a class="pn-card next" href="../c16/16-6-arrays-and-loops.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">16.6 · 数组和循环</span>
+      <span class="pn-chapter">第 16 章 · std::vector 动态数组</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/16-%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84Vector/16-5-returning-stdvector-and-an-introduction-to-move-semantics" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c16/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

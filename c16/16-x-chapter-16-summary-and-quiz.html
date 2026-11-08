@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16.x · Chapter 16 summary and quiz · tklcpp</title>
+<meta name="description" content="Words of encouragement This chapter isn’t an easy one. We covered a lot of material, and unearthed some of C++…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c16/16-12-stdvector-bool.html">
+<link rel="next" href="../c17/11-1-arrays-part-i.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c16/16-x-chapter-16-summary-and-quiz.html" data-type="lesson" data-chapter="16" data-chapter-title="第 16 章 · std::vector 动态数组" data-title="Chapter 16 summary and quiz" data-num="16.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c16/index.html">第 16 章 · std::vector 动态数组</a><span class="sep">/</span><span class="current">16.x · Chapter 16 summary and quiz</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c16/index.html">第 16 章 · std::vector 动态数组</a>
+        <h1><span class="h1-num">16.x</span>Chapter 16 summary and quiz</h1>
+        <div class="article-meta"><span>8 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/16-%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84Vector/16-x-chapter-16-summary-and-quiz" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+<p>Words of encouragement</p>
+<p>This chapter isn’t an easy one. We covered a lot of material, and unearthed some of C++’s warts. Congrats on making it through!</p>
+<p>Arrays are one of the keys that unlock a huge amount of power within your C++ programs.</p>
+<p>Chapter Review</p>
+<p>A <strong>container</strong> is a data type that provides storage for a collection of unnamed objects (called <strong>elements</strong>). We typically use containers when we need to work with a set of related values.</p>
+<p>The number of elements in a container is often called it’s <strong>length</strong> (or sometimes <strong>count</strong>). In C++, the term <strong>size</strong> is also commonly used for the number of elements in a container. In most programming languages (including C++), containers are <strong>homogenous</strong>, meaning the elements of a container are required to have the same type.</p>
+<p>The <strong>Containers library</strong> is a part of the C++ standard library that contains various class types that implement some common types of containers. A class type that implements a container is sometimes called a <strong>container class</strong>.</p>
+<p>An <strong>array</strong> is a container data type that stores a sequence of values <strong>contiguously</strong> (meaning each element is placed in an adjacent memory location, with no gaps). Arrays allow fast, direct access to any element.</p>
+<p>C++ contains three primary array types: (C-style) arrays, the <code>std::vector</code> container class, and the <code>std::array</code> container class.</p>
+<p><code>std::vector</code> is one of the container classes in the C++ standard containers library that implements an array. <code>std::vector</code> is defined in the <vector> header as a class template, with a template type parameter that defines the type of the elements. Thus, <code>std::vector&lt;int&gt;</code> declares a <code>std::vector</code> whose elements are of type <code>int</code>.</vector></p>
+<p>Containers typically have a special constructor called a <strong>list constructor</strong> that allows us to construct an instance of the container using an initializer list. Use list initialization with an initializer list of values to construct a container with those element values.</p>
+<p>In C++, the most common way to access array elements is by using the name of the array along with the subscript operator (<code>operator[]</code>). To select a specific element, inside the square brackets of the subscript operator, we provide an integral value that identifies which element we want to select. This integral value is called a <strong>subscript</strong> (or informally, an <strong>index</strong>). The first element is accessed using index 0, the second is accessed using index 1, etc… Because the indexing starts with 0 rather than 1, we say arrays in C++ are <strong>zero-based</strong>.</p>
+<p><code>operator[]</code> does not do any kind of <strong>bounds checking</strong>, meaning it does not check to see whether the index is within the bounds of 0 to N-1 (inclusive). Passing an invalid index to <code>operator[]</code> will result in undefined behavior.</p>
+<p>Arrays are one of the few container types that allow <strong>random access</strong>, meaning every element in the container can be accessed directly and with equal speed, regardless of the number of elements in the container.</p>
+<p>When constructing a class type object, a matching list constructor is selected over other matching constructors. When constructing a container (or any type that has a list constructor) with initializers that are not element values, use direct initialization.</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">vector v1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // defines a 1 element vector containing value `5`.</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">vector</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> v2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> );</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // defines a 5 element vector where elements are value-initialized.</span></span></code></pre></div></figure>
+<p><code>std::vector</code> can be made const but not constexpr.</p>
+<p>Each of the standard library container classes defines a nested typedef member named <code>size_type</code> (sometimes written as <code>T::size_type</code>), which is an alias for the type used for the length (and indices, if supported) of the container. <code>size_type</code> is almost always an alias for <code>std::size_t</code>, but can be overridden (in rare cases) to use a different type. We can reasonably assume <code>size_type</code> is an alias for <code>std::size_t</code>.</p>
+<p>When accessing the <code>size_type</code> member of a container class, we must scope qualify it with the fully templated name of the container class. For example, <code>std::vector&lt;int&gt;::size_type</code>.</p>
+<p>We can ask a container class object for its length using the <code>size()</code> member function, which returns the length as unsigned <code>size_type</code>. In C++17, we can also use the <code>std::size()</code> non-member function.</p>
+<p>In C++20, the <code>std::ssize()</code> non-member function, which returns the length as a large <em>signed</em> integral type (usually <code>std::ptrdiff_t</code>, which is the type normally used as the signed counterpart to <code>std::size_t</code>).</p>
+<p>Accessing array elements using the <code>at()</code> member function does runtime bounds checking (and throws an exception of type <code>std::out_of_range</code> if the bounds are out of range). If the exception isn’t caught, the application will be terminated.</p>
+<p>Both <code>operator[]</code> and the <code>at()</code> member function support indexing with non-const indices. However, both expect the index to be of type <code>size_type</code>, which is an unsigned integral type. This causes sign conversion problems when the indices are non-constexpr.</p>
+<p>An object of type <code>std::vector</code> can be passed to a function just like any other object. That means if we pass a <code>std::vector</code> by value, an expensive copy will be made. Therefore, we typically pass <code>std::vector</code> by (const) reference to avoid such copies.</p>
+<p>We can use a function template to be able to pass a <code>std::vector</code> with any element type into a function. You can use an <code>assert()</code> to ensure the vector passed in has the correct length.</p>
+<p>The term <strong>copy semantics</strong> refers to the rules that determine how copies of objects are made. When we say copy semantics are being invoked, that means we’ve done something that will make a copy of an object.</p>
+<p>When ownership of data is transfered from one object to another, we say that data has been <strong>moved</strong>.</p>
+<p><strong>Move semantics</strong> refers to the rules that determine how the data from one object is moved to another object. When move semantics is invoked, any data member that can be moved is moved, and any data member that can’t be moved is copied. The ability to move data instead of copying it can make move semantics more efficient than copy semantics, especially when we can replace an expensive copy with an inexpensive move.</p>
+<p>Normally, when an object is being initialized with or assigned an object of the same type, copy semantics will be used (assuming the copy isn’t elided). Move semantics will be automatically used instead when the type of the object supports move semantics, and the initializer or object being assigned from is an rvalue.</p>
+<p>We can return move-capable types (like <code>std::vector</code> and <code>std::string</code>) by value. Such types will inexpensively move their values instead of making an expensive copy.</p>
+<p>Accessing each element of a container in some order is called <strong>traversal</strong>, or <strong>traversing</strong> the container. Traversal is also sometimes called <strong>iterating over</strong> or <strong>iterating through</strong> the container.</p>
+<p>Loops are often used to traverse through an array, with a loop variable being used as an index. Beware of off-by-one errors, where the loop body executes one too many or one too few times.</p>
+<p>A <strong>range-based for loop</strong> (also sometimes called a <strong>for-each loop</strong>) allows traversal of a container without having to do explicit indexing. Favor range-based-for loops over regular for-loops when traversing containers.</p>
+<p>Use type deduction (<code>auto</code>) with ranged-based for-loops to have the compiler deduce the type of the array element. The element declaration should use a (const) reference whenever you would normally pass that element type by (const) reference. Consider always using <code>const auto&amp;</code> unless you need to work with copies. This will ensure copies aren’t made even if the element type is later changed.</p>
+<p>Unscoped enumerations can be used as indices, and help provide any information about the meaning of the index.</p>
+<p>Adding an additional “count” enumerator is useful whenever we need an enumerator that represents the array length. You can assert or static_assert that an array’s length is equal to the count enumerator to ensure an array is initialized with the expected number of initializers.</p>
+<p>Arrays where the length of the array must be defined at the point of instantiation and then cannot be changed are called <strong>fixed-size arrays</strong> or <strong>fixed-length arrays</strong>. A <strong>dynamic array</strong> (also called a <strong>resizable array</strong>) is an array whose size can be changed after instantiation. This ability to be resized is what makes <code>std::vector</code> special.</p>
+<p>A <code>std::vector</code> can be resized after instantiation by calling the <code>resize()</code> member function with the new desired length.</p>
+<p>In the context of a <code>std::vector</code>, <strong>capacity</strong> is how many elements the <code>std::vector</code> has allocated storage for, and <strong>length</strong> is how many elements are currently being used. We can ask a <code>std::vector</code> for its capacity via the <code>capacity()</code> member function.</p>
+<p>When a <code>std::vector</code> changes the amount of storage it is managing, this process is called <strong>reallocation</strong>. Because reallocation typically requires every element in the array to be copied, reallocation is an expensive process. As a result, we want to avoid reallocation as much as reasonable.</p>
+<p>Valid indices for the subscript operator (<code>operator[]</code>) and <code>at()</code> member function is based on the vector’s length, not the capacity.</p>
+<p><code>std::vector</code> has a member function called <code>shrink_to_fit()</code> that requests that the vector shrink its capacity to match its length. This request is non-binding.</p>
+<p>The order in which items are added to and removed from a stack can be described as <strong>last-in, first-out (LIFO)</strong>. The last plate added onto the stack will be the first plate that is removed. In programming, a <strong>stack</strong> is a container data type where the insertion and removal of elements occurs in a LIFO manner. This is commonly implemented via two operations named <strong>push</strong> and <strong>pop</strong>.</p>
+<p>The <code>std::vector</code> member functions <code>push_back()</code> and <code>emplace_back()</code> will increment the length of a <code>std::vector</code>, and will cause a reallocation to occur if the capacity is not sufficient to insert the value. When pushing triggers a reallocation, <code>std::vector</code> will typically allocate some extra capacity to allow additional elements to be added without triggering another reallocation the next time an element is added.</p>
+<p>The <code>resize()</code> member function changes the length of the vector, and the capacity (if necessary).<br>
+The <code>reserve()</code> member function changes just the capacity (if necessary)</p>
+<p>To increase the number of elements in a <code>std::vector</code>:</p>
+<ul>
+<li>Use <code>resize()</code> when accessing a vector via indexing. This changes the length of the vector so your indices will be valid.</li>
+<li>Use <code>reserve()</code> when accessing a vector using stack operations. This adds capacity without changing the length of the vector.</li>
+</ul>
+<p>Both <code>push_back()</code> and <code>emplace_back()</code> push an element onto the stack. If the object to be pushed already exists, <code>push_back()</code> and <code>emplace_back()</code> are equivalent. However, in cases where we are creating a temporary object for the purpose of pushing it onto the vector, <code>emplace_back()</code> can be more efficient. Prefer emplace_back() when creating a new temporary object to add to the container, or when you need to access an explicit constructor. Prefer push_back() otherwise.</p>
+<p>There is a special implementation for <code>std::vector&lt;bool&gt;</code> that may be more space efficient for Boolean values by similarly compacting 8 Boolean values into a byte.</p>
+<p><code>std::vector&lt;bool&gt;</code> is not a vector (it is not required to be contiguous in memory), nor does it hold <code>bool</code> values (it holds a collection of bits), nor does it meet C++’s definition of a container. Although <code>std::vector&lt;bool&gt;</code> behaves like a vector in most cases, it is not fully compatible with the rest of the standard library. Code that works with other element types may not work with <code>std::vector&lt;bool&gt;</code>. As a result, <code>std::vector&lt;bool&gt;</code> should generally be avoided.</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c16/16-12-stdvector-bool.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">16.12 · std::vector&lt;bool&gt;</span>
+      <span class="pn-chapter">第 16 章 · std::vector 动态数组</span>
+    </a><a class="pn-card next" href="../c17/11-1-arrays-part-i.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">11.1 · 数组（第一部分）</span>
+      <span class="pn-chapter">第 17 章 · std::array 与 C 风格数组</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/16-%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84Vector/16-x-chapter-16-summary-and-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c16/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

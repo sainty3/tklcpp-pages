@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.6 · Constexpr variables · tklcpp</title>
+<meta name="description" content="In the previous lesson 5.5 — Constant expressions, we defined what a constant expression is, discussed why con…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c05/5-5-constant-expressions.html">
+<link rel="next" href="../c05/5-7-an-introduction-to-std-string.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c05/5-6-constexpr-variables.html" data-type="lesson" data-chapter="05" data-chapter-title="第 05 章 · 常量与字符串" data-title="Constexpr variables" data-num="5.6">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c05/index.html">第 05 章 · 常量与字符串</a><span class="sep">/</span><span class="current">5.6 · Constexpr variables</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c05/index.html">第 05 章 · 常量与字符串</a>
+        <h1><span class="h1-num">5.6</span>Constexpr variables</h1>
+        <div class="article-meta"><span>8 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/05-%E5%B8%B8%E9%87%8F%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2/5-6-constexpr-variables" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+<p>In the previous lesson <a href="https://www.learncpp.com/cpp-tutorial/constant-expressions/#whywecare" class="external alias" target="_blank" rel="noopener noreferrer">5.5 — Constant expressions</a>, we defined what a constant expression is, discussed why constant expressions are desirable, and concluded with when constant expressions actually evaluate at compile-time.</p>
+<p>In this lesson, we’ll take a closer look at how we create variables that can be used in constant expressions in modern C++. We’ll also explore our first method for ensuring that code actually executes at compile-time.</p>
+<p>The compile-time <code>const</code> challenge</p>
+<p>In the prior lesson, we noted that one way to create a variable that can be used in a constant expression is to use the <code>const</code> keyword. A <code>const</code> variable with an integral type and a constant expression initializer can be used in a constant expression. All other <code>const</code> variables cannot be used in constant expressions.</p>
+<p>However, the use of <code>const</code> to create variables that can be used in constant expressions has a few challenges.</p>
+<p>First, use of <code>const</code> does not make it immediately clear whether the variable is usable in a constant expression or not. In some cases, we can figure it out fairly easily:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">       // not const at all</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // clearly not a constant expression (since initializer is non-const)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // clearly a constant expression (since initializer is a constant expression)</span></span></code></pre></div></figure>
+<p>In other cases, it can be quite difficult:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> d </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> someVar </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // not obvious whether d is usable in a constant expression or not</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> e </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> getValue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // not obvious whether e is usable in a constant expression or not</span></span></code></pre></div></figure>
+<p>In the above example, variables <code>d</code> and <code>e</code> may or may not be usable in a constant expressions, depending on how <code>someVar</code> and <code>getValue()</code> are defined. That means we have to go inspect the definitions of those initializers and infer what case we’re in. And that may not even be sufficient — if <code>someVar</code> is const and initialized with a variable or a function call, we’ll have to go inspect the definition of its initializer too!</p>
+<p>Second, use of <code>const</code> does not provide a way to inform the compiler that we require a variable that is usable in a constant expression (and that it should halt compilation if it isn’t). Instead, it will just silently create a variable that can only be used in runtime expressions.</p>
+<p>Third, the use of <code>const</code> to create compile-time constant variables does not extend to non-integral variables. And there are many cases where we would like non-integral variables to be compile-time constants too.</p>
+<p>The <code>constexpr</code> keyword</p>
+<p>Fortunately, we can enlist the compiler’s help to ensure we get a compile-time constant variable where we desire one. To do so, we use the <code>constexpr</code> keyword (which is shorthand for “constant expression”) instead of <code>const</code> in a variable’s declaration. A <strong>constexpr</strong> variable is always a compile-time constant. As a result, a constexpr variable must be initialized with a constant expression, otherwise a compilation error will result.</p>
+<p>For example:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// The return value of a non-constexpr function is not constexpr</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> five</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> gravity </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 9.8</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ok: 9.8 is a constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> sum </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // ok: 4 + 5 is a constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> something </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> sum </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">  // ok: sum is a constant expression</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter your age: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> age</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> age</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> myAge </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> age </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // compile error: age is not a constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> f </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> five</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">       // compile error: return value of five() is not constexpr</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>Because functions normally execute at runtime, the return value of a function is not constexpr (even when the return expression is a constant expression). This is why <code>five()</code> is not a legal initialization value for <code>constexpr int f</code>.</p>
+<p>Related content</p>
+<p>We talk about functions whose return values can be used in constant expressions in lesson <a href="https://www.learncpp.com/cpp-tutorial/constexpr-functions/" class="external alias" target="_blank" rel="noopener noreferrer">F.1 — Constexpr functions</a>.</p>
+<p>Additionally, <code>constexpr</code> works for variables with non-integral types:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> d </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // d can be used in constant expressions!</span></span></code></pre></div></figure>
+<p>The meaning of const vs constexpr for variables</p>
+<p>For variables:</p>
+<ul>
+<li><code>const</code> means that the value of an object cannot be changed after initialization. The value of the initializer may be known at compile-time or runtime. The const object can be evaluated at runtime.</li>
+<li><code>constexpr</code> means that the object can be used in a constant expression. The value of the initializer must be known at compile-time. The constexpr object can be evaluated at runtime or compile-time.</li>
+</ul>
+<p>Constexpr variables are implicitly const. Const variables are not implicitly constexpr (except for const integral variables with a constant expression initializer). Although a variable can be defined as both <code>constexpr</code> and <code>const</code>, in most cases this is redundant, and we only need to use either <code>const</code> or <code>constexpr</code>.</p>
+<p>Unlike <code>const</code>, <code>constexpr</code> is not part of an object’s type. Therefore a variable defined as <code>constexpr int</code> actually has type <code>const int</code> (due to the implicit <code>const</code> that <code>constexpr</code> provides for objects).</p>
+<p>Best practice</p>
+<p>Any constant variable whose initializer is a constant expression should be declared as <code>constexpr</code>.</p>
+<p>Any constant variable whose initializer is not a constant expression (making it a runtime constant) should be declared as <code>const</code>.</p>
+<p>Caveat: In the future we will discuss some types that are not fully compatible with <code>constexpr</code> (including <code>std::string</code>, <code>std::vector</code>, and other types that use dynamic memory allocation). For constant objects of these types, either use <code>const</code> instead of <code>constexpr</code>, or pick a different type that is constexpr compatible (e.g. <code>std::string_view</code> or <code>std::array</code>).</p>
+<p>Nomenclature</p>
+<p>The term <code>constexpr</code> is a portmanteau of “constant expression”. This name was picked because constexpr objects (and functions) can be used in constant expressions.</p>
+<p>Formally, the keyword <code>constexpr</code> applies only to objects and functions. Conventionally, the term <code>constexpr</code> is used as shorthand for any constant expression (such as <code>1 + 2</code>).</p>
+<p>Author’s note</p>
+<p>Some of the examples on this site were written prior to the best practice to use <code>constexpr</code> — as a result, you will note that some examples do not follow the above best practice. We are currently in the process of updating non-compliant examples as we run across them.</p>
+<p>For advanced readers</p>
+<p>In C and C++, the declaration of an array object (an object can hold multiple values) requires the length of the array (the number of values that it can hold) be known at compile-time (so the compiler can ensure the correct amount of memory is allocated for array objects).</p>
+<p>Since literals are known at compile-time, they can be used as an array length:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">];</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // an array of 5 int values, length of 5 is known at compile-time</span></span></code></pre></div></figure>
+<p>In many cases, it would be preferable to use a symbolic constant as an array length (e.g. to avoid magic numbers and make the array length easier to change if it is used in multiple places). In C, this can be done via a preprocessor macro, or via an enumerator, but not via a const variable (excluding VLA’s, which have other downsides). C++, looking to improve on this situation, wanted to allow the use of const variables instead of macros. But the value of variables was generally assumed to be known only at runtime, which made them ineligible to be used as array lengths.</p>
+<p>To solve this problem, the C++ language standard added an exemption so that const integral types with a constant expression initializer would be treated as values known at compile-time, and thus be usable as array lengths:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arrLen </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> arr</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">arrLen</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">];</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // ok: array of 5 ints</span></span></code></pre></div></figure>
+<p>When C++11 introduced constant expressions, it made sense for a const int with a constant expression initializer to be grandfathered into that definition. The committee discussed whether other types should be included as well, but ultimately decided not to.</p>
+<p>Const and constexpr function parameters</p>
+<p>Normal function calls are evaluated at runtime, with the supplied arguments being used to initialize the function’s parameters. Because the initialization of function parameters happens at runtime, this leads to two consequences:</p>
+<ol>
+<li><code>const</code> function parameters are treated as runtime constants (even when the supplied argument is a compile-time constant).</li>
+<li>Function parameters cannot be declared as <code>constexpr</code>, since their initialization value isn’t determined until runtime.</li>
+</ol>
+<p>Related content</p>
+<p>We discuss functions that can be evaluated at compile-time (and thus be used in constant expressions) below.</p>
+<p>C++ also supports a way to pass compile-time constants to a function. We discuss these in lesson <a href="https://www.learncpp.com/cpp-tutorial/non-type-template-parameters/" class="external alias" target="_blank" rel="noopener noreferrer">11.9 — Non-type template parameters</a>.</p>
+<p>Nomenclature recap</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>Term</th><th>Definition</th></tr></thead><tbody><tr><td>Compile-time constant</td><td>A value or non-modifiable object whose value must be known at compile time (e.g. literals and constexpr variables).</td></tr><tr><td>Constexpr</td><td>Keyword that declares objects as compile-time constants (and functions that can be evaluated at compile-time). Informally, shorthand for “constant expression”.</td></tr><tr><td>Constant expression</td><td>An expression that contains only compile-time constants and operators/functions that support compile-time evaluation.</td></tr><tr><td>Runtime expression</td><td>An expression that is not a constant expression.</td></tr><tr><td>Runtime constant</td><td>A value or non-modifiable object that is not a compile-time constant.</td></tr></tbody></table></div>
+<p>A brief introduction to constexpr functions</p>
+<p>A <strong>constexpr function</strong> is a function that can be called in a constant expression. A constexpr function must evaluate at compile-time when the constant expression it is part of must evaluate at compile time (e.g. in the initializer of a constexpr variable). Otherwise, a constexpr function may be evaluated at either compile-time (if eligible) or runtime. To be eligible for compile-time execution, all arguments must be constant expressions.</p>
+<p>To make a constexpr function, the <code>constexpr</code> keyword is placed in the function declaration before the return type:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> max</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // this is a non-constexpr function</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> cmax</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // this is a constexpr function</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> m1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> max</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">            // ok</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> m2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> max</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // ok</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> m3 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> max</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">  // compile error: max(5, 6) not a constant expression</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> m4 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> cmax</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">           // ok: may evaluate at compile-time or runtime</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> m5 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> cmax</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">     // ok: may evaluate at compile-time or runtime</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> m6 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> cmax</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // okay: must evaluate at compile-time</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>Author’s note</p>
+<p>We used to discuss constexpr functions in detail in this chapter, but feedback from readers indicated that the topic was too long and nuanced to present this early in the tutorial series. As a result, we’ve moved the full discussion back to lesson <a href="https://www.learncpp.com/cpp-tutorial/constexpr-functions/" class="external alias" target="_blank" rel="noopener noreferrer">F.1 — Constexpr functions</a>.</p>
+<p>The key thing to take away from this introduction is that a constexpr function may be called in constant expressions.</p>
+<p>You will see constexpr functions used in some future examples (where appropriate), but we will not expect you to understand them further or write your own constexpr functions until we’ve formally covered the topic.</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c05/5-5-constant-expressions.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">5.5 · Constant expressions</span>
+      <span class="pn-chapter">第 05 章 · 常量与字符串</span>
+    </a><a class="pn-card next" href="../c05/5-7-an-introduction-to-std-string.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">5.7 · std::string 简介</span>
+      <span class="pn-chapter">第 05 章 · 常量与字符串</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/05-%E5%B8%B8%E9%87%8F%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2/5-6-constexpr-variables" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c05/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

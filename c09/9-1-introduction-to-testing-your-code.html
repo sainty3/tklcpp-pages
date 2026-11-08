@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.1 · 代码测试 · tklcpp</title>
+<meta name="description" content="当程序可以编译，甚至可以运行后，还有什么工作需要做呢？ 这要看情况。如果该程序只运行一次并被丢弃，那么不需要做其他事情了。在这种情况下，你的程序是否能适用于所有情况可能并不重要——如果它能满足你当前任务的需要，并且你也只…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c08/8-x-chapter-8-summary-and-quiz.html">
+<link rel="next" href="../c09/9-2-code-coverage.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c09/9-1-introduction-to-testing-your-code.html" data-type="lesson" data-chapter="09" data-chapter-title="第 09 章 · 错误检测与处理" data-title="代码测试" data-num="9.1">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c09/index.html">第 09 章 · 错误检测与处理</a><span class="sep">/</span><span class="current">9.1 · 代码测试</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c09/index.html">第 09 章 · 错误检测与处理</a>
+        <h1><span class="h1-num">9.1</span>代码测试</h1>
+        <div class="article-meta"><span>9 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">testing</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">7 节</span></summary>
+    <ul><li class="lv2"><a href="#%E6%9C%89%E5%85%B3%E6%B5%8B%E8%AF%95%E7%9A%84%E9%9A%BE%E9%A2%98">有关测试的难题</a></li><li class="lv2"><a href="#%E5%8C%96%E6%95%B4%E4%B8%BA%E9%9B%B6%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95">化整为零进行测试</a></li><li class="lv2"><a href="#%E9%9D%9E%E6%AD%A3%E5%BC%8F%E6%B5%8B%E8%AF%95">非正式测试</a></li><li class="lv2"><a href="#%E4%BF%9D%E5%AD%98%E6%B5%8B%E8%AF%95">保存测试</a></li><li class="lv2"><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95">自动化测试</a></li><li class="lv2"><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6">单元测试框架</a></li><li class="lv2"><a href="#%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95">集成测试</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body">
+<p>当程序可以编译，甚至可以运行后，还有什么工作需要做呢？</p>
+<p>这要看情况。如果该程序只运行一次并被丢弃，那么不需要做其他事情了。在这种情况下，你的程序是否能适用于所有情况可能并不重要——如果它能满足你当前任务的需要，并且你也只需要运行它一次，那么任务就已经完成了。</p>
+<p>如果你的程序完全是线性的(没有条件，如“If语句”或“switch语句”)，不接受输入，并产生正确的答案，那么你就完成了。在本例中，你已经通过运行和验证输出测试了整个程序。</p>
+<p>但更有可能的情况是，你的程序需要被多次运行，而且该程序使用循环和条件逻辑，能够接受某种类型的用户输入。你可能已经编写了可以在将来的其他程序中重用的函数，也可能经添加了一些最初没有计划的新功能。也许还打算将这个程序分发给其他人(用户可能会做出你意料之外的操作)。在这种情况下，我们必须验证程序在各种各样的条件下都能正确工作——这需要测试来保证。</p>
+<p>仅仅因为你的程序适用于一组输入并不意味着它在所有情况下都能正确工作。</p>
+<p>软件验证(也称为软件测试)是确定软件在所有情况下是否按预期工作的过程。</p>
+<h2 id="有关测试的难题">有关测试的难题<a class="anchor" aria-label="本节链接" href="#有关测试的难题">#</a></h2>
+<p>在讨论测试代码的实用方法之前，让我们先谈谈为什么全面测试程序并不容易。</p>
+<p>考虑这个简单的程序：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> compare</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is greater than "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // case 1</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is less than "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // case 2</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is equal to "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // case 3</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a number: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter another number: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">    compare</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>假设有一个4字节的整数，用每种可能的输入组合显式地测试这个程序将需要运行程序18,446,744,073,709,551,616次(~18亿亿次)。显然这是不可行的。</p>
+<p>当程序要求用户输入或者在代码中存在条件判断时，程序可以执行的方式的就相应地变多了。除了最简单的程序之外，几乎不可能显式地测试每种输入组合。</p>
+<p>现在，直觉告诉我们，其实并不需要真的运行程序18亿亿次才能确保它可以正确工作。你可以合理地得出结论，如果情况1适用于一对 <code>x</code> 和<code>y</code> 值，其中 <code>x &gt; y</code> ，那么它应该适用于任何一对满足 <code>x&gt;y</code> 的 <code>x</code> 和 <code>y</code> 组合。鉴于此，程序实际上只需要运行这个大约三次(在函数 <code>compare()</code> 中分别运行一次)，就可以高度确信它能按预期工作。为了使测试易于管理，我们还可以使用其他类似的技巧来大幅减少测试的次数。</p>
+<p>关于测试方法有很多东西可以写——事实上，我们可以为此写一整章。但由于这不是C++教程应该关注的事情，所以我们只会简单介绍作为程序员应该如何测试自己的代码。在接下来的几个小节中，我们将讨论一些在测试代码时应该考虑的实际问题。</p>
+<h2 id="化整为零进行测试">化整为零进行测试<a class="anchor" aria-label="本节链接" href="#化整为零进行测试">#</a></h2>
+<p>假设你是一家汽车制造商，正在制造一辆客户概念车。那么你会怎么做呢？
+a) 在组装前制造 (或购买) 并测试各个零部件，如果零部件可以正常工作，则将其组装到汽车上，确保仍然可以正常工作。最后，对整车进行测试，确保所有部分都可以正常工作。
+b) 用所有的部件一气呵成地造出一辆车，然后在最后对整个部件进行第一次测试。</p>
+<p>很明显选项a)是更好的选择。然而，许多新程序员会按照 b) 描述的方法编写代码！</p>
+<p>在b)情况下，如果汽车中有任何部件没有按照预期工作，工程师就必须对整辆车进行诊断，以确定哪里出了问题——问题可能在任何地方。一个症状可能有很多原因——例如，由于火花塞、电池、燃油泵或其他原因，汽车无法启动？这无疑会浪费大量时间。如果发现了问题，后果可能是灾难性的——一处修改可能会在其他多个地方引起“涟漪效应”(变化)。例如，燃油泵太小可能会导致发动机重新设计，从而导致汽车框架的重新设计。在最坏的情况下，你可能会重新设计汽车的一个很大的部分，只是为了适应最初的一个小问题!很明显选项a)是更好的选择。然而，许多新程序员编写类似选项b)的代码!</p>
+<p>对于 a) 的情况，汽车公司一边组装一边测试。如果任何零件是坏的，他们会立即知道，并能修复/更换它。任何东西都不会被集成到汽车中，直到它被证明可以工作，然后一旦它被集成到汽车中，就会再次进行测试。这样，任何意外的问题都可以尽早发现，而它们仍然是可以轻松解决的小问题。</p>
+<p>开始组装整辆车的时候，制造商应该对汽车能够正常工作有合理的信心——毕竟，所有的部件都已经单独测试过了，并且在初始集成时也进行了测试。在这一点上仍然有可能发现意外的问题，但是通过所有先前的测试将风险降到最低。</p>
+<p>上面的类比也适用于程序，尽管由于某种原因，新程序员经常没有意识到这一点。最好是编写小函数(或类)，然后立即编译和测试它们。这样，如果你犯了错误就会知道它一定是在上次编译/测试后更改的少量代码中。这意味着要查看的地方更少，花在调试上的时间也更少。</p>
+<p>单独测试一小部分代码，以确保代码的“单元”是正确的，这称为单元测试。每个单元测试都被设计用来确保单元的特定行为是正确的。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>用定义良好的小单元(函数或类)编写程序，频繁编译，并在运行时测试代码。</p>
+</div></aside>
+<p>如果程序很短并且接受用户输入，那么尝试各种用户输入可能就足够了。但是随着程序变得越来越长，这就不够了，在将单个函数或类集成到程序的其余部分之前就对它们进行测试效果会更好。</p>
+<p>那么我们如何以单位来测试代码呢?</p>
+<h2 id="非正式测试">非正式测试<a class="anchor" aria-label="本节链接" href="#非正式测试">#</a></h2>
+<p>测试代码的一种方法是在编写程序时进行非正式测试。在编写了一个代码单元(一个函数、一个类或其他一些离散的“包”代码)之后，可以编写一些代码来测试刚刚添加的单元，然后在测试通过后删除测试。例如，对于下面的isLowerVowel()函数，则可以编写以下代码：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// We want to test the following function</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'e'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'i'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'o'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'u'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    default</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // So here's our temporary tests to validate it works</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // temporary test code, should produce 1</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'q'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // temporary test code, should produce 0</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>如果返回的结果是“<code>1</code>”和“<code>0</code>”，那么程序就是正确的。你的函数适用于一些基本情况，随后你可以通过查看代码合理地推断它也适用于那些尚未测试的情况(<code>e</code>，<code>i</code>，<code>o</code> 和<code>u</code> )。因此，你可以删除临时测试代码，并继续编程。</p>
+<h2 id="保存测试">保存测试<a class="anchor" aria-label="本节链接" href="#保存测试">#</a></h2>
+<p>尽管编写临时的测试代码可以简单快速地测试程序，但如果稍后还需要测试程序的话，就不能依赖这些临时的测试代码了。当我们修改了一个函数并添加新的功能后，往往希望确保没有破坏程序的其他部分。出于这个原因，将测试代码保存起来以便将来可以再次运行是更加有意义的做法。例如，你可以将测试移动到 <code>testVowel()</code> 函数中，而不是删除你的临时测试代码：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'e'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'i'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'o'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'u'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    default</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// Not called from anywhere right now</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// But here if you want to retest things later</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> testVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // temporary test code, should produce 1</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'q'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // temporary test code, should produce 0</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在创建更多测试时，可以将它们添加到 <code>testVowel()</code> 函数中。</p>
+<h2 id="自动化测试">自动化测试<a class="anchor" aria-label="本节链接" href="#自动化测试">#</a></h2>
+<p>上述测试函数的一个问题是，它依赖于你在运行时手动验证结果。这要求你要记住期望的结果是什么(假设您没有记录它)，并手动将实际结果与预期结果进行比较。</p>
+<p>我们可以通过编写一个包含测试和预期答案的测试函数来做得更好，这样我们就不必对它们进行人工比较了。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    switch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'e'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'i'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'o'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    case</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> 'u'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    default</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    }</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// returns the number of the test that failed, or 0 if all tests passed</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> testVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'a'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> !=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> true</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">isLowerVowel</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'q'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> !=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> false</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>这样一来，你就可以在任何时候调用 <code>testVowel()</code>&nbsp;函数来测试程序，确保它始终能够正确运行。测试代码可以自动帮你测试所有用例，返回“all good”（返回值0），或者返回失败用例的序号。这样的测试在我们修改老代码时尤为重要，因为谁也不希望无意间破坏程序原本正常的功能！</p>
+<h2 id="单元测试框架">单元测试框架<a class="anchor" aria-label="本节链接" href="#单元测试框架">#</a></h2>
+<p>因为编写函数来执行其他函数是非常常见和有用的需求，所以有一些完整的框架(称为单元测试框架)旨在帮助简化编写、维护和执行单元测试的过程。因为这些涉及到第三方软件，所以我们在这里不做介绍，但是你应该知道它们的存在。</p>
+<h2 id="集成测试">集成测试<a class="anchor" aria-label="本节链接" href="#集成测试">#</a></h2>
+<p>一旦程序的每个单元都单独测试过，它们就可以被集成到你的程序中，并重新测试，以确保它们被正确地集成了。这就是所谓的集成测试。集成测试往往更加复杂——目前，运行几次程序并抽检集成单元的行为就足够了。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c08/8-x-chapter-8-summary-and-quiz.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">8.x · 小结与测试 - 控制流和错误处理</span>
+      <span class="pn-chapter">第 08 章 · 控制流</span>
+    </a><a class="pn-card next" href="../c09/9-2-code-coverage.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">9.2 · 代码覆盖率</span>
+      <span class="pn-chapter">第 09 章 · 错误检测与处理</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/09-%E9%94%99%E8%AF%AF%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%A4%84%E7%90%86/9-1-Introduction-to-testing-your-code" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c09/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E6%9C%89%E5%85%B3%E6%B5%8B%E8%AF%95%E7%9A%84%E9%9A%BE%E9%A2%98">有关测试的难题</a></li><li class="lv2"><a href="#%E5%8C%96%E6%95%B4%E4%B8%BA%E9%9B%B6%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95">化整为零进行测试</a></li><li class="lv2"><a href="#%E9%9D%9E%E6%AD%A3%E5%BC%8F%E6%B5%8B%E8%AF%95">非正式测试</a></li><li class="lv2"><a href="#%E4%BF%9D%E5%AD%98%E6%B5%8B%E8%AF%95">保存测试</a></li><li class="lv2"><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95">自动化测试</a></li><li class="lv2"><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6">单元测试框架</a></li><li class="lv2"><a href="#%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95">集成测试</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

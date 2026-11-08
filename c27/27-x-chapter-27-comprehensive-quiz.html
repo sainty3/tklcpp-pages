@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>27.x · 小结与测试 - 异常 · tklcpp</title>
+<meta name="description" content="异常处理提供了将错误处理或异常情况处理流程与正常流程代码解耦的一种机制。这样一来程序员就可以根据实际情况，更加自如地处理错误，同时还可以在很大程度上缓解由基于返回错误码的方式处理异常所带来的问题。 throw语句可以用来…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c27/27-10-std-move-if-noexcept.html">
+<link rel="next" href="../c28/28-1-input-and-output-io-streams.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c27/27-x-chapter-27-comprehensive-quiz.html" data-type="lesson" data-chapter="27" data-chapter-title="第 27 章 · 异常" data-title="小结与测试 - 异常" data-num="27.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c27/index.html">第 27 章 · 异常</a><span class="sep">/</span><span class="current">27.x · 小结与测试 - 异常</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c27/index.html">第 27 章 · 异常</a>
+        <h1><span class="h1-num">27.x</span>小结与测试 - 异常</h1>
+        <div class="article-meta"><span>2 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><p>异常处理提供了将错误处理或异常情况处理流程与正常流程代码解耦的一种机制。这样一来程序员就可以根据实际情况，更加自如地处理错误，同时还可以在很大程度上缓解由基于返回错误码的方式处理异常所带来的问题。</p>
+<p><strong>throw</strong>语句可以用来抛出一个异常。<strong>Try 语句块</strong>则会关注其块内代码是否抛出异常。一旦有异常抛出，这些异常就会被重定向到对应的<strong>catch 语句块</strong>中，不同类型的语句块可以捕获对应类型的异常并对其进行处理。默认情况下，异常只要被捕获，就可以认为是处理了。</p>
+<p>异常会被立即处理——一旦异常被抛出，控制流会立即跳转到距离该Try语句块最近，且能够处理该异常的catch语句块。如果抛出异常的语句不位于任何try语句块中，则异常会沿着函数调用栈上送，如果在整个函数栈中都没有能够找到可用的异常处理逻辑，程序就会因为<strong>异常未处理</strong>而停止运行。</p>
+<p>抛出的异常可以是任意类型的，包括类。</p>
+<p>catch 语句块可以被声明为只捕获某种特定类型的异常，也可以使用省略号来声明为捕获所有类型的异常。能够捕获某种基类的 catch 语句块，也可以捕获该基类对应的派生类类型的异常。标准库中抛出的所有异常类型，都派生自 <code>std::exception</code> 类（位于<code>exception</code>头文件中）。因此，捕获 <code>std::exception</code> 的 catch 的语句块，可以捕获标准库中的异常。<code>what()</code> 成员函数可以用来确定被抛出的 <code>std::exception</code> 是什么。</p>
+<p>在 catch 语句块中，还可以进一步抛出新的遗产。因为这个异常不是在 try 语句块中抛出的，所以它不会被抛出它的 catch 语句块捕获。异常可以在 catch 语句块中通过<code>throw</code>关键字将该异常重新抛出。不过，不要将捕获的的异常变量直接重新抛出，这可能会导致<a href="../glossary/object-slicing.html" class="internal alias glossary-link" data-slug="词汇表/object-slicing" title="词汇表：对象切片">对象切片</a>。</p>
+<p>函数中的try-block语句块使我们可以捕获发生在函数内部或成员初始化列表中发生的异常。通常只会在派生类的构造函数中使用。</p>
+<p>在任何情况下，也不要在析构函数中抛出异常。</p>
+<p>通过 <strong>noexcept</strong>&nbsp;异常标识符可以将函数标记为不引发异常。</p>
+<p>异常处理是有开销的。在大多数情况下，使用异常的代码会稍慢一些，而且处理异常的开销非常高。因此，我们应该只在需要处理异常的场合下使用异常，而不要在一般的错误处理时使用异常（例如处理非法输入）。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c27/27-10-std-move-if-noexcept.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">27.10 · std::move_if_noexcept</span>
+      <span class="pn-chapter">第 27 章 · 异常</span>
+    </a><a class="pn-card next" href="../c28/28-1-input-and-output-io-streams.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">28.1 · 输入输出流</span>
+      <span class="pn-chapter">第 28 章 · 输入输出</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/27-%E5%BC%82%E5%B8%B8/27-x-Chapter-27-comprehensive-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c27/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

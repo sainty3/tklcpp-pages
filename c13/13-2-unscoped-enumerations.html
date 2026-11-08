@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13.2 · 无作用域枚举类型 · tklcpp</title>
+<meta name="description" content="Key Takeaway 使用关键字定义的枚举是无作用域枚举类型，它的枚举值被暴露在和枚举类型定义的作用域中，因此更适合被直接定义在使用它的类中 一个枚举类型的枚举值不能用于另一个枚举类型的对象 C++ 中内置了很多有用…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c13/13-1-introduction-to-program-defined-user-defined-types.html">
+<link rel="next" href="../c13/13-3-unscoped-enumeration-input-and-output.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c13/13-2-unscoped-enumerations.html" data-type="lesson" data-chapter="13" data-chapter-title="第 13 章 · 枚举和结构体" data-title="无作用域枚举类型" data-num="13.2">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c13/index.html">第 13 章 · 枚举和结构体</a><span class="sep">/</span><span class="current">13.2 · 无作用域枚举类型</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c13/index.html">第 13 章 · 枚举和结构体</a>
+        <h1><span class="h1-num">13.2</span>无作用域枚举类型</h1>
+        <div class="article-meta"><span>15 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">enum</span> <span class="tag">unscoped-enumerations</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">8 节</span></summary>
+    <ul><li class="lv2"><a href="#%E6%9E%9A%E4%B8%BE">枚举</a></li><li class="lv2"><a href="#%E6%97%A0%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B">无作用域枚举类型</a></li><li class="lv2"><a href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%9E%9A%E4%B8%BE%E5%80%BC%E7%9A%84%E5%91%BD%E5%90%8D">枚举类型和枚举值的命名</a></li><li class="lv2"><a href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%8F%AF%E5%8C%BA%E5%88%86%E7%B1%BB%E5%9E%8B">枚举类型是可区分类型</a></li><li class="lv2"><a href="#%E4%BD%BF%E7%94%A8%E6%9E%9A%E4%B8%BE">使用枚举</a></li><li class="lv2"><a href="#%E6%97%A0%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F">无作用域枚举类型的作用域</a></li><li class="lv2"><a href="#%E9%81%BF%E5%85%8D%E6%9E%9A%E4%B8%BE%E5%80%BC%E7%9A%84%E5%91%BD%E5%90%8D%E5%86%B2%E7%AA%81">避免枚举值的命名冲突</a></li><li class="lv2"><a href="#%E6%AF%94%E8%BE%83%E6%9E%9A%E4%B8%BE%E5%80%BC">比较枚举值</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>使用<code>enum</code>关键字定义的枚举是<a href="../glossary/unscoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/unscoped-enumerations" title="词汇表：无作用域枚举类型">无作用域枚举类型</a>，它的枚举值被暴露在和枚举类型定义的作用域中，因此更适合被直接定义在使用它的类中</li>
+<li>一个枚举类型的枚举值不能用于另一个枚举类型的对象</li>
+</ul>
+</div></aside>
+<p>C++ 中内置了很多有用的基础数据类型和符合类型（分别在<a href="../c04/4-1-introduction-to-fundamental-data-types.html" class="internal alias" data-slug="04-基础数据类型/4-1-Introduction-to-fundamental-data-types">4.1 - 基础数据类型简介</a>和<a href="../c12/12-1-introduction-to-compound-data-types.html" class="internal alias" data-slug="12-复合类型-引用和指针/12-1-Introduction-to-compound-data-types">12.1 - 复合数据类型</a>中进行了介绍）。但是这些内置数据类型并不是总能满足我们的需要。</p>
+<p>例如，我们的程序需要追踪一个苹果的颜色是红色、黄色还是绿色。亦或者我们需要描述一件T恤的可选颜色（通过一个颜色列表）。如果只能使用基础类型的话，你会怎么做？</p>
+<p>你可能会把颜色存储为整型值，并隐式地将其关联到对应的颜色(0 = red , 1 = green, 2 = blue)：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> appleColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // my apple is red</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> shirtColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // my shirt is green</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>但是这么做并不直观，而且我们讨论过为什么使用魔鬼数字是不利的（<a href="../c05/5-1-const-variables-and-symbolic-constants.html" class="internal alias" data-slug="05-常量与字符串/5-1-Const-variables-and-symbolic-constants">5.1 - const 变量和符号常量</a>）。我们可以使用符号常量来避免魔鬼数字的问题：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> appleColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> shirtColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> green </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>尽管可读性变好了一些，程序员仍然需要理解<code>appleColor</code>&nbsp;和&nbsp;<code>shirtColor</code>&nbsp;(<code>int</code>类型)存放的是另外一些表示颜色的符号常量（而这些常量很可能被定义在其他地方，甚至是其他文件中）。</p>
+<p>使用<a href="../c10/10-7-typedefs-and-type-aliases.html" class="internal alias" data-slug="10-类型转换、类型别名和类型推导/10-7-Typedefs-and-type-aliases">别名</a>可以进一步提高可读性：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">using</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // define a type alias named Color</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// The following color values should be used for a Color</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> Color red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> Color green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">constexpr</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> Color blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color appleColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color shirtColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> green </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>可读性更好了。但是程序员仍然需要理解，这些表示颜色的符号常量需要配合&nbsp;<code>Color</code> 类型的变量来使用。不过至少现在这些类型具有一个唯一的别名&nbsp;<code>Color</code>&nbsp;，我们可以搜索它并找到相关的符号常量定义。</p>
+<p>但是，因为&nbsp;<code>Color</code>&nbsp;只是&nbsp;<code>int</code> 的别名，所以我们仍然无法保证这些符号常量被正确地使用。我们仍然由可能犯如下的错误。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Color eyeColor</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 8</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 语法正确，但语义错误（8不是一个被定义的颜色值）</span></span></code></pre></div></figure>
+<p>不仅如此，当我们调试程序的时候，这些变量都会显示为整型值，而不是其符号含义 (<code>red</code>)，这无疑会让debug变得更加困难。</p>
+<p>幸运地是，我们还有更好的办法。</p>
+<h2 id="枚举">枚举<a class="anchor" aria-label="本节链接" href="#枚举">#</a></h2>
+<p>枚举(也称为枚举类型和<code>enum</code>) 是一种复合类型。在枚举类型中，每个可能的值都被定义为一个<a href="../glossary/symbolic-constants-p0612.html" class="internal alias glossary-link" data-slug="词汇表/symbolic-constants" title="词汇表：符号常量">符号常量</a>（称为枚举值）。</p>
+<p>因为枚举属于程序定义类型（<a href="../c13/13-1-introduction-to-program-defined-user-defined-types.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-1-Introduction-to-program-defined-user-defined-types">13.1 - 程序定义类型简介</a>），所以枚举类型在使用前必须先进行定义。</p>
+<p>C++ 支持两种类型的枚举：<a href="../c13/13-2-unscoped-enumerations.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-2-unscoped-enumerations">13.2 - 无作用域枚举类型</a>和<a href="../c13/13-6-scoped-enumerations-enum-classes.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-6-scoped-enumerations-enum-classes">13.6 - 限定作用域枚举（枚举类）</a></p>
+<h2 id="无作用域枚举类型">无作用域枚举类型<a class="anchor" aria-label="本节链接" href="#无作用域枚举类型">#</a></h2>
+<p><a href="../glossary/unscoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/unscoped-enumerations" title="词汇表：无作用域枚举类型">无作用域枚举类型</a>通过&nbsp;<code>enum</code>&nbsp;关键字定义。</p>
+<p>枚举类型通过实例来学习效果更好。接下来，让我们定义一个无作用域枚举类型来表示颜色值吧：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// 定义一个新的无作用域枚举类型，名为 Color</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // 枚举值定义在这里</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // 这些符号常量定义了所有可能的值</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // 枚举值通过逗号分割，而不是分号</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 结尾的逗号可有可无，但是推荐写上</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 枚举定义必须以分号结尾</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // 定义一些Color类型的变量</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color apple </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">   // my apple is red</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color shirt </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> green </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // my shirt is green</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color cup </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> blue </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // my cup is blue</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color socks </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> white </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 错误: white 不是可用的枚举值</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color hat </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">       // 错误: 2 页不是Color的枚举值</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>我们首先使用<code>enum</code>关键字来告诉编译器，我们正在定义一个无作用域枚举，我们将其命名为<code>Color</code> 。</p>
+<p>随后，在花括号里面定义<code>Color</code>类型的枚举值：<code>red</code>，<code>green</code>和<code>blue</code>。这些枚举值指定了 <code>Color</code>&nbsp;类型能够表示或存储的所有可能值。每个枚举值需要通过逗号（而不是分号）隔开——最后一个枚举值后面可以有逗号也可以没有，加上逗号看起来一致性更好。</p>
+<p><code>Color</code>&nbsp;的定义以分号结尾。至此，枚举类型 <code>Color</code>&nbsp;就定义完成了！</p>
+<p>在&nbsp;<code>main()</code> 函数中，我们初始化了三个&nbsp;<code>Color</code> 类型的变量：<code>apple</code>&nbsp;被初始化为&nbsp;<code>red</code>，<code>shirt</code>&nbsp;初始化为&nbsp;<code>green</code> ，<code>cup</code>&nbsp;初始化为 <code>blue</code>。</p>
+<p>程序会为这三个对象分配内存。注意，当初始化枚举类型时，所用的初始化值必须是该类型定义过的枚举值。变量<code>socks</code>&nbsp;和&nbsp;<code>hat</code>&nbsp;并不能成功定义，因为&nbsp;<code>white</code>&nbsp;和&nbsp;<code>2</code>&nbsp;并不是&nbsp;<code>Color</code> 的枚举值。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>命名规则小结:</p>
+<ul>
+<li>枚举和枚举类型指的是类型本身(例如 <code>Color</code>)</li>
+<li>枚举值指的是枚举中可能值所对应的符号常量(例如&nbsp;<code>red</code>)</li>
+</ul>
+</div></aside>
+<h2 id="枚举类型和枚举值的命名">枚举类型和枚举值的命名<a class="anchor" aria-label="本节链接" href="#枚举类型和枚举值的命名">#</a></h2>
+<p>按照惯例，枚举类型的名字以大写字母开头（规则适用于所有自定义类型）。</p>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>枚举类型不一定要有名字，但是现代C++推荐避免使用匿名的枚举。</p>
+</div></aside>
+<p>枚举值必须有名字。可惜的是，对于枚举值的名字暂时还没有约定俗成的命名规范。通常的选择有：小写字母开头（例如<code>red</code>），大写字母开头（例如<code>Red</code>，全大写（例如<code>RED</code>）、全大写且添加将枚举类型作为前缀（例如<code>COLOR_RED</code>），再或者使用<code>k</code>作为前缀并配合大小写交替(kColorRed)。</p>
+<p>现代C++指南通常建议避免使用全大写的命名约定，因为全大写通常用于预处理器宏，可能会发生冲突。我们还建议避免以大写字母开头的约定，因为以大写字母开头的名称通常为自定义类型保留。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>以大写字母开头命名枚举类型。以小写字母开头命名枚举值。</p>
+</div></aside>
+<h2 id="枚举类型是可区分类型">枚举类型是可区分类型<a class="anchor" aria-label="本节链接" href="#枚举类型是可区分类型">#</a></h2>
+<p>你创建的每个枚举类型都被认为是一个不同的类型，这意味着编译器可以将其与其他类型区分开来(不像<code>typedefs</code>或类型别名，它们是一种别名，与其对应的类型并没有区别)。</p>
+<p>枚举类型是不同的，因此一种枚举类型中枚举值也不能用于另一种枚举类型的对象:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Pet</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    cat</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    dog</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    pig</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    whale</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    black</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Pet myPet </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> black </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 编译错误: black 不是 Pet 的枚举值</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color shirt </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> pig </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 编译错误: pig 不是 Color 的枚举值</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>你可能也不想要一件”pig“衬衫。</p>
+<h2 id="使用枚举">使用枚举<a class="anchor" aria-label="本节链接" href="#使用枚举">#</a></h2>
+<p>因为枚举器是描述性的，它们对于增强代码文档性和可读性非常有用。当你的相关常量的集合很小，并且对象每次只需要保存其中一个值时，枚举类型是最合适的。</p>
+<p>星期几、方向或者一副牌中的花色都是常见的枚举定义。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> DaysOfWeek</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    sunday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    monday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    tuesday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    wednesday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    thursday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    friday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    saturday</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CardinalDirections</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    north</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    east</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    south</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    west</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CardSuits</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    clubs</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    diamonds</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    hearts</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    spades</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span></code></pre></div></figure>
+<p>有时候被调函数需要像主调函数返回状态码以表明自己是否执行成功。传统做法是使用负值来代表不同的错误码，例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> readFileContents</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">openFile</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">())</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">readFile</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">())</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">parseFile</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">())</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // success</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>但是，这些魔鬼数字含义非常模糊。更好的办法是使用枚举类型：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> FileReadResult</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    readResultSuccess</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    readResultErrorFileOpen</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    readResultErrorFileRead</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    readResultErrorFileParse</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">FileReadResult</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> readFileContents</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">openFile</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">())</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> readResultErrorFileOpen</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">readFile</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">())</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> readResultErrorFileRead</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">parseFile</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">())</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> readResultErrorFileParse</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> readResultSuccess</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>然后调用者可以将返回值和特定的枚举值进行比较，相对于直接和整型数比较，这种方法可读性更好。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">readFileContents</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ==</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> readResultSuccess</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // do something</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // print error message</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>枚举类型也可以用于标识简单游戏中的道具、怪物或地形类型。基本上，任何相关对象的小集合都可以使用枚举表示：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> ItemType</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">	sword</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">	torch</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">	potion</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">	ItemType holding</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> torch </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">	return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>枚举类型也可以用于函数形参，表示用户的输入的不同选项：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> SortOrder</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    alphabetical</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    alphabeticalReverse</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    numerical</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> sortData</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">SortOrder</span><span style="--shiki-light:#E64553;--shiki-light-font-style:italic;--shiki-dark:#FFAB70;--shiki-dark-font-style:inherit;"> order</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">order </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> alphabetical</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">        // sort data in forwards alphabetical order</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">order </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> alphabeticalReverse</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">        // sort data in backwards alphabetical order</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">order </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> numerical</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">        // sort data numerically</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>很多编程语言会使用枚举来定义布尔类型——毕竟布尔类型本质上就是一个具有两个枚举值的枚举类型：<code>false</code>&nbsp;和&nbsp;<code>true</code>！但是，C++ 中的<code>true</code>&nbsp;和&nbsp;<code>false</code>&nbsp;是关键字而不是枚举值。</p>
+<h2 id="无作用域枚举类型的作用域">无作用域枚举类型的作用域<a class="anchor" aria-label="本节链接" href="#无作用域枚举类型的作用域">#</a></h2>
+<p><a href="../glossary/unscoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/unscoped-enumerations" title="词汇表：无作用域枚举类型">无作用域枚举类型</a>之所以被赋予这样的名字，<span class="text-highlight">是因为它会将其定义的枚举值暴露在和自己一样的作用域中</span>（而不是像命名空间那样创建了一个新的作用域空间）。</p>
+<p>例如：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 该枚举类型在全局作用域中定义</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 所以 red 也位于全局作用域</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color apple </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // apple 是 red 的</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p><code>Color</code>&nbsp;枚举类型被定义在全局作用域中，因此它所有枚举值(<code>red</code>、<code>green</code> 和&nbsp;<code>blue</code>) 都会被放到全局作用域中。这无疑会污染全局作用域，而且显著提高了命名冲突的可能性。</p>
+<p>同样地，由于这个原因，相同的枚举值名称不能用在不同的枚举类型中（如果它们在一个作用域中被定义的话）：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // blue 在全局作用域</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Feeling</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    happy</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    tired</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 错误：命名冲突</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color apple </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // my apple is red</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Feeling me </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> happy </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // I'm happy right now (even though my program doesn't compile)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在上面的例子中，两个<a href="../glossary/unscoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/unscoped-enumerations" title="词汇表：无作用域枚举类型">无作用域枚举类型</a>都被定义在全局作用域中，但是它们都包含了一个同名的枚举值<code>blue</code>。这无疑会导致命名冲突，程序是无法编译的。</p>
+<p>无作用域枚举还为它们的枚举值提供命名作用(非常类似于<a href="../glossary/namespace.html" class="internal alias glossary-link" data-slug="词汇表/namespace" title="词汇表：命名空间">命名空间</a>为其中声明的变量名提供命名作用域区域)。这意味着你可以按以下方式访问无作用域枚举的枚举值：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // blue 位于全局命名空间</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color apple </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 可以直接使用</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color raspberry </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> Color</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">red </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 也可以通过Color访问</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>不过多数情况下，枚举值不会通过<a href="../glossary/scope-resolution-operator.html" class="internal alias glossary-link" data-slug="词汇表/scope-resolution-operator" title="词汇表：作用域解析运算符">作用域解析运算符</a>来访问。</p>
+<h2 id="避免枚举值的命名冲突">避免枚举值的命名冲突<a class="anchor" aria-label="本节链接" href="#避免枚举值的命名冲突">#</a></h2>
+<p>有很多常见的方法可以避免无作用域枚举值的命名冲突。一种选择是在命名枚举值前，加上枚举本身的名称：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    color_red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    color_blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    color_green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Feeling</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    feeling_happy</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    feeling_tired</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    feeling_blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // no longer has a naming collision with color_blue</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color paint </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> color_blue </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Feeling me </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> feeling_blue </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>虽然这仍然会污染命名空间，但通过使名称更长、更唯一，减少了命名冲突的机会。</p>
+<p>一个更好的选择是将枚举类型放在能够提供单独作用域的东西中，例如命名空间:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // The names Color, red, blue, and green are defined inside namespace color</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">        red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">        green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">        blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    };</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> feeling</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Feeling</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    {</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">        happy</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">        tired</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">        blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // feeling::blue doesn't collide with color::blue</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">    };</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    color</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Color paint </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> color</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">blue </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    feeling</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Feeling me </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> feeling</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">blue </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>但这意味着我们现在必须在枚举和枚举值名称前面加上作用域名称。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">扩展阅读</span></div><div class="callout-body">
+<p>类也能够提供作用域，通常将与类相关的枚举类型直接定义在类内。我们会在<a href="../c15/15-3-nested-types-in-classes.html" class="internal alias" data-slug="15-深入类/15-3-nested-types-in-classes">15.3 - 类中的嵌套类型</a>中进行详细介绍。</p>
+</div></aside>
+<p>另外一个接近方案是使用<a href="../glossary/scoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/scoped-enumerations" title="词汇表：有作用域枚举">限定作用域枚举</a>会在<a href="../c13/13-6-scoped-enumerations-enum-classes.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-6-scoped-enumerations-enum-classes">13.6 - 限定作用域枚举（枚举类）</a>中进行介绍。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>最好将枚举放在一个命名的作用域中(例如命名空间或类)，这样枚举值就不会污染全局命名空间。</p>
+</div></aside>
+<h2 id="比较枚举值">比较枚举值<a class="anchor" aria-label="本节链接" href="#比较枚举值">#</a></h2>
+<p>我们可以使用等于号或不等号 (<code>operator==</code>&nbsp;和&nbsp;<code>operator!=</code>) 来判断两个枚举值是否相同。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">enum</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Color</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    red</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    green</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#79B8FF;">    blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">    Color shirt</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> blue </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">shirt </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> blue</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // if the shirt is blue</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Your shirt is blue!"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Your shirt is not blue!"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在上面的例子中，我们使用<code>if</code>语句来测试<code>shirt</code> 是否等于<code>blue</code> 。这为我们提供了一种基于枚举所持有的枚举值来按照条件执行程序的方法。</p>
+<p>我们将在下一课中更多地使用它。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c13/13-1-introduction-to-program-defined-user-defined-types.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">13.1 · 程序定义类型简介</span>
+      <span class="pn-chapter">第 13 章 · 枚举和结构体</span>
+    </a><a class="pn-card next" href="../c13/13-3-unscoped-enumeration-input-and-output.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">13.3 · 限定作用域枚举类型的输入输出</span>
+      <span class="pn-chapter">第 13 章 · 枚举和结构体</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/13-%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B-%E6%9E%9A%E4%B8%BE%E5%92%8C%E7%BB%93%E6%9E%84%E4%BD%93/13-2-unscoped-enumerations" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c13/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E6%9E%9A%E4%B8%BE">枚举</a></li><li class="lv2"><a href="#%E6%97%A0%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B">无作用域枚举类型</a></li><li class="lv2"><a href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E5%92%8C%E6%9E%9A%E4%B8%BE%E5%80%BC%E7%9A%84%E5%91%BD%E5%90%8D">枚举类型和枚举值的命名</a></li><li class="lv2"><a href="#%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%8F%AF%E5%8C%BA%E5%88%86%E7%B1%BB%E5%9E%8B">枚举类型是可区分类型</a></li><li class="lv2"><a href="#%E4%BD%BF%E7%94%A8%E6%9E%9A%E4%B8%BE">使用枚举</a></li><li class="lv2"><a href="#%E6%97%A0%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%9E%8B%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F">无作用域枚举类型的作用域</a></li><li class="lv2"><a href="#%E9%81%BF%E5%85%8D%E6%9E%9A%E4%B8%BE%E5%80%BC%E7%9A%84%E5%91%BD%E5%90%8D%E5%86%B2%E7%AA%81">避免枚举值的命名冲突</a></li><li class="lv2"><a href="#%E6%AF%94%E8%BE%83%E6%9E%9A%E4%B8%BE%E5%80%BC">比较枚举值</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

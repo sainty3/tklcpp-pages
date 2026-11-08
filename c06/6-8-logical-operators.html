@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.8 · 逻辑运算符 · tklcpp</title>
+<meta name="description" content="Key Takeaway 逻辑非的优先级非常高，如果使用它的目的是对整个表达式的结果取反，则要对整个表达式加括号 区分逻辑与()和按位与()，逻辑非()和按位非() 短路求值可能会导致逻辑与或逻辑非不对第二个表达式求值。…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c06/6-7-relational-operators-and-floating-point-comparisons.html">
+<link rel="next" href="../c06/6-x-chapter-6-summary-and-quiz.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c06/6-8-logical-operators.html" data-type="lesson" data-chapter="06" data-chapter-title="第 06 章 · 运算符" data-title="逻辑运算符" data-num="6.8">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c06/index.html">第 06 章 · 运算符</a><span class="sep">/</span><span class="current">6.8 · 逻辑运算符</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c06/index.html">第 06 章 · 运算符</a>
+        <h1><span class="h1-num">6.8</span>逻辑运算符</h1>
+        <div class="article-meta"><span>10 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">operator</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">8 节</span></summary>
+    <ul><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E9%9D%9Enot">逻辑非（NOT）</a></li><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E6%88%96or">逻辑或（OR）</a></li><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E4%B8%8Eand">逻辑与（AND)</a></li><li class="lv2"><a href="#%E7%9F%AD%E8%B7%AF%E6%B1%82%E5%80%BC">短路求值</a></li><li class="lv2"><a href="#%E6%B7%B7%E5%90%88-and--%E5%92%8C-or">混合 AND 和 OR</a></li><li class="lv2"><a href="#%E5%BE%B7%E6%91%A9%E6%A0%B9%E5%AE%9A%E5%BE%8Bde-morgans-law">德摩根定律（De Morgan‘s law）</a></li><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E7%AC%A6%E5%9C%A8%E5%93%AA%E9%87%8C">逻辑异或运算符在哪里？</a></li><li class="lv2"><a href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E7%9A%84%E5%85%B6%E4%BB%96%E8%A1%A8%E7%A4%BA%E5%BD%A2%E5%BC%8F">运算符的其他表示形式</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>逻辑非的优先级非常高，如果使用它的目的是对整个表达式的结果取反，则要对整个表达式加括号</li>
+<li>区分<strong>逻辑与(<code>&amp;&amp;</code>)<strong>和</strong>按位与(<code>&amp;</code>)</strong>，<strong>逻辑非(<code>||</code>)<strong>和</strong>按位非(<code>|</code>)</strong></li>
+<li>短路求值可能会导致<strong>逻辑与</strong>或<strong>逻辑非</strong>不对第二个表达式求值。所以请避免将具有副作用的运算符和逻辑与或逻辑非一起使用。</li>
+<li>逻辑或和逻辑与运算符的两个操作数，求值顺序是固定的，因为标准里对其进行了说明，左边的操作数总是先求值。</li>
+<li>只有 C++ 自带的这些逻辑运算符会执行短路求值，如果你自己重载了这些操作符以便将其应用于你自己定义的类型，这些重载后的运算符是不具备短路求值功能的。</li>
+<li>逻辑与的优先级高于逻辑或的优先级，如果在一个表达式里同时使用逻辑与和逻辑或，最好使用括号为其明确指定优先级。</li>
+<li>德摩根定律
+<ul>
+<li><code>!(x &amp;&amp; y)</code>&nbsp;等价于&nbsp;<code>!x || !y</code></li>
+<li><code>!(x || y)</code>&nbsp;等价于&nbsp;<code>!x &amp;&amp; !y</code></li>
+</ul>
+</li>
+<li>C++ 没有异或运算符。可以使用不等号(<code>!=</code>)来模拟逻辑异或（相同为真）</li>
+<li>C++ 中的很多操作符 (例如 <code>operator ||</code>) 都可以使用名字来代替符号吗，因为并不是所有的键盘都支持输入符号。</li>
+</ul>
+</div></aside>
+<p>尽管条件（比较）运算符可以被用来测试一个特定的表达式是否为真，但它们一次只能对一个条件进行测试。很多时候，我们需要知道多个条件是否同时为真。例如，为了确定彩票是否中奖，我们必须将购买的每一个数字和中奖号码的各个数字逐一比较。对于有6个数的彩票，这就需要6次比较，只有当它们的结果全部都是真的时候，才能看做中奖。还有一些情况，我们需要知道多个条件中是否有一个为真。例如，如果我今天生病了，或者太累了，又或者中了彩票，这三个条件只要有一条为真我就会考虑翘班。</p>
+<p>逻辑运算符就为我们提供了这样的能力。</p>
+<p>C++ 提供了三种逻辑运算符：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>运算符</th><th>符号</th><th>形式</th><th>操作</th></tr></thead><tbody><tr><td>逻辑非 NOT</td><td>!</td><td>!x</td><td>如果 x 为真则为 false，如果 x 为假则为 true</td></tr><tr><td>逻辑与 AND</td><td>&amp;&amp;</td><td>x &amp;&amp; y</td><td>如果 x 和 y 都是真，则为 true，否则为 false</td></tr><tr><td>逻辑或 OR</td><td>||</td><td>x || y</td><td>如果 x 或 y 其中一个位真，则为真，否则为假</td></tr></tbody></table></div>
+<h2 id="逻辑非not">逻辑非（NOT）<a class="anchor" aria-label="本节链接" href="#逻辑非not">#</a></h2>
+<p>在&nbsp;<a href="../c04/4-9-boolean-values.html" class="internal alias" data-slug="04-基础数据类型/4-9-Boolean-values">4.9 - 布尔值</a> 一节课中你已经遇到逻辑非这个一元运算符：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>操作符</th><th>结果</th></tr></thead><tbody><tr><td>true</td><td>false</td></tr><tr><td>false</td><td>true</td></tr></tbody></table></div>
+<p>如果逻辑非的操作数求值为 <code>true</code>，则逻辑非求值为 <code>false</code>。如果逻辑非的操作数求值为 <code>false</code>，逻辑非的求值为 <code>true</code>。换句话说，逻辑非可以将布尔值反转，真变成假，假变成真。</p>
+<p>逻辑非经常被用在条件表达式中：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> tooLarge </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 100</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // tooLarge is true if x &gt; 100</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">tooLarge</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // do something with x</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // print an error</span></span></code></pre></div></figure>
+<p>有件事情需要注意，那就逻辑非的优先级非常高。新手程序员经常会犯这样的错误：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 7</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is not greater than "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is greater than "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>打印结果如下：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>5 is greater than 7
+</code></pre></div>
+<p>但是&nbsp;<em>x</em>&nbsp;并不比 7 大，这结果是怎么得到的？这是因为逻辑非的优先级比大于号的优先级高，因此 <code>! x &gt; y</code>&nbsp;实际上相当于<code>(!x) &gt; y</code>。因为 <code>x</code>&nbsp;是 5，<code>!x</code> 求值结果为 <em>0</em>，而 &nbsp;<code>0 &gt; y</code>&nbsp;是假，所以执行的是 else 的语句。</p>
+<p>正确的做法应该像下面这样：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 7</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">))</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is not greater than "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " is greater than "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>这样 &nbsp;<code>x &gt; y</code>&nbsp;会首先进行求值，然后再通过逻辑非将布尔结果反转。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>如果逻辑非要对其他运算符的结果进行操作，那么其他运算符和它们的操作数应该放在括号中。</p>
+</div></aside>
+<p>逻辑非的简单用法，例如&nbsp;<code>if (!value)</code>&nbsp;并不需要括号，因为这时不会受到优先级的影响。</p>
+<h2 id="逻辑或or">逻辑或（OR）<a class="anchor" aria-label="本节链接" href="#逻辑或or">#</a></h2>
+<p>逻辑或运算符被用来测试两个条件中是否有为真的。如果左操作数或右操作数为 <code>true</code>，或者两个都是 <code>true</code>，则逻辑或表达式会返回 <code>true</code>，否则返回 <code>false</code>。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>左操作数</th><th>右操作数</th><th>结果</th></tr></thead><tbody><tr><td>false</td><td>false</td><td>false</td></tr><tr><td>false</td><td>true</td><td>true</td></tr><tr><td>true</td><td>false</td><td>true</td></tr><tr><td>true</td><td>true</td><td>true</td></tr></tbody></table></div>
+<p>例如，考虑下面的代码：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a number: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "You picked 0 or 1</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "You did not pick 0 or 1</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>这种情况下，我们使用逻辑或运算符来判断做操作数 (<code>value == 0</code>) 或者右操作数 (<code>value == 1</code>) 是否为真。如果其一（或两个）全部为真，则逻辑或运算符的求值结果为真，if 语句就会被执行。如果两个操作数都是假，逻辑或运算符的结果就是假，那么 else 语句就会执行。</p>
+<p>你可以将多个逻辑或表达式连接起来：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">     std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "You picked 0, 1, 2, or 3</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>新手程序员经常会把逻辑或运算符 (<code>||</code>) 和按位或运算符搞混 (<code>|</code>) (稍后会介绍)。 即使它们的名字中都有一个或，其功能确是不同的。将它们混为一谈会带来错误的结果。</p>
+<h2 id="逻辑与and">逻辑与（AND)<a class="anchor" aria-label="本节链接" href="#逻辑与and">#</a></h2>
+<p>逻辑与运算符被用作测试两个操作数是否均为真。如果均为真，则逻辑与会返回 <code>true</code>，否则返回值为<code>false</code> 。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>左操作数</th><th>右操作数</th><th>结果</th></tr></thead><tbody><tr><td>false</td><td>false</td><td>false</td></tr><tr><td>false</td><td>true</td><td>false</td></tr><tr><td>true</td><td>false</td><td>false</td></tr><tr><td>true</td><td>true</td><td>true</td></tr></tbody></table></div>
+<p>例如，我们想要判断 x 是否在 10 到 20 之间：我们必须知道&nbsp;<em>x</em>&nbsp;是否大于&nbsp;<em>10</em>，<strong>并且</strong>是否小于 20：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a number: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 10</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &amp;&amp;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 20</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Your value is between 10 and 20</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    else</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">        std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Your value is not between 10 and 20</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在这个例子中，我们使用逻辑与运算符检测左侧的条件 (value &gt; 10) <strong>和</strong>右侧的条件 (value &lt; 20) 是否都是 <code>true</code>。如果都是真，则逻辑与运算符的求值结果为 <code>true</code>，执行 if 语句。如果左右两个条件都是假，则逻辑与运算符的求值结果为 <code>false</code>，执行 else 语句。</p>
+<p>和逻辑或运算符一样，你可以把多个逻辑与运算符连接起来：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 10</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &amp;&amp;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 20</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &amp;&amp;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> value </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 16</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // do something</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">else</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // do something else</span></span></code></pre></div></figure>
+<p>如果上述所有条件都是真，则执行 if 语句。如果任何一个条件为假，则执行 else 语句。</p>
+<p>新手程序员不仅容易把<strong>逻辑或</strong>和<strong>按位或</strong>搞混，也会把逻辑与 (<code>&amp;&amp;</code>) 和按位与 (<code>&amp;</code>)搞混。</p>
+<h2 id="短路求值">短路求值<a class="anchor" aria-label="本节链接" href="#短路求值">#</a></h2>
+<p>为了让逻辑与返回 <code>true</code>，两个操作数都需要求值为真。如果第一个操作数求值为假，不论第二个操作数求值结果如何，逻辑与运算符一定求值为<code>false</code>。这种情况下，逻辑与运算符会立即返回<code>false</code>，而不会再对第二个操作数求值。这个方法称为短路求值，这么做可以优化程序性能。</p>
+<p>类似地，如果逻辑与运算符的第一个操作数求值结果为真，则它会直接返回<code>true</code>，而不必对第二个操作数进行求值。</p>
+<p>短路求值还向我们展示了，为什么有副作用的运算符，不应该放到复合表达式中。考虑下面的代码：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &amp;&amp;</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> ++</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">y </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">==</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // do something</span></span></code></pre></div></figure>
+<p>如果&nbsp;<code>x</code>&nbsp;不等于 1，那么整个条件一定会返回 <code>false</code>。所以 <code>++y</code> 根本不会被求值。因此，只有当 x 等于 1 时，<code>y</code> 才会递增，也许这并不是你需要的！</p>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>短路求值可能会导致<strong>逻辑与</strong>或<strong>逻辑非</strong>不对第二个表达式求值。所以请避免将具有副作用的运算符和逻辑与或逻辑非一起使用。</p>
+</div></aside>
+<aside class="callout callout-abstract" data-callout="abstract"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg></span><span class="callout-label">关键信息</span></div><div class="callout-body">
+<p>逻辑或和逻辑与运算符的两个操作数，求值顺序是固定的，因为标准里对其进行了说明，左边的操作数总是先求值。（参考：<a href="../c06/6-1-operator-precedence-and-associativity.html#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E6%B1%82%E5%80%BC%E9%A1%BA%E5%BA%8F%E5%92%8C%E5%87%BD%E6%95%B0%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86%E9%A1%BA%E5%BA%8F%E5%A4%A7%E5%A4%9A%E6%98%AF%E6%9C%AA%E6%8C%87%E6%98%8E%E7%9A%84" class="internal alias" data-slug="06-运算符/6-1-Operator-precedence-and-associativity">表达式求值顺序和函数参数处理顺序大多是未指明的</a>）</p>
+</div></aside>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">扩展阅读</span></div><div class="callout-body">
+<p>只有 C++ 自带的这些逻辑运算符会执行短路求值，如果你自己重载了这些操作符以便将其应用于你自己定义的类型，这些重载后的运算符是不具备短路求值功能的。</p>
+</div></aside>
+<h2 id="混合-and--和-or">混合 AND  和 OR<a class="anchor" aria-label="本节链接" href="#混合-and--和-or">#</a></h2>
+<p>在一个表达式里面混合使用逻辑与和逻辑或运算符通常是无法避免的，但是这样的用法也存在一定的危险。</p>
+<p>很多程序员会假定逻辑与和逻辑或具有相同的优先级（或忘记了它们的优先级是不同的），就像加/减或者乘/除那样。但是，逻辑与的优先级其实比逻辑或要高，因此逻辑与会先于逻辑或求值（除非有括号修改其优先级）。</p>
+<p>新手程序员通常会写出这样的表达式：<code>value1 || value2 &amp;&amp; value3</code>。因为逻辑与的优先级更高，所以上述表达式等价于 <code>value1 || (value2 &amp;&amp; value3)</code> 而不是&nbsp;<code>(value1 || value2) &amp;&amp; value3</code>。如果这正是你想要的，那就好了。但是如果你假设上面的表达式是按照从左向右的顺序求值，那得到的结果肯定出你所料！</p>
+<p>如果在一个表达式里同时使用逻辑与和逻辑或，最好使用括号为其明确指定优先级。这样不仅可以避免由优先级引起的顺序，还能够增强可读性并清晰地表明你的目的。例如，<code>value1 &amp;&amp; value2 || value3 &amp;&amp; value4</code> 最好改写为&nbsp;<code>(value1 &amp;&amp; value2) || (value3 &amp;&amp; value4)</code>.</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>如果在一个表达式里同时使用逻辑与和逻辑或，最好使用括号为其明确指定优先级。</p>
+</div></aside>
+<h2 id="德摩根定律de-morgans-law">德摩根定律（De Morgan‘s law）<a class="anchor" aria-label="本节链接" href="#德摩根定律de-morgans-law">#</a></h2>
+<p>很多程序员会认为&nbsp;<code>!(x &amp;&amp; y)</code>&nbsp;等价于&nbsp;<code>!x &amp;&amp; !y</code>。不幸的是，逻辑非运算符并不能像这样进行分配。</p>
+<p>根据<a href="https://baike.baidu.com/item/%E5%BE%B7%C2%B7%E6%91%A9%E6%A0%B9%E5%AE%9A%E5%BE%8B/489073" class="external alias" target="_blank" rel="noopener noreferrer">德摩根定律</a>&nbsp;，逻辑非的分配律应该是下面这种方式：</p>
+<ul>
+<li><code>!(x &amp;&amp; y)</code>&nbsp;等价于&nbsp;<code>!x || !y</code></li>
+<li><code>!(x || y)</code>&nbsp;等价于&nbsp;<code>!x &amp;&amp; !y</code></li>
+</ul>
+<p>换言之，当你分配逻辑非运算符时，必须将逻辑与替换为逻辑或，反之亦然。</p>
+<p>有时候，我们可以通过德摩根定律对复杂的表达式进行简化。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">扩展阅读</span></div><div class="callout-body">
+<p>我们可以证明德摩根定律的第一部分是正确的，即对于任何可能的<code>x</code>和<code>y</code>，<code>!(x &amp;&amp; y)</code>&nbsp;等于&nbsp;<code>!x || !y</code>。为此，我们需要使用一个称为<em>真值表</em>的数学概念。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>x</th><th>y</th><th>!x</th><th>!y</th><th>!(x &amp;&amp; y)</th><th>!x || !y</th></tr></thead><tbody><tr><td>false</td><td>false</td><td>true</td><td>true</td><td>true</td><td>true</td></tr><tr><td>false</td><td>true</td><td>true</td><td>false</td><td>true</td><td>true</td></tr><tr><td>true</td><td>false</td><td>false</td><td>true</td><td>true</td><td>true</td></tr><tr><td>true</td><td>true</td><td>false</td><td>false</td><td>false</td><td>false</td></tr></tbody></table></div>
+<p>在表中，第一列和第二列分别表示 <code>x</code>&nbsp;和&nbsp;<code>y</code>。每一行则表示一组可能的 <code>x</code>&nbsp;和&nbsp;<code>y</code> 组合，4行就足以表示所有的可能。</p>
+<p>剩下的列表示基于初始 <code>x</code>&nbsp;和&nbsp;<code>y</code> 构造的表达式。第三列和第四列分别计算 <code>!x</code>&nbsp;和&nbsp;<code>!y</code>。第五列计算<code>!(x &amp;&amp; y)</code>。第六列则计算<code>!x || !y</code>。</p>
+<p>可以注意到，第五列和第六列的值总是相同的。也就是说，对于任意 <code>x</code>&nbsp;和&nbsp;<code>y</code>，<code>!(x &amp;&amp; y)</code>&nbsp;等于&nbsp;<code>!x || !y</code>，这也正是我们要证明的。</p>
+<p>同样的，我们还能够证明德摩根定律的第二部分也是正确的：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>x</th><th>y</th><th>!x</th><th>!y</th><th>!(x || y)</th><th>!x &amp;&amp; !y</th></tr></thead><tbody><tr><td>false</td><td>false</td><td>true</td><td>true</td><td>true</td><td>true</td></tr><tr><td>false</td><td>true</td><td>true</td><td>false</td><td>false</td><td>false</td></tr><tr><td>true</td><td>false</td><td>false</td><td>true</td><td>false</td><td>false</td></tr><tr><td>true</td><td>true</td><td>false</td><td>false</td><td>false</td><td>false</td></tr><tr><td>同样的，对于任意 <code>x</code>&nbsp;和&nbsp;<code>y</code>，我们可以看到 `!(x</td><td></td><td>y)<code>&nbsp;等于 </code>!x &amp;&amp; !y`。</td><td></td><td></td><td></td></tr></tbody></table></div>
+</div></aside>
+<h2 id="逻辑异或运算符在哪里">逻辑异或运算符在哪里？<a class="anchor" aria-label="本节链接" href="#逻辑异或运算符在哪里">#</a></h2>
+<p>有些语言提供了逻辑异或（XOR）运算符，用来测试<strong>是否有奇数个条件为真</strong>。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>左操作数</th><th>右操作数</th><th>结果</th></tr></thead><tbody><tr><td>false</td><td>false</td><td>false</td></tr><tr><td>false</td><td>true</td><td>true</td></tr><tr><td>true</td><td>false</td><td>true</td></tr><tr><td>true</td><td>true</td><td>false</td></tr></tbody></table></div>
+<p>C++ 并没有提供逻辑异或运算符。和<strong>逻辑或</strong>或者<strong>逻辑与</strong>不同，<strong>逻辑异或</strong>并没有短路求值特性。因此，使用逻辑或或者逻辑与来构建一个逻辑异或是很困难的。但是，你可以使用不等号(<code>!=</code>)来模拟逻辑异或：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">a </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ...</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // a XOR b, 假设 a 和 b 都是布尔值</span></span></code></pre></div></figure>
+<p>也可以对多个操作数来使用：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">a </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">!=</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> d</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ...</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // a XOR b XOR c XOR d, 假设 a, b, c, 和 d 都是布尔值</span></span></code></pre></div></figure>
+<p>注意，上面的方法只有当操作数都是布尔类型时才有效 (不能是整型)。如果你想将逻辑异或应用于非布尔类型的操作数，你可以使用 <code>static_cast</code> 将它转换为布尔类型。</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">static_cast&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">a</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> !=</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> static_cast&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">b</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> !=</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> static_cast&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> !=</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> static_cast&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">bool</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">d</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">))</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> ...</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // a XOR b XOR c XOR d, for any type that can be converted to bool</span></span></code></pre></div></figure>
+<h2 id="运算符的其他表示形式">运算符的其他表示形式<a class="anchor" aria-label="本节链接" href="#运算符的其他表示形式">#</a></h2>
+<p>C++ 中的很多操作符 (例如 <code>operator ||</code>) 都有可以代替符号表示法的关键字。出于历史原因，并不是所有的键盘或者标准支持输入这些运算符的符号。因此C++提供了一组关键字用于代替符号。例如，<code>||</code> 也可以用<code>or</code>来替代。</p>
+<p>完整的列表可以参考<a href="https://en.cppreference.com/w/cpp/language/operator_alternative" class="external alias" target="_blank" rel="noopener noreferrer">这里</a>，尤其可以注意一下下面三种：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>运算符</th><th>关键字替代名</th></tr></thead><tbody><tr><td>&amp;&amp;</td><td>and</td></tr><tr><td>||</td><td>or</td></tr><tr><td>!</td><td>not</td></tr></tbody></table></div>
+<p>因此下面两行代码是等价的：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> !</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">a </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&amp;&amp;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">b </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">||</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> not</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">and</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">b </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">or</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span></code></pre></div></figure>
+<p>尽管这些关键字看起来可读性更好，但是大多数有经验的 C++ 程序员还是喜欢使用符号而不是关键字。因此，我们还是建议你学习这些运算符的符号表示法，这也是代码中最常见的形式。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c06/6-7-relational-operators-and-floating-point-comparisons.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">6.7 · 关系运算符和浮点数比较</span>
+      <span class="pn-chapter">第 06 章 · 运算符</span>
+    </a><a class="pn-card next" href="../c06/6-x-chapter-6-summary-and-quiz.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">6.x · 小结与测试 - 运算符</span>
+      <span class="pn-chapter">第 06 章 · 运算符</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/06-%E8%BF%90%E7%AE%97%E7%AC%A6/6-8-Logical-operators" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c06/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E9%9D%9Enot">逻辑非（NOT）</a></li><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E6%88%96or">逻辑或（OR）</a></li><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E4%B8%8Eand">逻辑与（AND)</a></li><li class="lv2"><a href="#%E7%9F%AD%E8%B7%AF%E6%B1%82%E5%80%BC">短路求值</a></li><li class="lv2"><a href="#%E6%B7%B7%E5%90%88-and--%E5%92%8C-or">混合 AND 和 OR</a></li><li class="lv2"><a href="#%E5%BE%B7%E6%91%A9%E6%A0%B9%E5%AE%9A%E5%BE%8Bde-morgans-law">德摩根定律（De Morgan‘s law）</a></li><li class="lv2"><a href="#%E9%80%BB%E8%BE%91%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E7%AC%A6%E5%9C%A8%E5%93%AA%E9%87%8C">逻辑异或运算符在哪里？</a></li><li class="lv2"><a href="#%E8%BF%90%E7%AE%97%E7%AC%A6%E7%9A%84%E5%85%B6%E4%BB%96%E8%A1%A8%E7%A4%BA%E5%BD%A2%E5%BC%8F">运算符的其他表示形式</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

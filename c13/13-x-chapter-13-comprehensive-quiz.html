@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>13.x · 小结与测试 - 枚举和结构体 · tklcpp</title>
+<meta name="description" content="13.1 - 程序定义类型简介 用户定义类型是一种自定义类型，我们可以在程序中创建它用于某些目的。基于枚举类型和class类型（包括结构体、类和联合）我们可以创建需要的自定义类型。自定义类型在使用前必须先定义，定义它的过…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c13/13-15-alias-templates.html">
+<link rel="next" href="../c13/13-y-using-a-language-reference.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c13/13-x-chapter-13-comprehensive-quiz.html" data-type="lesson" data-chapter="13" data-chapter-title="第 13 章 · 枚举和结构体" data-title="小结与测试 - 枚举和结构体" data-num="13.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c13/index.html">第 13 章 · 枚举和结构体</a><span class="sep">/</span><span class="current">13.x · 小结与测试 - 枚举和结构体</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c13/index.html">第 13 章 · 枚举和结构体</a>
+        <h1><span class="h1-num">13.x</span>小结与测试 - 枚举和结构体</h1>
+        <div class="article-meta"><span>2 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><p><a href="../c13/13-1-introduction-to-program-defined-user-defined-types.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-1-Introduction-to-program-defined-user-defined-types">13.1 - 程序定义类型简介</a></p>
+<ul>
+<li>用户定义类型是一种自定义类型，我们可以在程序中创建它用于某些目的。基于枚举类型和class类型（包括结构体、类和联合）我们可以创建需要的自定义类型。自定义类型在使用前必须先定义，定义它的过程则称为<a href="../glossary/type-definition.html" class="internal alias glossary-link" data-slug="词汇表/type-definition" title="词汇表：类型定义">类型定义</a>。类型定义不需要遵循<a href="../glossary/one-definition-rule.html" class="internal alias glossary-link" data-slug="词汇表/one-definition-rule" title="词汇表：单一定义规则(one-definition-rule)">单一定义规则(one-definition-rule)</a>。</li>
+</ul>
+<p><a href="../c13/13-2-unscoped-enumerations.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-2-unscoped-enumerations">13.2 - 无作用域枚举类型</a>
+<a href="../c13/13-3-unscoped-enumeration-input-and-output.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-3-unscoped-enumeration-input-and-output">13.3 - 限定作用域枚举类型的输入输出</a></p>
+<ul>
+<li>枚举（称为枚举类型或enum）是一种复合数据类型，它的每个可能值都被定义为<a href="../glossary/symbolic-constants-p0612.html" class="internal alias glossary-link" data-slug="词汇表/symbolic-constants" title="词汇表：符号常量">符号常量</a>（称为枚举值）。枚举值是一种确切的数据类型，也就是说编译器可以区分它和其他类型（不像<a href="../c10/10-7-typedefs-and-type-aliases.html" class="internal alias" data-slug="10-类型转换、类型别名和类型推导/10-7-Typedefs-and-type-aliases">类型别名</a>那样）。</li>
+<li><a href="../glossary/unscoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/unscoped-enumerations" title="词汇表：无作用域枚举类型">无作用域枚举类型</a>会将自己的枚举值名称导入到与自己相同的作用域中(而不是像命名空间那样创建新的作用域区域)。无作用域枚举会被隐式转换为整型数。</li>
+</ul>
+<p><a href="../c13/13-6-scoped-enumerations-enum-classes.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-6-scoped-enumerations-enum-classes">13.6 - 限定作用域枚举（枚举类）</a></p>
+<ul>
+<li><a href="../glossary/scoped-enumerations.html" class="internal alias glossary-link" data-slug="词汇表/scoped-enumerations" title="词汇表：有作用域枚举">限定作用域枚举</a>&nbsp;与无作用域枚举的工作原理类似，但它们是强类型的(它们不会隐式转换为整数)和强作用域的(枚举数只放在枚举的作用域区域中)。</li>
+</ul>
+<p><a href="../c13/13-7-introduction-to-structs-members-and-member-selection.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-7-Introduction-to-structs-members-and-member-selection">13.7 - 结构体、成员和成员选择</a></p>
+<ul>
+<li>结构体是一种自定义类型，使用它可以将多个变量打包为一个单独的类型。变量是结构体（或类）的一部分，称为数据成员或<a href="../glossary/member-variable.html" class="internal alias glossary-link" data-slug="词汇表/member-variable" title="词汇表：成员变量">成员变量</a>。访问成员函数需要在结构体变量名（普通结构体或结构体引用）和成员名之间使用<a href="../glossary/member-selection-operator.html" class="internal alias glossary-link" data-slug="词汇表/member-selection-operator" title="词汇表：成员选择运算符">成员选择运算符</a>（<code>operator .</code>），或者使用指针运算符(<code>operator-&gt;</code>) （对于结构体指针而言）。</li>
+</ul>
+<p><a href="../c13/13-8-struct-aggregate-initialization.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-8-struct-aggregate-initialization">13.8 - 结构体的聚合初始化</a></p>
+<ul>
+<li>==在一般编程领域，<a href="../glossary/aggregate-data-type.html" class="internal alias glossary-link" data-slug="词汇表/aggregate-data-type" title="词汇表：聚合数据类型">聚合数据类型</a>（通常称为聚合）是指任何可以包含多个数据成员的类型。在 C++ 中，只包含数据成员的数组和结构体是聚合。==</li>
+<li>聚合使用一种被称为<a href="../glossary/aggregate-initialization.html" class="internal alias glossary-link" data-slug="词汇表/aggregate-initialization" title="词汇表：聚合初始化">聚合初始化</a>的初始化形式，使用聚合初始化可以直接初始化聚合的成员。为此，我们需要提供一个初始化列表作为初始化值，而所谓初始化列表就是一个以逗号分割值的列表。聚合初始化使用<a href="../glossary/memberwise-initialization.html" class="internal alias glossary-link" data-slug="词汇表/memberwise-initialization" title="词汇表：成员依次初始化">成员依次初始化</a>方式，即结构体的每个成员依照其声明顺序进行初始化。</li>
+<li>==在 C++20 中，使用<a href="../glossary/designated-initializers.html" class="internal alias glossary-link" data-slug="词汇表/designated-initializers" title="词汇表：指定初始化">指定初始化</a>可以显式地指定将初始化值映射到哪个成员。结构体成员必须按照声明的顺序初始化，否则会报错。==</li>
+</ul>
+<p><a href="../c13/13-9-default-member-initialization.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-9-default-member-initialization">13.9 - 默认成员初始化</a></p>
+<ul>
+<li>定义结构(或类)类型时，可以为每个成员提供默认初始化值，作为类型定义的一部分。这个过程称为<a href="../glossary/non-static-member-initialization.html" class="internal alias glossary-link" data-slug="词汇表/non-static-member-initialization" title="词汇表：非静态成员初始化">非静态成员初始化</a>，初始化值称为<a href="../glossary/default-member-initializer.html" class="internal alias glossary-link" data-slug="词汇表/default-member-initializer" title="词汇表：默认成员初始化值">默认成员初始化值</a>。</li>
+<li></li>
+</ul>
+<p><a href="../c13/13-10-struct-passing-and-miscellany.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-10-struct-passing-and-miscellany">13.10 - 结构体传递及其他</a></p>
+<ul>
+<li>出于性能原因，编译器有时会在结构中添加间隙(这称为填充)，因此结构体的大小可能大于其成员的大小之和。</li>
+</ul>
+<p><a href="../c13/13-12-member-selection-with-pointers-and-references.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-12-member-selection-with-pointers-and-references">13.12 - 基于指针和引用的成员选择</a></p>
+<p><a href="../c13/13-14-class-template-argument-deduction-and-deduction-guides.html" class="internal alias" data-slug="13-复合类型-枚举和结构体/13-14-class-template-argument-deduction-and-deduction--guides">13.14 - 类模板参数推断CTAD</a></p>
+<ul>
+<li><a href="../glossary/class-template.html" class="internal alias glossary-link" data-slug="词汇表/class-template" title="词汇表：类模板">类模板</a>是实例化类类型(结构、类或联合)的模板定义。<a href="../glossary/class-template-argument-deduction.html" class="internal alias glossary-link" data-slug="词汇表/class-template-argument-deduction" title="词汇表：类模板实参推断">类模板实参推断(CTAD)</a>是 C++17的一个特性，它允许编译器从初始化式中推断模板类型实参。</li>
+</ul></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c13/13-15-alias-templates.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">13.15 · Alias templates</span>
+      <span class="pn-chapter">第 13 章 · 枚举和结构体</span>
+    </a><a class="pn-card next" href="../c13/13-y-using-a-language-reference.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">13.y - 学会使用C++参考手册</span>
+      <span class="pn-chapter">第 13 章 · 枚举和结构体</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/13-%E5%A4%8D%E5%90%88%E7%B1%BB%E5%9E%8B-%E6%9E%9A%E4%B8%BE%E5%92%8C%E7%BB%93%E6%9E%84%E4%BD%93/13-x-Chapter-13-comprehensive-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c13/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

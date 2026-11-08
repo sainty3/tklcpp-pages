@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.5 · Constant expressions · tklcpp</title>
+<meta name="description" content="In lesson 1.10 — Introduction to expressions, we introduced expressions. By default, expressions evaluate at r…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c05/5-4-the-as-if-rule-and-compile-time-optimization.html">
+<link rel="next" href="../c05/5-6-constexpr-variables.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c05/5-5-constant-expressions.html" data-type="lesson" data-chapter="05" data-chapter-title="第 05 章 · 常量与字符串" data-title="Constant expressions" data-num="5.5">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c05/index.html">第 05 章 · 常量与字符串</a><span class="sep">/</span><span class="current">5.5 · Constant expressions</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c05/index.html">第 05 章 · 常量与字符串</a>
+        <h1><span class="h1-num">5.5</span>Constant expressions</h1>
+        <div class="article-meta"><span>13 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/05-%E5%B8%B8%E9%87%8F%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2/5-5-constant-expressions" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+<p>In lesson <a href="https://www.learncpp.com/cpp-tutorial/introduction-to-expressions/" class="external alias" target="_blank" rel="noopener noreferrer">1.10 — Introduction to expressions</a>, we introduced expressions. By default, expressions evaluate at runtime. And in some cases, they must do so:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>Because input and output can’t be performed at compile time, the expressions above are required to evaluate at runtime.</p>
+<p>In prior lesson <a href="https://www.learncpp.com/cpp-tutorial/the-as-if-rule-and-compile-time-optimization/" class="external alias" target="_blank" rel="noopener noreferrer">5.4 — The as-if rule and compile-time optimization</a>, we discussed the as-if rule, and how the compiler can optimize programs by shifting work from runtime to compile-time. Under the as-if rule, the compiler may choose whether to evaluate certain expressions at runtime or compile-time:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3.4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> z </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // x + y may evaluate at runtime or compile-time</span></span></code></pre></div></figure>
+<p>The expression <code>x + y</code> would normally evaluate at runtime, but since the value of <code>x</code> and <code>y</code> are known at compile-time, the compiler may opt to perform compile-time evaluation instead and initialize <code>z</code> with the compile-time calculated value <code>4.6</code>.</p>
+<p>In a few other cases, the C++ language requires an expression that can be evaluated at compile-time. For example, constexpr variables require an initializer that can be evaluated at compile-time:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> expr </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // Because variable x is constexpr, expr must be evaluatable at compile-time</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>In cases where a constant expression is required but one is not provided, the compiler will error and halt compilation.</p>
+<p>We’ll discuss constexpr variables in the next lesson (<a href="https://www.learncpp.com/cpp-tutorial/constexpr-variables/" class="external alias" target="_blank" rel="noopener noreferrer">5.6 — Constexpr variables</a>), when we cover constexpr variables.</p>
+<p>For advanced readers</p>
+<p>A few common cases where a compile-time evaluatable expression is required:</p>
+<ul>
+<li>The initializer of a constexpr variable (<a href="https://www.learncpp.com/cpp-tutorial/constexpr-variables/" class="external alias" target="_blank" rel="noopener noreferrer">5.6 — Constexpr variables</a>).</li>
+<li>A non-type template argument (<a href="https://www.learncpp.com/cpp-tutorial/non-type-template-parameters/" class="external alias" target="_blank" rel="noopener noreferrer">11.9 — Non-type template parameters</a>).</li>
+<li>The defined length of a <code>std::array</code> (<a href="https://www.learncpp.com/cpp-tutorial/introduction-to-stdarray/" class="external alias" target="_blank" rel="noopener noreferrer">17.1 — Introduction to std::array</a>) or a C-style array (<a href="https://www.learncpp.com/cpp-tutorial/introduction-to-c-style-arrays/" class="external alias" target="_blank" rel="noopener noreferrer">17.7 — Introduction to C-style arrays</a>).</li>
+</ul>
+<p>In this lesson, we’ll explore more of C++’s capabilities around compile-time evaluation, and look at how C++ differentiates this last case from the prior two cases.</p>
+<p>The benefits of compile-time programming</p>
+<p>While the as-if rule is great for improving performance, it leaves us reliant on the sophistication of the compiler to actually determine what can evaluate at compile-time. This means if there is a section of code we really want to execute at compile-time, it may or may not. That same code compiled on a different platform, or with a different compiler, or using different compilation options, or slightly modified, may produce a different result. Because the as-if rule is applied invisibly to us, we get no feedback from the compiler on what portions of code it decided to evaluate at compile-time, or why. Code we desire to be evaluated at compile-time may not even be eligible (due to a typo or misunderstanding), and we may never know.</p>
+<p>To improve upon this situation, the C++ language provides ways for us to be explicit about what parts of code we want to execute at compile-time. The use of language features that result in compile-time evaluation is called <strong>compile-time programming</strong>.</p>
+<p>These features can help improve software in a number of areas:</p>
+<ul>
+<li>Performance: Compile-time evaluation makes our programs smaller and faster. The more code we can ensure is capable of evaluating at compile-time, the more performance benefit we’ll see.</li>
+<li>Versatility: We can always use such code in places that require a compile-time value. Code that relies on the as-if rule to evaluate at compile-time can’t be used in such places (even if the compiler opts to evaluate that code at compile-time) — this decision was made so that code that compiles today won’t stop compiling tomorrow, when the compiler decides to optimize differently.</li>
+<li>Predictability: We can have the compiler halt compilation if it determines that code cannot be executed at compile-time (rather than silently opting to have that code evaluate at runtime instead). This allows us to ensure a section of code we really want to execute at compile-time will.</li>
+<li>Quality: We can have the compiler reliably detect certain kinds of programming errors at compile-time, and halt the build if it encounters them. This is much more effective than trying to detect and gracefully handle those same errors at runtime.</li>
+<li>Quality: Perhaps most importantly, undefined behavior is not allowed at compile-time. If we do something that causes undefined behavior at compile-time, the compiler should halt the build and ask us to fix it. Note that this is a hard problem for compilers, and they may not catch all cases.</li>
+</ul>
+<p>To summarize, compile-time evaluation allows us to write programs that are both more performant and of higher quality (more secure and less buggy)! So while compile-time evaluation does add some additional complexity to the language, the benefits can be substantial.</p>
+<p>The following C++ features are the most foundational to compile-time programming:</p>
+<ul>
+<li>Constexpr variables (discussed in upcoming lesson <a href="https://www.learncpp.com/cpp-tutorial/constexpr-variables/" class="external alias" target="_blank" rel="noopener noreferrer">5.6 — Constexpr variables</a>).</li>
+<li>Constexpr functions (discussed in upcoming lesson <a href="https://www.learncpp.com/cpp-tutorial/constexpr-functions/" class="external alias" target="_blank" rel="noopener noreferrer">F.1 — Constexpr functions</a>).</li>
+<li>Templates (introduced in lesson <a href="https://www.learncpp.com/cpp-tutorial/function-templates/" class="external alias" target="_blank" rel="noopener noreferrer">11.6 — Function templates</a>).</li>
+<li>static_assert (discussed in lesson <a href="https://www.learncpp.com/cpp-tutorial/assert-and-static_assert/" class="external alias" target="_blank" rel="noopener noreferrer">9.6 — Assert and static_assert</a>).</li>
+</ul>
+<p>All of these features have one thing in common: they make use of constant expressions.</p>
+<p>Constant expressions</p>
+<p>Perhaps surprisingly, the C++ standard barely mentions “compile-time” at all. Instead, the standard defines a “constant expression”, which is an expression that must be evaluatable at compile-time, along with rules that determine how the compiler should handle these expressions. Constant expressions form the backbone of compile-time evaluation in C++.</p>
+<p>In lesson <a href="https://www.learncpp.com/cpp-tutorial/introduction-to-expressions/" class="external alias" target="_blank" rel="noopener noreferrer">1.10 — Introduction to expressions</a>, we defined an expression as “a non-empty sequence of literals, variables, operators, and function calls”. A <strong>constant expression</strong> is a non-empty sequence of literals, constant variables, operators, and function calls, all of which must be evaluatable at compile-time. The key difference is that in a constant expression, each part of the expression must be evaluatable at compile-time.</p>
+<p>Key insight</p>
+<p>In a constant expression, each part of the expression must be evaluatable at compile-time.</p>
+<p>An expression that is not a constant expression is often called a non-constant expression, and may informally be called a <strong>runtime expression</strong> (as such expressions typically evaluate at runtime).</p>
+<p>Optional reading</p>
+<p>The C++20 language standard (in section [expr.const]) states “Constant expressions can be evaluated during translation”. As we covered in lesson <a href="https://www.learncpp.com/cpp-tutorial/introduction-to-the-preprocessor/" class="external alias" target="_blank" rel="noopener noreferrer">2.10 — Introduction to the preprocessor</a>, translation is the whole process of building a program (that includes preprocessing, compiling, and linking). Therefore, in a compiled program, constant expressions can be evaluated as part of the compilation process. In an interpreted program, translation happens at runtime.</p>
+<p>Since C++ programs are typically compiled, we’ll proceed under the assumption that constant expressions can be evaluated at compile-time.</p>
+<p>What can be in a constant expression?</p>
+<p>Author’s note</p>
+<p>In technical terms, constant expressions are quite complex. In this section, we’ll go into a little bit deeper into what they can and can’t contain. You do not need to remember most of this. If a constant expression is required somewhere and you do not provide one, the compiler will happily point out your mistake, and you can fix it at that point.</p>
+<p>Most commonly, constant expressions contain the following:</p>
+<ul>
+<li>Literals (e.g. ‘5’, ‘1.2’)</li>
+<li>Most operators with constant expression operands (e.g. <code>3 + 4</code>, <code>2 * sizeof(int)</code>).</li>
+<li>Const integral variables with a constant expression initializer (e.g. <code>const int x { 5 };</code>). This is a historical exception — in modern C++, constexpr variables are preferred.</li>
+<li>Constexpr variables (discussed in upcoming lesson <a href="https://www.learncpp.com/cpp-tutorial/constexpr-variables/" class="external alias" target="_blank" rel="noopener noreferrer">5.6 — Constexpr variables</a>).</li>
+<li>Constexpr function calls with constant expression arguments (see <a href="https://www.learncpp.com/cpp-tutorial/constexpr-functions/" class="external alias" target="_blank" rel="noopener noreferrer">F.1 — Constexpr functions</a>).</li>
+</ul>
+<p>For advanced readers</p>
+<p>Constant expressions can also contain:</p>
+<ul>
+<li>Non-type template parameters (see <a href="https://www.learncpp.com/cpp-tutorial/non-type-template-parameters/" class="external alias" target="_blank" rel="noopener noreferrer">11.9 — Non-type template parameters</a>).</li>
+<li>Enumerators (see <a href="https://www.learncpp.com/cpp-tutorial/unscoped-enumerations/" class="external alias" target="_blank" rel="noopener noreferrer">13.2 — Unscoped enumerations</a>).</li>
+<li>Type traits (see the <a href="https://en.cppreference.com/w/cpp/header/type_traits" class="external alias" target="_blank" rel="noopener noreferrer">cppreference page for type traits</a>).</li>
+<li>Constexpr lambda expressions (see <a href="https://www.learncpp.com/cpp-tutorial/introduction-to-lambdas-anonymous-functions/" class="external alias" target="_blank" rel="noopener noreferrer">20.6 — Introduction to lambdas (anonymous functions)</a>).</li>
+</ul>
+<p>Tip</p>
+<p>Notably, the following cannot be used in a constant expression:</p>
+<ul>
+<li>Non-const variables.</li>
+<li>Const non-integral variables, even when they have a constant expression initializer (e.g. <code>const double d { 1.2 };</code>). To use such variables in a constant expression, define them as constexpr variables instead (see lesson <a href="https://www.learncpp.com/cpp-tutorial/constexpr-variables/" class="external alias" target="_blank" rel="noopener noreferrer">5.6 — Constexpr variables</a>).</li>
+<li>The return values of non-constexpr functions (even when the return expression is a constant expression).</li>
+<li>Function parameters (even when the function is constexpr).</li>
+<li>Operators with operands that are not constant expressions (e.g. <code>x + y</code> when <code>x</code> or <code>y</code> is not a constant expression, or <code>std::cout &lt;&lt; "hello\n"</code> as <code>std::cout</code> is not a constant expression).</li>
+<li>Operators <code>new</code>, <code>delete</code>, <code>throw</code>, <code>typeid</code>, and <code>operator,</code> (comma).</li>
+</ul>
+<p>An expression containing any of the above is a runtime expression.</p>
+<p>Related content</p>
+<p>For the precise definition of a constant expression, see the <a href="https://en.cppreference.com/w/cpp/language/constant_expression" class="external alias" target="_blank" rel="noopener noreferrer">cppreference page for constant expression</a>. Note that a constant expression is defined by what kind of expression it is not. That means we’re left to infer what it is. Good luck with that!</p>
+<p>Nomenclature</p>
+<p>When discussing constant expressions, it is common to use one of two phrasings:</p>
+<ul>
+<li>“X is usable in a constant expression” is often used when emphasizing what X is. e.g. “<code>5</code> is usable in a constant expression” emphasizes that the literal <code>5</code> can be used in a constant expression.</li>
+<li>“X is a constant expression” is sometimes used when emphasizing that the full expression (consisting of X) is a constant expression. e.g. “<code>5</code> is a constant expression” emphasizes that the expression <code>5</code> is a constant expression.</li>
+</ul>
+<p>The latter can sound awkward when phrased like “literals are constant expressions” (because they are actually values). But it simply means that an expression consisting of a literal is a constant expression.</p>
+<p>As an aside…</p>
+<p>When constant expressions were defined, <code>const</code> integral types were grandfathered in because they were already being treated as constant expressions within the language.</p>
+<p>The committee discussed whether <code>const</code> non-integral types with a constant expression initializer should also be treated as constant expressions (for consistency with the <code>const</code> integral types case). Ultimately, they decided not to, in order to promote more consistent usage of <code>constexpr</code>.</p>
+<p>Examples of constant and non-constant expressions</p>
+<p>In the following program, we look at some expression statements and indicate whether each expression is a constant expression or runtime expression:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> getNumber</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a number: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // can only execute at runtime</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // this return expression is a runtime expression</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// The return value of a non-constexpr function is a runtime expression</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// even when the return expression is a constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> five</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // this return expression is a constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // Literals can be used in constant expressions</span></span>
+<span data-line=""><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">    5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                           // constant expression            </span></span>
+<span data-line=""><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">    1.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                         // constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">    "Hello world!"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">              // constant expression</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // Most operators that have constant expression operands can be used in constant expressions</span></span>
+<span data-line=""><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">    5</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                       // constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">    1.2</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> *</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3.4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                   // constant expression</span></span>
+<span data-line=""><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">    8</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> -</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5.6</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                     // constant expression (even though operands have different types)</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">    sizeof</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">             // constant expression (sizeof can be determined at compile-time)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // The return values of non-constexpr functions can only be used in runtime expressions</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">    getNumber</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">();</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                 // runtime expression</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">    five</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">();</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                      // runtime expression (even though the return expression is a constant expression)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // Operators without constant expression operands can only be used in runtime expressions</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">              // runtime expression (std::cout isn't a constant expression operand)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>In the following snippet, we define a bunch of variables, and indicate whether they can be used in constant expressions:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // Const integral variables with a constant expression initializer can be used in constant expressions:</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">           // a is usable in constant expressions</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> b </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">           // b is usable in constant expressions (a is a constant expression per the prior statement)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> long</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> c </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> a </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // c is usable in constant expressions (operator+ has constant expression operands)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // Other variables cannot be used in constant expressions (even when they have a constant expression initializer):</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> d </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                 // d is not usable in constant expressions (d is non-const)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> e </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> d </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">};</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">           // e is not usable in constant expressions (initializer is not a constant expression)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> f </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // f is not usable in constant expressions (not a const integral variable)</span></span></code></pre></div></figure>
+<p>When constant expressions are evaluated at compile-time</p>
+<p>Since constant expressions are always capable of being evaluated at compile-time, you may have assumed that constant expressions will always be evaluated at compile-time. Counterintuitively, this is not the case.</p>
+<p>The compiler is only <em>required</em> to evaluate constant expressions at compile-time in contexts that <em>require</em> a constant expression.</p>
+<p>Nomenclature</p>
+<p>The technical name for an expression that must be evaluated at compile-time is a <strong>manifestly constant-evaluated expression</strong>. You will likely only encounter this term in technical documentation.</p>
+<p>In contexts that do not require a constant expression, the compiler may choose whether to evaluate a constant expression at compile-time or at runtime.</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // constant expression 3 + 4 must be evaluated at compile-time</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> y </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> +</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 4</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">       // constant expression 3 + 4 may be evaluated at compile-time or runtime</span></span></code></pre></div></figure>
+<p>Variable <code>x</code> has type <code>const int</code> and a constant expression initializer, <code>x</code> is usable in a constant expression. Its initializer must be evaluated at compile-time (otherwise the value of <code>x</code> wouldn’t be known at compile-time, and <code>x</code> wouldn’t be usable in a constant expression). On the other hand, variable <code>y</code> is non-const, so <code>y</code> is not usable in a constant expression. Even though its initializer is a constant expression, the compiler can decide to evaluate the initializer at compile-time or runtime.</p>
+<p>Even when not required to do so, modern compilers will <em>usually</em> evaluate a constant expression at compile-time when optimizations are enabled.</p>
+<p>Key insight</p>
+<p>The compiler is only <em>required</em> to evaluate constant expressions at compile-time in contexts that <em>require</em> a constant expression. It may or may not do so in other cases.</p>
+<p>Tip</p>
+<p>The likelihood that an expression is fully evaluated at compile-time can be categorized as follows:</p>
+<ul>
+<li>Never: A non-constant expression where the compiler is not able to determine all values at compile-time.</li>
+<li>Possibly: A non-constant expression where the compiler is able to determine all values at compile-time (optimized under the as-if rule).</li>
+<li>Likely: A constant expression used in a context that does not require a constant expression.</li>
+<li>Always: A constant expression used in a context that requires a constant expression.</li>
+</ul>
+<p>For advanced readers</p>
+<p>So why doesn’t C++ require all constant expressions to be evaluated at compile-time? There are at least two good reasons:</p>
+<ol>
+<li>Compile-time evaluation makes debugging harder. If our code has a buggy calculation that is evaluated at compile-time, we have limited tools to diagnose the issue. Allowing non-required constant expressions to be evaluated at runtime (typically when optimizations are turned off) enables runtime debugging of our code. Being able to step through and inspect the state of our programs while they are running can make finding bugs easier.</li>
+<li>To provide the compiler with the flexibility to optimize as it sees fit (or as influenced by compiler options). For example, a compiler might want to offer an option that defers all non-required constant expression evaluation to runtime, in order to improve compile times for developers.</li>
+</ol>
+<p>Why compile-time expressions must be constant Optional</p>
+<p>You may be wondering why compile-time expressions can only contain constant objects (and operators and functions that can evaluate at compile-time to constants).</p>
+<p>Consider the following program:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 5</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // x is known to the compiler at this point</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // read in value of x from user</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // x is no longer known to the compiler</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>To start, <code>x</code> is initialized with value <code>5</code>. The value of <code>x</code> is known to the compiler at this point. But then <code>x</code> is assigned a value from the user. The compiler can’t know what value the user will provide at compile-time, so beyond this point, the value of <code>x</code> is not known to the compiler. Thus, the expression <code>x</code> is not always evaluatable at compile-time, violating the requirement that such an expression must always be capable of being evaluated at compile-time.</p>
+<p>Because constants cannot have their values changed, a constant variable whose initializer is evaluatable at compile-time will always have a value that is known at compile-time. This keeps things simple.</p>
+<p>While the language designers could have defined a compile-time expression as one whose values are all currently known at compile-time (rather than an expression that must always be capable of being evaluated at compile-time), this would have added significant complexity to the compiler (as the compiler would now be responsible for determining when every variable could be changed to a value not known at compile-time). Adding a single line of code (such as <code>std::cin &gt;&gt; x</code>) could break the program elsewhere (if <code>x</code> was being used in any context that required a value known at compile-time).</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c05/5-4-the-as-if-rule-and-compile-time-optimization.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">5.4 · The as-if rule and compile-time optimization</span>
+      <span class="pn-chapter">第 05 章 · 常量与字符串</span>
+    </a><a class="pn-card next" href="../c05/5-6-constexpr-variables.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">5.6 · Constexpr variables</span>
+      <span class="pn-chapter">第 05 章 · 常量与字符串</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/05-%E5%B8%B8%E9%87%8F%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2/5-5-constant-expressions" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c05/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

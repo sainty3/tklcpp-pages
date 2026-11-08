@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>23.x · 小结与测试 - 对象关系 · tklcpp</title>
+<meta name="description" content="复习 23.2 - 组合关系 使用简单对象构建复杂对象的过程，称为对象组合。对象组合有两种：组合和聚合。 当一个类的类成员为该类的一部分（part-of）时，就产生了组合关系。在组合关系中，类负责管理成员是否存在。一个合…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c23/23-7-std-initializer-list.html">
+<link rel="next" href="../c24/24-1-introduction-to-inheritance.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c23/23-x-chapter-23-comprehensive-quiz.html" data-type="lesson" data-chapter="23" data-chapter-title="第 23 章 · 对象关系" data-title="小结与测试 - 对象关系" data-num="23.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c23/index.html">第 23 章 · 对象关系</a><span class="sep">/</span><span class="current">23.x · 小结与测试 - 对象关系</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c23/index.html">第 23 章 · 对象关系</a>
+        <h1><span class="h1-num">23.x</span>小结与测试 - 对象关系</h1>
+        <div class="article-meta"><span>2 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><h2 id="复习">复习<a class="anchor" aria-label="本节链接" href="#复习">#</a></h2>
+<p><a href="../c23/23-2-composition.html" class="internal alias" data-slug="23-对象关系简介/23-2-composition">23.2 - 组合关系</a></p>
+<ul>
+<li>使用简单对象构建复杂对象的过程，称为<strong>对象组合</strong>。对象组合有两种：<a href="../glossary/composition.html" class="internal alias glossary-link" data-slug="词汇表/Composition" title="词汇表：Composition">组合</a>和<a href="../glossary/aggregation.html" class="internal alias glossary-link" data-slug="词汇表/aggregation" title="词汇表：聚合">聚合</a>。</li>
+<li>当一个类的类成员为该类的<strong>一部分</strong>（part-of）时，就产生了组合关系。在组合关系中，类负责管理成员是否存在。一个合格的组合关系应该满足如下条件：
+<ul>
+<li>部分(成员) 是对象（类）的一部分；</li>
+<li>部分(成员) 同时只能属于一个对象（类）;</li>
+<li>部分(成员) 的存在与否受到对象（类）的管理；</li>
+<li>部分(成员) 并不知道对象（类）是否存在。</li>
+</ul>
+</li>
+<li>通常情况下，组合关系可以使用一般的成员变量来实现，或者也可以使用指针，但其表示的内存的申请和释放必须完全由该类来管理。如果你能够将一个类实现为组合关系，那你就应该尽量这么做。</li>
+</ul>
+<p><a href="../c23/23-3-aggregation.html" class="internal alias" data-slug="23-对象关系简介/23-3-aggregation">23.3 - 聚合关系</a></p>
+<ul>
+<li>当某个类<strong>具有（has）</strong> 某个成员是，<a href="../glossary/aggregation.html" class="internal alias glossary-link" data-slug="词汇表/aggregation" title="词汇表：聚合">聚合</a>关系就出现了。在聚合关系中，类并不负责管理该成员的存在性。一个合格的聚合关系应该满足如下条件：
+<ul>
+<li>部分(成员) 是对象（类）的一部分；</li>
+<li>部分(成员) 不仅仅属于一个对象（类）;</li>
+<li>部分(成员) 的存在与否不会受到对象（类）的管理；</li>
+<li>部分(成员) 并不知道对象（类）是否存在。</li>
+</ul>
+</li>
+<li>聚合关系通常可以通过指针和引用来实现。</li>
+</ul>
+<p><a href="../c23/23-4-association.html" class="internal alias" data-slug="23-对象关系简介/23-4-association">23.4 - 关联关系</a></p>
+<ul>
+<li><a href="../glossary/associations.html" class="internal alias glossary-link" data-slug="词汇表/Associations" title="词汇表：关联">关联</a>是一种相对更加松散的关系。类使用了一个与它并无直接关系的对象。只有满足如下条件，才能将两个对象称为关联关系：
+<ul>
+<li>关联对象（成员）与该对象（类）本不该相关；</li>
+<li>关联对象（成员）可以同时属于多个对象（类）；</li>
+<li>关联对象（成员）存在与否不会受到对象（类）的管理；</li>
+<li>关联对象（成员）对对象（或类）的存在，可能知晓也可能不知晓。</li>
+</ul>
+</li>
+<li>关联关系可以通过指针或引用来实现，也可以通过更加间接的方式实现（例如通过关联对象的对应键或索引来使用它）。</li>
+</ul>
+<p><a href="../c23/23-5-dependencies.html" class="internal alias" data-slug="23-对象关系简介/23-5-dependencies">23.5 - 依赖关系</a></p>
+<ul>
+<li>当一个类使用另一个类完成某项任务时，它们之间属于<a href="../glossary/dependency.html" class="internal alias glossary-link" data-slug="词汇表/dependency" title="词汇表：依赖">依赖</a>关系。被依赖的对象通常并不是使用它的对象的一部分。被使用的对象通常是被临时创建、使用然后销毁，或者是通过成员函数传入并使用的外部资源。</li>
+</ul>
+<p><a href="../c23/23-6-container-classes.html" class="internal alias" data-slug="23-对象关系简介/23-6-container-classes">23.6 - 容器类</a></p>
+<ul>
+<li><a href="../glossary/container-class.html" class="internal alias glossary-link" data-slug="词汇表/container-class" title="词汇表：容器类">容器类(container class)</a>指的是为其他一些类提供容器来存储它们的类。&nbsp;<strong>值容器</strong>和它保存的数据副本属于组合关系。<strong>引用容器</strong>是一种聚合关系，它保存了容器外部对象的指针或引用。</li>
+</ul>
+<p><a href="../c23/23-7-std-initializer-list.html" class="internal alias" data-slug="23-对象关系简介/23-7-std-initializer_list">23.7 - std::initializer_list</a></p>
+<ul>
+<li><code>std::initializer_list</code> 可以用来实现构造函数、赋值操作符和其他接受列表初始化参数的函数。 <code>std::initailizer_list</code> 位于<code>&lt;initializer_list&gt;</code> 头文件中。</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">属性类型</th><th style="text-align:center;">组合</th><th style="text-align:center;">聚合</th><th style="text-align:center;">关联</th><th style="text-align:center;">依赖</th></tr></thead><tbody><tr><td style="text-align:center;">关系类型</td><td style="text-align:center;">整体/部分</td><td style="text-align:center;">整体/部分</td><td style="text-align:center;">本不相关</td><td style="text-align:center;">本不相关</td></tr><tr><td style="text-align:center;">成员是否可以属于多个类</td><td style="text-align:center;">No</td><td style="text-align:center;">Yes</td><td style="text-align:center;">Yes</td><td style="text-align:center;">Yes</td></tr><tr><td style="text-align:center;">成员存在与否是否受类管理</td><td style="text-align:center;">Yes</td><td style="text-align:center;">No</td><td style="text-align:center;">No</td><td style="text-align:center;">No</td></tr><tr><td style="text-align:center;">方向</td><td style="text-align:center;">单向</td><td style="text-align:center;">单向</td><td style="text-align:center;">单向或双向</td><td style="text-align:center;">单向或双向</td></tr><tr><td style="text-align:center;">关系动词</td><td style="text-align:center;">Part-of</td><td style="text-align:center;">Has-a</td><td style="text-align:center;">Uses-a</td><td style="text-align:center;">Depends-on</td></tr></tbody></table></div></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c23/23-7-std-initializer-list.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">23.7 · std::initializer_list</span>
+      <span class="pn-chapter">第 23 章 · 对象关系</span>
+    </a><a class="pn-card next" href="../c24/24-1-introduction-to-inheritance.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">24.1 · 继承简介</span>
+      <span class="pn-chapter">第 24 章 · 继承</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/23-%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E7%AE%80%E4%BB%8B/23-x-Chapter-23-comprehensive-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c23/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

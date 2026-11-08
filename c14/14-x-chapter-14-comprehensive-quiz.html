@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14.x · 小结与测试 - 面向对象基础 · tklcpp</title>
+<meta name="description" content="14.2 - 类和类成员 使用类可以创建自定义的数据类型，并且将数据和函数和该数据类型绑定并配合使用。类中的数据和函数称为成员，而选择类中的成员需要使用成员选择运算符（在使用指针访问时，使用运算符）。 14.5 - 访问…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c14/14-17-constexpr-aggregates-and-classes.html">
+<link rel="next" href="../c15/15-1-the-hidden-this-pointer.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c14/14-x-chapter-14-comprehensive-quiz.html" data-type="lesson" data-chapter="14" data-chapter-title="第 14 章 · 类简介" data-title="小结与测试 - 面向对象基础" data-num="14.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c14/index.html">第 14 章 · 类简介</a><span class="sep">/</span><span class="current">14.x · 小结与测试 - 面向对象基础</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c14/index.html">第 14 章 · 类简介</a>
+        <h1><span class="h1-num">14.x</span>小结与测试 - 面向对象基础</h1>
+        <div class="article-meta"><span>2 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><p><a href="../c14/14-2-classes-and-class-members.html" class="internal alias" data-slug="14-类简介/14-2-classes-and-class-members">14.2 - 类和类成员</a></p>
+<ul>
+<li>使用类可以创建自定义的数据类型，并且将数据和函数和该数据类型绑定并配合使用。类中的数据和函数称为成员，而选择类中的成员需要使用成员选择运算符<code>.</code>（在使用指针访问时，使用<code>-&gt;</code>运算符）。</li>
+</ul>
+<p><a href="../c14/14-5-public-vs-private-access-specifiers.html" class="internal alias" data-slug="14-类简介/14-5-public-vs-private-access-specifiers">14.5 - 访问修饰符 public 和 private</a></p>
+<ul>
+<li><a href="../glossary/access-specifiers.html" class="internal alias glossary-link" data-slug="词汇表/access-specifiers" title="词汇表：成员访问修饰符">成员访问修饰符</a>允许用户限定类成员可以被谁访问。<code>public</code> 成员可以被任何人使用。<code>private</code> 成员只能被类中的其他成员访问。稍后我们还会介绍 <code>protected</code> 成员。默认情况下，类成员都是 <code>private</code> 的，而结构体的成员都是 <code>public</code> 的。</li>
+</ul>
+<p><a href="../c14/14-6-access-functions-and-encapsulation.html" class="internal alias" data-slug="14-类简介/14-6-access-functions-and-encapsulation">14.6 - 成员访问函数与封装</a></p>
+<ul>
+<li><a href="../glossary/encapsulation.html" class="internal alias glossary-link" data-slug="词汇表/Encapsulation" title="词汇表：封装">封装</a>是将成员设为private的过程，这样它们就不能被直接访问。这有助于保护类不被滥用。</li>
+</ul>
+<p><a href="../c14/14-9-constructors.html" class="internal alias" data-slug="14-类简介/14-9-constructors">14.9 - 构造函数</a></p>
+<ul>
+<li><a href="../glossary/constructor.html" class="internal alias glossary-link" data-slug="词汇表/constructor" title="词汇表：构造函数">构造函数</a>是一种特殊类型的函数，使用它可以初始化该类的对象。不具有任何<a href="../glossary/parameters.html" class="internal alias glossary-link" data-slug="词汇表/parameters" title="词汇表：形参">形参</a>（或具有全部默认形参）的构造函数是默认构造函数。当用户没有提供任何初始化值的时候，默认函数将会被调用。你应该至少为类提供一个构造函数。</li>
+</ul>
+<p><a href="../c14/14-10-constructor-member-initializer-lists.html" class="internal alias" data-slug="14-类简介/14-10-constructor-member-initializer-lists">14.10 - 构造函数成员初始化值列表</a></p>
+<ul>
+<li><a href="../glossary/member-initializer-list.html" class="internal alias glossary-link" data-slug="词汇表/member-initializer-list" title="词汇表：成员初始化值列表">成员初始化值列表</a>允许用户在构造函数中对成员变量进行初始化（而不必为每个成员变量赋值）。</li>
+</ul>
+<p><a href="../c14/13-7-non-static-member-initialization.html" class="internal alias" data-slug="14-类简介/13-7-non-static-member-initialization">13.7 - 非静态成员初始化</a></p>
+<ul>
+<li><a href="../glossary/non-static-member-initialization.html" class="internal alias glossary-link" data-slug="词汇表/non-static-member-initialization" title="词汇表：非静态成员初始化">非静态成员初始化</a>允许你在声明成员时为变量直接指定默认值。</li>
+</ul>
+<p><a href="../c14/14-12-overlapping-and-delegating-constructors.html" class="internal alias" data-slug="14-类简介/14-12-overlapping-and-delegating-constructors">14.12 - 重叠和委托构造函数</a></p>
+<ul>
+<li><a href="../glossary/constructor.html" class="internal alias glossary-link" data-slug="词汇表/constructor" title="词汇表：构造函数">构造函数</a>也可以调用其他构造函数（称为<a href="../glossary/delegating-constructors.html" class="internal alias glossary-link" data-slug="词汇表/delegating-constructors" title="词汇表：委托构造函数">委托构造函数</a>或构造函数链）。</li>
+</ul>
+<p><a href="../c19/19-3-destructors.html" class="internal alias" data-slug="19-动态内存分配（建设中）/19-3-destructors">19.3 - 析构函数</a></p>
+<ul>
+<li><a href="../glossary/destructor.html" class="internal alias glossary-link" data-slug="词汇表/destructor" title="词汇表：析构函数">析构函数</a>是另外一类特殊的构造函数，使用它可以让类对自己进行清理。任何内存回收或退出流程都应该在析构函数中执行。</li>
+</ul>
+<p><a href="../c15/15-1-the-hidden-this-pointer.html" class="internal alias" data-slug="15-深入类/15-1-the-hidden-this-pointer">15.1 - 隐藏的this指针</a></p>
+<ul>
+<li>所有的成员函数都有一个隐藏的指针<code>this</code>，<code>this</code>指针指向这个对象本身。大多数情况下你并不需要直接访问该指针，但是偶尔也会有这样的需求。</li>
+</ul>
+<p><a href="../c15/15-2-class-code-and-header-files.html" class="internal alias" data-slug="15-深入类/15-2-class-code-and-header-files">15.2 - 类代码和头文件</a></p>
+<ul>
+<li>一个好的编程实践是这样的：将类的定义放置在其同名的头文件内，然后将类的成员定义在另一个与类同名的<code>.cpp</code>文件中。 这样有助于避免循环依赖。</li>
+</ul>
+<p><a href="../c14/14-4-const-class-objects-and-member-functions.html" class="internal alias" data-slug="14-类简介/14-4-const-class-objects-and-member-functions">14.4 - const 对象和成员函数</a></p>
+<ul>
+<li>如果成员函数不修改类的状态，则可以（也应该）被声明为const类型。const 对象也只能调用const成员函数。</li>
+</ul>
+<p><a href="../c15/15-6-static-member-variables.html" class="internal alias" data-slug="15-深入类/15-6-static-member-variables">15.6 - 静态成员变量</a> &amp; <a href="../c15/15-7-static-member-functions.html" class="internal alias" data-slug="15-深入类/15-7-static-member-functions">15.7 - 静态成员函数</a></p>
+<ul>
+<li><a href="../glossary/static-member-variables.html" class="internal alias glossary-link" data-slug="词汇表/static-member-variables" title="词汇表：静态成员变量">静态成员变量</a>在该类的所有对象间共享。它们可以通过对象来访问，它们也可以使用<a href="../glossary/scope-resolution-operator.html" class="internal alias glossary-link" data-slug="词汇表/scope-resolution-operator" title="词汇表：作用域解析运算符">作用域解析运算符</a>来访问。</li>
+<li><a href="../glossary/static-member-functions.html" class="internal alias glossary-link" data-slug="词汇表/static-member-functions" title="词汇表：静态成员函数">静态成员函数</a>没有<code>this</code>指针，它们只能够被静态成员变量访问。</li>
+</ul>
+<p><a href="../c15/15-8-friend-functions-and-classes.html" class="internal alias" data-slug="15-深入类/15-8-friend-functions-and-classes">15.8 - 友元函数和友元类</a></p>
+<ul>
+<li><a href="../glossary/friend-function.html" class="internal alias glossary-link" data-slug="词汇表/friend-function" title="词汇表：友元函数">友元函数</a>被当做类成员函数使用（可以直接访问类的私有数据）。<a href="../glossary/friend-class.html" class="internal alias glossary-link" data-slug="词汇表/friend-class" title="词汇表：友元类">友元类</a>的所有成员函数都被看做是友元函数。</li>
+</ul>
+<p><a href="../c14/14-13-anonymous-objects.html" class="internal alias" data-slug="14-类简介/14-13-anonymous-objects">14.13 - 匿名对象</a></p>
+<ul>
+<li>在表达式求值，或者传递、返回值时，可以使用匿名对象。</li>
+</ul>
+<p><a href="../c15/15-3-nested-types-in-classes.html" class="internal alias" data-slug="15-深入类/15-3-nested-types-in-classes">15.3 - 类中的嵌套类型</a></p>
+<ul>
+<li>你也可以在类中嵌套类型。通常是枚举类型，不过如有需要也可以是其他类型（或者其他类）。</li>
+</ul></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c14/14-17-constexpr-aggregates-and-classes.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">14.17 · Constexpr aggregates and classes</span>
+      <span class="pn-chapter">第 14 章 · 类简介</span>
+    </a><a class="pn-card next" href="../c15/15-1-the-hidden-this-pointer.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">15.1 · 隐藏的this指针</span>
+      <span class="pn-chapter">第 15 章 · 深入类</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/14-%E7%B1%BB%E7%AE%80%E4%BB%8B/14-x-Chapter-14-comprehensive-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c14/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

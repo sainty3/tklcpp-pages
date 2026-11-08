@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.6 · Installing an Integrated Development Environment (IDE) · tklcpp</title>
+<meta name="description" content="An Integrated Development Environment (IDE) is a piece of software designed to make it easy to develop, build,…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c00/0-5-introduction-to-the-compiler-linker-and-libraries.html">
+<link rel="next" href="../c00/0-7-compiling-your-first-program.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c00/0-6-installing-an-integrated-development-environment-ide.html" data-type="lesson" data-chapter="00" data-chapter-title="第 00 章 · 简介与入门" data-title="Installing an Integrated Development Environment (IDE)" data-num="0.6">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c00/index.html">第 00 章 · 简介与入门</a><span class="sep">/</span><span class="current">0.6 · Installing an Integrated Development Environment (IDE)</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c00/index.html">第 00 章 · 简介与入门</a>
+        <h1><span class="h1-num">0.6</span>Installing an Integrated Development Environment (IDE)</h1>
+        <div class="article-meta"><span>9 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/00-%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/0-6-installing-an-integrated-development-environment-ide" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+
+<p>An <strong>Integrated Development Environment (IDE)</strong> is a piece of software designed to make it easy to develop, build, and debug your programs.</p>
+<p>A typical modern IDE will include:</p>
+<ul>
+<li>Some way to easily load and save your code files.</li>
+<li>A code editor that has programming-friendly features, such as line numbering, syntax highlighting, integrated help, name completion, and automatic source code formatting.</li>
+<li>A basic build system that will allow you to compile and link your program into an executable, and then run it.</li>
+<li>An integrated debugger to make it easier to find and fix software defects.</li>
+<li>Some way to install plugins so you can modify the IDE or add capabilities such as version control.</li>
+</ul>
+<p>Some C++ IDEs will install and configure a C++ compiler and linker for you. Others will allow you to plug in a compiler and linker of your choice (installed separately).</p>
+<p>And while you could do all of these things separately, it’s much easier to just install an IDE and be able to do all of these things from a single interface.</p>
+<p>So let’s install one!</p>
+<p>Choosing an IDE</p>
+<p>The obvious next question is, “which one?”. Many IDEs are free (in price), and you can install multiple IDEs if you wish to try more than one. We’ll recommend a few of our favorites below.</p>
+<p>If you have some other IDE in mind, that’s fine too. The concepts we show you in these tutorials should generally work for any decent modern IDE. However, various IDEs use different names, layouts, key mappings, etc… so you may have to do a bit of searching in your IDE to find the equivalent functionality.</p>
+<p>Tip</p>
+<p>To get the most value out of this site, we recommend installing an IDE that comes with a compiler that supports at least C++17.</p>
+<p>If you’re restricted to using a compiler that only supports C++14 (due to educational or business constraints), many of the lessons and examples will still work. However, if you encounter a lesson that uses capabilities from C++17 (or newer) and you’re using an older language compiler, you’ll have to skip it or translate it to your version, which may or may not be easy.</p>
+<p>You should not be using any compiler that does not support at least C++11 (which is typically considered the modern minimum spec for C++).</p>
+<p>We recommend installing the newest version of a compiler. If you can’t use the newest version, these are the absolute minimum compiler versions with C++17 support:</p>
+<ul>
+<li>GCC/G++ 7</li>
+<li>Clang++ 8</li>
+<li>Visual Studio 2017 15.7</li>
+</ul>
+<p>Visual Studio (for Windows)</p>
+<p>If you are developing on a Windows 10 or 11 machine, then we strongly recommend downloading <a href="https://www.visualstudio.com/downloads/" class="external alias" target="_blank" rel="noopener noreferrer">Visual Studio 2022 Community</a>.</p>
+<p>Once you run the installer, you’ll eventually come to a screen that asks you what workload you’d like to install. Choose <em>Desktop development with C++</em>. If you do not do this, then C++ capabilities will not be available.</p>
+<p>The default options selected on the right side of the screen should be fine, but please ensure that the <em>Windows 11 SDK</em> (or <em>Windows 10 SDK</em> if that is the only one available) is selected. Windows 11 SDK apps can run on Windows 10.</p>
+<p><img src="../assets/img/4e63ec7a7bf6.webp" alt="Visual Studio Workload" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<p>Code::Blocks (for Linux or Windows)</p>
+<p>If you are developing on Linux (or you are developing on Windows but want to write programs that you can easily port to Linux), we recommend <a href="https://www.codeblocks.org/downloads/binaries/" class="external alias" target="_blank" rel="noopener noreferrer">Code::Blocks</a>. Code::Blocks is a free, open source, cross-platform IDE that will run on both Linux and Windows.</p>
+<p>For Windows users</p>
+<p>Make sure to get the version of Code::Blocks that has MinGW bundled (it should be the one whose filename ends in <em>mingw-setup.exe</em>). This will install MinGW, which includes a Windows port of the GCC C++ compiler:</p>
+<p><img src="../assets/img/2a488d0d77fb.png" alt="Code::Blocks MinGW Windows download" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<hr>
+<p>Code::Blocks 20.03 ships with an outdated version of MinGW that only supports C++17 (currently one version back from the latest version of C++). If you want to use the latest version of C++ (C++20), you will need to update MinGW. To do so, follow this procedure:</p>
+<ol>
+<li>Install Code::Blocks as per the above.</li>
+<li>Close Code::Blocks if it is open.</li>
+<li>Open Windows File Explorer (Keyboard shortcut <em>Win-E</em>).</li>
+<li>Navigate to your Code::Blocks install directory (probably C:\Program Files (x86)\CodeBlocks).</li>
+<li>Rename the “MinGW” directory to “MinGW.bak” (in case something goes wrong).</li>
+<li>Open a browser and navigate to <a href="https://winlibs.com/" class="external" target="_blank" rel="noopener noreferrer">https://winlibs.com/</a>.</li>
+<li>Download an updated version of MinGW-w64. You probably want the one under <em>Release Versions <span>→</span> UCRT Runtime <span>→</span> LATEST <span>→</span> Win64 <span>→</span> without LLVM/Clang/LLD/LLDB <span>→</span> Zip archive</em>.</li>
+<li>Extract the “mingw64” folder to your Code::blocks install directory.</li>
+<li>Rename “mingw64” to “MinGW”.</li>
+</ol>
+<p>Once you have confirmed the updated compiler works, you can delete the old folder (“MinGW.bak”).</p>
+<p>For Linux users</p>
+<p>Some Linux installations may be missing dependencies needed to run or compile programs with Code::Blocks.</p>
+<p>Debian-based Linux users (such as those on Mint or Ubuntu) may need to install the <em>build-essential</em> package. To do so from the terminal command line, type: <code>sudo apt-get install build-essential</code>.</p>
+<p>Arch Linux users may need to install the <em>base-devel</em> package.</p>
+<p>Users on other Linux variants will need to determine what their equivalent package manager and packages are.</p>
+<p>When you launch Code::Blocks for the first time, you may get a <em>Compilers auto-detection</em> dialog. If you do, make sure <em>GNU GCC Compiler</em> is set as the default compiler and then select the <em>OK</em> button.</p>
+<p><img src="../assets/img/621b45549122.webp" alt="Compilers Auto Detection dialog" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<p>Q: What do I do if I get a “Can’t find compiler executable in your configured search paths for GNU GCC Compiler” error?</p>
+<p>Try the following:</p>
+<ol>
+<li>If you’re on Windows, make sure you’ve downloaded the version of Code::Blocks WITH MinGW. It’s the one with “mingw” in the name.</li>
+<li>Try going to settings, compiler, and choose “reset to defaults”.</li>
+<li>Try going to settings, compiler, toolchain executables tab, and make sure “Compiler’s installation directory” is set to the MinGW directory (e.g. C:\Program Files (x86)\CodeBlocks\MinGW).</li>
+<li>Try doing a full uninstall, then reinstall.</li>
+<li><a href="http://wiki.codeblocks.org/index.php/Installing_a_supported_compiler" class="external alias" target="_blank" rel="noopener noreferrer">Try a different compiler.</a></li>
+</ol>
+<p>Visual Studio Code (for experienced Linux, macOS, or Windows users)</p>
+<p>Visual Studio Code (also called “VS Code”, not to be confused with the similarly named “Visual Studio Community”) is a code editor that is a popular choice with experienced developers because it is fast, flexible, open source, works for multiple programming languages, and is available for many different platforms.</p>
+<p>The downside is that VS Code is much harder to configure correctly than other choices on this list (and on Windows, harder to install as well). Before proceeding, we recommend reading through the installation and configuration documents linked below to ensure you understand and are comfortable with the steps involved.</p>
+<p>Warning</p>
+<p>This tutorial series does not have complete instructions for VS Code.</p>
+<p>Visual Studio Code is <em>not</em> a good option for C++ beginners, and readers have reported many different challenges getting Visual Studio Code installed and configured correctly for C++.</p>
+<p>Please do not choose this option unless you are already familiar with Visual Studio Code from prior use, or have experience debugging configuration issues.</p>
+<p>We cannot provide installation or configuration support for Visual Studio Code on this site.</p>
+<p>A tip o’ the hat to user glibg10b for providing an initial draft of VS Code instructions across multiple articles.</p>
+<p>For Linux users</p>
+<p>VS Code should be downloaded using your distribution’s package manager. The <a href="https://code.visualstudio.com/docs/setup/linux" class="external alias" target="_blank" rel="noopener noreferrer">VS Code instructions for linux</a> cover how to do this for various Linux distributions.</p>
+<p>Once VS Code is installed, follow the <a href="https://code.visualstudio.com/docs/cpp/config-linux" class="external alias" target="_blank" rel="noopener noreferrer">instructions on how to configure C++ for linux</a>.</p>
+<p>For Mac users</p>
+<p>The <a href="https://code.visualstudio.com/docs/setup/mac" class="external alias" target="_blank" rel="noopener noreferrer">VS Code instructions for Mac</a> detail how to install and setup VS Code for macOS.</p>
+<p>Once VS Code is installed, follow the <a href="https://code.visualstudio.com/docs/cpp/config-clang-mac" class="external alias" target="_blank" rel="noopener noreferrer">instructions on how to configure C++ for Mac</a>.</p>
+<p>For Windows users</p>
+<p>The <a href="https://code.visualstudio.com/docs/setup/windows" class="external alias" target="_blank" rel="noopener noreferrer">VS Code instructions for Windows</a> detail how to install and setup VS Code for Windows.</p>
+<p>Once VS Code is installed, follow the <a href="https://code.visualstudio.com/docs/cpp/config-mingw" class="external alias" target="_blank" rel="noopener noreferrer">instructions on how to configure C++ for Windows</a>.</p>
+<p>Other macOS IDEs</p>
+<p>Other popular Mac choices include <a href="https://developer.apple.com/xcode/" class="external alias" target="_blank" rel="noopener noreferrer">Xcode</a> (if it is available to you) and the <a href="https://www.eclipse.org/" class="external alias" target="_blank" rel="noopener noreferrer">Eclipse</a> code editor. Eclipse is not set up to use C++ by default, and you will need to install the optional C++ components.</p>
+<p>Other compilers or platforms</p>
+<p>Q: Can I use a web-based compiler?</p>
+<p>Yes, for some things. While your IDE is downloading (or if you’re not sure you want to commit to installing one yet), you can continue this tutorial using a web-based compiler. We recommend one of the following:</p>
+<ul>
+<li><a href="https://www.tutorialspoint.com/compile_cpp_online.php" class="external alias" target="_blank" rel="noopener noreferrer">TutorialsPoint</a></li>
+<li><a href="https://wandbox.org/" class="external alias" target="_blank" rel="noopener noreferrer">Wandbox</a> (can choose different versions of GCC or Clang)</li>
+<li><a href="https://godbolt.org/" class="external alias" target="_blank" rel="noopener noreferrer">Godbolt</a> (can see assembly)</li>
+</ul>
+<p>Web-based compilers are fine for dabbling and simple exercises. However, they are generally quite limited in functionality — many won’t allow you to create multiple files or effectively debug your programs, and most don’t support interactive input. You’ll want to migrate to a full IDE when you can.</p>
+<p>Q: Can I use a command-line compiler (e.g. g++ on Linux)?</p>
+<p>Yes, but we don’t recommend it for beginners. You’ll need to find your own editor and look up how to use it elsewhere. Learning to use a command line debugger is not as easy as an integrated debugger, and will make debugging your programs more difficult.</p>
+<p>Q: Can I use other code editors or IDEs, such as Eclipse, Sublime, or Notepad++?</p>
+<p>Yes, but we don’t recommend it for beginners. There are many great code editors and IDEs that can be configured to support a wide variety of languages, and allow you to mix and match plugins to customize your experience however you like. However, many of these editors and IDEs require additional configuration to compile C++ programs, and there’s a lot that can go wrong during that process. For beginners, we recommend something that works out of the box, so you can spend more time learning to code and less time trying to figure out why your code editor isn’t working properly with your compiler or debugger.</p>
+<p>IDEs to avoid</p>
+<p>You should avoid the following IDEs altogether because they do not support at least C++11, do not support C++ at all, or are no longer actively supported or maintained:</p>
+<ul>
+<li>Borland Turbo C++ — does not support C++11</li>
+<li>Visual Studio for Mac — does not support C++. (Note: this is a different product than VS Code).</li>
+<li>Dev C++ — not actively supported</li>
+</ul>
+<p>There is no good reason to use an outdated or unsupported compiler when lightweight, free alternatives that support modern C++ exist.</p>
+<p>When things go wrong (a.k.a. when IDE stands for “I don’t even…”)</p>
+<p>IDE installations seem to cause their fair share of problems. Installation might fail outright (or installation might work but the IDE will have problems when you try to use it due to a configuration issue). If you encounter such issues, try uninstalling the IDE (assuming it installed in the first place), reboot your machine, disable your antivirus or anti-malware temporarily, and try the installation again.</p>
+<p>If you’re still encountering issues at this point, you have two options. The easier option is to try a different IDE. The other option is to fix the problem. Unfortunately, the causes of installation and configuration errors are varied and specific to the IDE software itself, and we’re unable to effectively advise on how to resolve such issues. In this case, we recommend copying the error message or problem you are having into your favorite search engine (such as Google or Duck Duck Go) and trying to find a forum post elsewhere from some poor soul who has inevitably encountered the same issue. Often there will be suggestions on things you can try to remedy the issue.</p>
+<p>Moving on</p>
+<p>Once your IDE is installed (which can be one of the hardest steps if things don’t go as expected), or if you’re temporarily proceeding with a web-based compiler, you are ready to write your first program!</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c00/0-5-introduction-to-the-compiler-linker-and-libraries.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">0.5 · Introduction to the compiler, linker, and libraries</span>
+      <span class="pn-chapter">第 00 章 · 简介与入门</span>
+    </a><a class="pn-card next" href="../c00/0-7-compiling-your-first-program.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">0.7 · Compiling your first program</span>
+      <span class="pn-chapter">第 00 章 · 简介与入门</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/00-%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%85%A5%E9%97%A8/0-6-installing-an-integrated-development-environment-ide" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c00/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

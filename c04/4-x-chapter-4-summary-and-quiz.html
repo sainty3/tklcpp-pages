@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.x · 小结与测试 - 基本数据类型 · tklcpp</title>
+<meta name="description" content="章节回顾 4.1 - 基础数据类型简介 内存的最小单元称为位。内存可寻找的最小单位是字节，现代标准一个字节等于8个位。 一种数据类型告诉编译器如何将内存中的数据解析成有意义的值。 C++ 支持多种基础数据类型，包括浮点数…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c04/4-12-introduction-to-type-conversion-and-static-cast.html">
+<link rel="next" href="../c05/4-14-compile-time-constants-constant-expressions-and-constexpr.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c04/4-x-chapter-4-summary-and-quiz.html" data-type="lesson" data-chapter="04" data-chapter-title="第 04 章 · 基础数据类型" data-title="小结与测试 - 基本数据类型" data-num="4.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c04/index.html">第 04 章 · 基础数据类型</a><span class="sep">/</span><span class="current">4.x · 小结与测试 - 基本数据类型</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c04/index.html">第 04 章 · 基础数据类型</a>
+        <h1><span class="h1-num">4.x</span>小结与测试 - 基本数据类型</h1>
+        <div class="article-meta"><span>3 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><h2 id="章节回顾">章节回顾<a class="anchor" aria-label="本节链接" href="#章节回顾">#</a></h2>
+<p><a href="../c04/4-1-introduction-to-fundamental-data-types.html" class="internal alias" data-slug="04-基础数据类型/4-1-Introduction-to-fundamental-data-types">4.1 - 基础数据类型简介</a></p>
+<ul>
+<li>内存的最小单元称为<a href="../glossary/bit.html" class="internal alias glossary-link" data-slug="词汇表/bit" title="词汇表：位">位</a>。内存可寻找的最小单位是<a href="../glossary/byte.html" class="internal alias glossary-link" data-slug="词汇表/byte" title="词汇表：字节">字节</a>，现代标准一个字节等于8个位。</li>
+<li>一种<strong>数据类型</strong>告诉编译器如何将内存中的数据解析成有意义的值。</li>
+<li>C++ 支持多种基础数据类型，包括浮点数、整型、布尔类型、字符、null指针和 void。</li>
+</ul>
+<p><a href="../c04/4-2-void.html" class="internal alias" data-slug="04-基础数据类型/4-2-Void">4.2 - Void</a></p>
+<ul>
+<li><strong>Void</strong>用于表示无类型。其最主要的作用是表明函数无返回值。</li>
+</ul>
+<p><a href="../c04/4-3-object-sizes-and-the-sizeof-operator.html" class="internal alias" data-slug="04-基础数据类型/4-3-Object-sizes-and-the-sizeof-operator">4.3 - 对象的大小和 sizeof 操作符</a></p>
+<ul>
+<li>不同数据类型占据的内存大小也不同，同时也会收到机器体系结构的影响。参考&nbsp;<a href="../c04/4-3-object-sizes-and-the-sizeof-operator.html" class="internal alias" data-slug="04-基础数据类型/4-3-Object-sizes-and-the-sizeof-operator">4.3 - 对象的大小和 sizeof 操作符</a> 中的表格了解每种基础数据类型占用的空间。</li>
+<li><code>sizeof</code> 运算符可以返回某个类型所占用的字节数。</li>
+</ul>
+<p><a href="../c04/4-4-signed-integers.html" class="internal alias" data-slug="04-基础数据类型/4-4-Signed-integers">4.4 - 有符号整型</a></p>
+<ul>
+<li><strong>有符号整型</strong>用于保存正数和负数，也包括0。一个特定数据类型能够保存的值，称为该类型的范围。当使用整型时，一定要注意溢出和整型除0问题。</li>
+</ul>
+<p><a href="../c04/4-5-unsigned-integers-and-why-to-avoid-them.html" class="internal alias" data-slug="04-基础数据类型/4-5-Unsigned-integers-and-why-to-avoid-them">4.5 - 无符号整型以及为什么要避免使用它</a></p>
+<ul>
+<li><strong>无符号整型</strong>只能保存正整数，通常应该避免使用它，除非是用于位运算。</li>
+</ul>
+<p><a href="../c04/4-6-fixed-width-integers-and-size-t.html" class="internal alias" data-slug="04-基础数据类型/4-6-Fixed-width-integers-and-size_t">4.6 - 固定宽度整型和 size_t</a></p>
+<ul>
+<li><strong>固定宽度整型</strong>是具有确定大小的整型，但是并不是所有的体系结构都支持。速度优先和大小优先的整型是保证某其具有某大小前提下的最快的或最小的整型。<code>std::int8_t</code> 和 <code>std::uint8_t</code> 一般不要使用，它们的行为更像字符而不是整型。</li>
+<li><strong>size_t</strong>&nbsp;是一种无符号整型，它用于表示对象的大小或长度。</li>
+</ul>
+<p><a href="../c04/4-7-introduction-to-scientific-notation.html" class="internal alias" data-slug="04-基础数据类型/4-7-Introduction-to-scientific-notation">4.7 - 科学计数法</a></p>
+<ul>
+<li>科学计数法是一种表示大数的简单记法。C++ 支持科学计数法表示浮点数。科学计数法中，e前面的部分称为有效数字。</li>
+</ul>
+<p><a href="../c04/4-8-floating-point-numbers.html" class="internal alias" data-slug="04-基础数据类型/4-8-Floating-point-numbers">4.8 - 浮点数</a></p>
+<ul>
+<li><strong>浮点数</strong>类型用于保存实数（包括哪些有小数部分的数）。数字的精度指的是在不丢失精度的前提下，可以表示多少个有效数字。<a href="../glossary/rounding-error.html" class="internal alias glossary-link" data-slug="词汇表/rounding-error" title="词汇表：舍入误差">舍入误差</a>出现在过多的有效数字被存放在无法保存这么多有效数字的浮点数中。舍入误差一致存在，即使是像 0.1 这样简单的数。因此，你不能将浮点数进行直接比较。</li>
+</ul>
+<p><a href="../c04/4-9-boolean-values.html" class="internal alias" data-slug="04-基础数据类型/4-9-Boolean-values">4.9 - 布尔值</a></p>
+<ul>
+<li><strong>布尔</strong>类型用于存放 <code>true</code> 和 <code>false</code>。</li>
+</ul>
+<p><a href="../c04/4-10-introduction-to-if-statements.html" class="internal alias" data-slug="04-基础数据类型/4-10-Introduction-to-if-statements">4.10 - if 语句简介</a></p>
+<ul>
+<li><strong>If 语句</strong>&nbsp;<a href="../c04/4-10-introduction-to-if-statements.html" class="internal alias" data-slug="04-基础数据类型/4-10-Introduction-to-if-statements">4.10 - if 语句简介</a> 允许我们满足某种条件时才执行一条或多条语句。if 语句的条件表达式会被解析为布尔值。</li>
+</ul>
+<p><a href="../c04/4-11-chars.html" class="internal alias" data-slug="04-基础数据类型/4-11-Chars">4.11 - 字符</a></p>
+<ul>
+<li><strong>字符</strong>存放的值会被解析为 ASCII 字母。当使用字符时，小心不要将 ASCII 码值和数字搞混。如果需要把字符当整型打印处理，需要使用 <code>static_cast</code>。</li>
+</ul>
+<p><a href="../c04/4-12-introduction-to-type-conversion-and-static-cast.html" class="internal alias" data-slug="04-基础数据类型/4-12-Introduction-to-type-conversion-and-static_cast">4.12 - 类型转换和 static_cast</a></p>
+<ul>
+<li>尖括号在 C++ 中通常用来表示参数化类型。在 <code>static_cast</code> 中，尖括号的内容指定了目标类型。(例如&nbsp;<code>static_cast&lt;int&gt;(x)</code>会把 <code>x</code> 转换为 <code>int</code>)。</li>
+</ul>
+<p><a href="../c05/5-1-const-variables-and-symbolic-constants.html" class="internal alias" data-slug="05-常量与字符串/5-1-Const-variables-and-symbolic-constants">5.1 - const 变量和符号常量</a></p>
+<ul>
+<li>常量指的是值不会改变的变量。C++ 支持两种常量：字面量常量和符号常量</li>
+<li><a href="../glossary/symbolic-constants-p0612.html" class="internal alias glossary-link" data-slug="词汇表/symbolic-constants" title="词汇表：符号常量">符号常量</a>指的是给与常量的名字。常量是符号变量的一种，使用替换文本的类对象宏也是符号常量；</li>
+</ul>
+<p><a href="../c05/4-14-compile-time-constants-constant-expressions-and-constexpr.html" class="internal alias" data-slug="05-常量与字符串/4-14-Compile-time-constants-constant-expressions-and-constexpr">4.14 - 编译时常量、常量表达式和 constexpr</a></p>
+<ul>
+<li><a href="../glossary/constant-expression.html" class="internal alias glossary-link" data-slug="词汇表/constant-expression" title="词汇表：常量表达式">常量表达式</a>是一个可以在编译时求值的表达式。<strong>编译时常量</strong>是其值在编译时已知的常量。<strong>运行时常量</strong>是在运行时之前不知道其初始化值的常量。constexprvariable必须是编译时常量。</li>
+</ul>
+<p><a href="../c05/5-2-literals.html" class="internal alias" data-slug="05-常量与字符串/5-2-Literals">5.2 - 字面量</a></p>
+<ul>
+<li><a href="../glossary/literals.html" class="internal alias glossary-link" data-slug="词汇表/literals" title="词汇表：字面量">字面量</a>是直接嵌入到代码中的常量。字面量是有类型的，而字面量后缀可以用来修改字面量的默认类型。</li>
+<li>魔鬼数字指的是含义不明确或是稍后会被修改的字面量（通常是数字），不要在代码中使用魔术数字，应该用符号常量代替它。</li>
+</ul>
+<p><a href="../c05/5-3-numeral-systems-decimal-binary-hexadecimal-and-octal.html" class="internal alias" data-slug="05-常量与字符串/5-3-Numeral-systems-decimal-binary-hexadecimal-and-octal">5.3 - 数值系统（十进制、二进制、十六进制和八进制）</a></p>
+<ul>
+<li>在日常生活中，我们使用十进制数，它有10位数字。计算机使用二进制，它只有2位数字。C++还支持八进制(以8为基数)和十六进制(以16为基数)。这些都是数字系统的例子，是用来表示数字的符号(数字)的集合。</li>
+</ul>
+<p><a href="../c05/5-7-an-introduction-to-std-string.html" class="internal alias" data-slug="05-常量与字符串/5-7-an-introduction-to-std-string">5.7 - std::string 简介</a><br>
+<a href="../c05/5-8-introduction-to-std-string-view.html" class="internal alias" data-slug="05-常量与字符串/5-8-Introduction-to-std-string_view">5.8 - std::string_view 简介</a></p>
+<ul>
+<li>字符串是用于表示文本(如名称、单词和句子)的顺序字符的集合。字符串字面值总是放在双引号之间。C++中的字符串字面量是C风格的字符串，它的类型比较奇怪，很难处理。</li>
+<li><strong>std::string</strong>提供了简便、安全的处理字符串的方式。字符串字面量总是放在双引号中。使用 <code>std::string</code> 需要包含&nbsp;<code>&lt;string&gt;</code>&nbsp;头文件；</li>
+<li><code>std::string_view</code>&nbsp;为已经存在的字符串（C风格字符串、<code>std::string</code>或字符数组）提供了一种只读的访问方式，而不需创建拷贝。</li>
+</ul></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c04/4-12-introduction-to-type-conversion-and-static-cast.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">4.12 · 类型转换和 static_cast</span>
+      <span class="pn-chapter">第 04 章 · 基础数据类型</span>
+    </a><a class="pn-card next" href="../c05/4-14-compile-time-constants-constant-expressions-and-constexpr.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">4.14 · 编译时常量、常量表达式和 constexpr</span>
+      <span class="pn-chapter">第 05 章 · 常量与字符串</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/04-%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/4-x-Chapter-4-summary-and-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c04/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

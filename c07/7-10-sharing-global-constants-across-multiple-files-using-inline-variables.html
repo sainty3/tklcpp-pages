@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.10 · 使用 inline 变量共享全局常量 · tklcpp</title>
+<meta name="description" content="Key Takeaway 全局常量定义在头文件中，它是内部变量，头文件包含时会被复制到到源文件中。 当全局变量为内部变量时，会导致两个问题： 修改后所有包含该头文件的文件都要重新编译 变量复制占用大量内存 将全局变量定义…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c07/7-9-inline-functions.html">
+<link rel="next" href="../c07/7-11-static-local-variables.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c07/7-10-sharing-global-constants-across-multiple-files-using-inline-variables.html" data-type="lesson" data-chapter="07" data-chapter-title="第 07 章 · 作用域、生命周期和链接" data-title="使用 inline 变量共享全局常量" data-num="7.10">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c07/index.html">第 07 章 · 作用域、生命周期和链接</a><span class="sep">/</span><span class="current">7.10 · 使用 inline 变量共享全局常量</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c07/index.html">第 07 章 · 作用域、生命周期和链接</a>
+        <h1><span class="h1-num">7.10</span>使用 inline 变量共享全局常量</h1>
+        <div class="article-meta"><span>9 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">inline</span> <span class="tag">global</span> <span class="tag">C++17</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">3 节</span></summary>
+    <ul><li class="lv2"><a href="#%E5%B0%86%E5%85%A8%E5%B1%80%E5%B8%B8%E9%87%8F%E4%BD%9C%E4%B8%BA%E5%86%85%E9%83%A8%E5%8F%98%E9%87%8F">将全局常量作为内部变量</a></li><li class="lv2"><a href="#%E5%B0%86%E5%85%A8%E5%B1%80%E5%B8%B8%E9%87%8F%E4%BD%9C%E4%B8%BA%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F">将全局常量作为外部变量</a></li><li class="lv2"><a href="#%E5%B0%86%E5%85%A8%E5%B1%80%E5%B8%B8%E9%87%8F%E4%BD%9C%E4%B8%BA%E5%86%85%E8%81%94%E5%8F%98%E9%87%8Fc17">将全局常量作为内联变量 (C++17)</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>全局常量定义在头文件中，它是内部变量，头文件包含时会被复制到到源文件中。</li>
+<li>当全局变量为内部变量时，会导致两个问题：
+<ul>
+<li>修改后所有包含该头文件的文件都要重新编译</li>
+<li>变量复制占用大量内存</li>
+</ul>
+</li>
+<li>将全局变量定义在cpp文件中，并在头文件中对其进行前向声明，然后再需要它的地方包含头文件，这样可以确保全局变量为外部变量。需要注意的是，由于 <code>constexpr</code> 不能被<a href="../glossary/forward-declaration.html" class="internal alias glossary-link" data-slug="词汇表/forward-declaration" title="词汇表：前向声明">前向声明</a>，因此只能使用 <code>const</code>。</li>
+<li>当全局变量为外部变量时，也会导致两个问题：
+<ul>
+<li>这些变量只有在定义它们的文件中属于编译时常量，在其他文件中都属于运行时常量。因此在需要使用编译时常量的地方不能使用它们。</li>
+<li>运行时常量的优化不如编译时常量</li>
+</ul>
+</li>
+<li>为了在编译时使用某些变量（例如，数组大小），编译器必须看到变量的定义（而不仅仅是前项声明）。</li>
+<li>C++17 引入了内联变量，即可以被多处定义的变量。编译器会将它们的定义合并。同时它还具有和 constexpr 同样的属性。</li>
+<li>内联变量有两个主要的限制，需要我们遵循：
+<ol>
+<li>内联变量的所有定义必须是完全一致的（否则会产生<a href="../glossary/undefined-behavior.html" class="internal alias glossary-link" data-slug="词汇表/undefined-behavior" title="词汇表：未定义行为">未定义行为</a>）。</li>
+<li>内联变量的定义（而非声明）必须出现在任何使用它们的文件中。</li>
+</ol>
+</li>
+<li>如果你的编译器支持 C++17，最好将全局变量定义为 <code>inline constexpr</code> 类型并放置在头文件中。</li>
+</ul>
+</div></aside>
+<p>在很多应用程序中，有些符号常量需要被所有的代码使用（而不仅仅是被局部的代码使用）。这些变量可能是物理常量或数学常量（例如 π 或阿伏伽德罗常数），或者是某个应用程序需要的参数（例如摩擦系数或引力系数）。与其在多个文件中各定义一遍这些变量，不如将它们集中定义在一个地方然后按需使用。这样，万一你需要修改它们的值，你只需要在一处修改即可。</p>
+<p>本节课会重点介绍如何实现上述全局常量的定义。</p>
+<h2 id="将全局常量作为内部变量">将全局常量作为内部变量<a class="anchor" aria-label="本节链接" href="#将全局常量作为内部变量">#</a></h2>
+<p>在 C++17 之前，定义全局常量最简单的方法如下：</p>
+<ol>
+<li>定义一个头文件来存放这些常量</li>
+<li>在头文件中，定义一个命名空间 (参见：<a href="../c07/7-2-user-defined-namespaces-and-the-scope-resolution-operator.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-2-User-defined-namespaces-and-the-scope-resolution-operator">7.2 - 用户定义命名空间和作用域解析运算符</a></li>
+<li>将全部的常量放到该命名空间中（同时确保它们都是 <code>constexpr</code> 类型的）</li>
+<li>在需要使用这些常量的地方，<code>#include</code> 该头文件</li>
+</ol>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">constants.h</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#ifndef</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CONSTANTS_H</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#define</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CONSTANTS_H</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// 定义包含常量的命名空间</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // 默认内部链接</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> pi </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3.14159</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> avogadro </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6.0221413</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">e</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">23</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> myGravity </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 9.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // m/s^2 -- gravity is light on this planet</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // ... other related constants</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#endif</span></span></code></pre></div></figure>
+<p>然后在 <em>.cpp</em> 文件中使用<a href="https://hanxiaomax.github.io/Learncpp_CN/%60::%60" class="internal alias external unresolved" data-slug="`::`" target="_blank" rel="noopener noreferrer">[scope-resolution-operator|作用域解析运算符]</a>来使用这些常量，运算符左侧是命名空间，右侧是常量名：</p>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">main.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "constants.h"</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // include a copy of each constant in this file</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a radius: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "The circumference is: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2.0</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> *</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">pi </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>当头文件被 <code>#included</code> 到了<em>a .cpp</em> 中后，头文件中的所有常量实际上都会被<strong>拷贝</strong>到源文件中。因为这些变量不属于任何函数，所以它们在被包含到源文件后，会被当做全局变量对待，因此你可以在文件的任何地方使用它们。</p>
+<p>因为 const 全局变量具有<a href="../glossary/internal-linkage.html" class="internal alias glossary-link" data-slug="词汇表/internal-linkage" title="词汇表：内部链接">内部链接</a>属性，因此每个变量在.cpp文件之间是独立的，而且链接器并不能看到它们。在大多数情况下，由于它们是常量，所以编译器通常会将其“优化掉”。</p>
+<aside class="callout callout-quote" data-callout="quote"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 3-1 5-4 5zM14 21c3 0 7-1 7-8V5h-7v8h4c0 3-1 5-4 5z"></path></svg></span><span class="callout-label">题外话</span></div><div class="callout-body">
+<p>“优化掉”这个术语，指的是编译器为了优化程序性能而删除了某些东西，但不会对程序的功能产生影响。例如，你定义了一个 const 类型的变量 <code>x</code> 并且将其初始化为 4。则编译器会将任何引用该变量的地方，直接替换为 4（因为 x 是const类型的，所以它不能被修改），从而避免了变量的定义和初始化过程。</p>
+</div></aside>
+<h2 id="将全局常量作为外部变量">将全局常量作为外部变量<a class="anchor" aria-label="本节链接" href="#将全局常量作为外部变量">#</a></h2>
+<p>上面提到的方法实际上有一些缺陷。</p>
+<p>尽管将 <code>constants.h</code> 头文件 <code>#included</code> 到每一个需要它的源文件中是非常简单（对于小程序来说也通常不会有什么问题）的一种方式，但毕竟这会导致变量被复制到源文件中。因此，如果 <code>constants.h</code> 被 20 个文件所包含，那么这些全局变量就会被复制 20 次。<a href="../c02/2-12-header-guards.html" class="internal alias" data-slug="02-C++-基础——函数和文件/2-12-Header-guards">头文件防卫式声明</a> 并不能防止该问题的发生，因为它只能保证头文件在一个文件中被包含一次，而不是阻止头文件被多个不同的文件包含。这样一来，我们就会面临两个问题：</p>
+<ol>
+<li>修改常量会导致所有包含该头文件的文件重新编译，对于大型项目来说这会浪费很多时间</li>
+<li>如果常量很大，而且无法被“优化掉”，那么大量的复制会导致大量的内存占用。</li>
+</ol>
+<p>避免这个问题的方法之一，是将全局常量定义为<a href="../glossary/external-variable.html" class="internal alias glossary-link" data-slug="词汇表/external-variable" title="词汇表：外部变量">外部变量</a>，这样一个变量（初始化一次）就可以被所有的文件“共享使用”。为此，我们必须将常量定义在一个<code>a.cpp</code>文件中（确保它只被定义一次），然后在头文件中添加其前向定义（该头文件仍需要被包含到使用了该变量的文件中）。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>这里使用了 <code>const</code> 类型的变量，这是因为 <code>constexpr</code> 类型的变量不能被前向声明（<a href="../c07/7-7-external-linkage-and-variable-forward-declarations.html#ce6263" class="internal alias" data-slug="07-作用域、生命周期和链接/7-7-External-linkage-and-variable-forward-declarations">7.7 - 外部链接和变量前向声明</a>），因为编译器需要在编译时知道<code>constexpr</code> 类型变量的定义，而前向声明并不能提供定义的信息。</p>
+</div></aside>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">constants.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "constants.h"</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // actual global variables</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> pi </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3.14159</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> avogadro </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6.0221413</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">e</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">23</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> myGravity </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 9.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // m/s^2 -- gravity is light on this planet</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">constants.h</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#ifndef</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CONSTANTS_H</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#define</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CONSTANTS_H</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // since the actual variables are inside a namespace, the forward declarations need to be inside a namespace as well</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> pi</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> avogadro</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> myGravity</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#endif</span></span></code></pre></div></figure>
+<p>使用方法和之前是一样的：</p>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">main.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "constants.h"</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // include all the forward declarations</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a radius: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "The circumference is: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2.0</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> *</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">pi </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>因为全局符号常量应该被放置在命名空间中（避免与其他全局命名空间中的标识符产生命名冲突），所以没必要对其使用<code>g_</code>前缀。</p>
+<p>这样一来，符号常量只会在&nbsp;<code>constants.cpp</code> 中被初始化一次，而不是在每个&nbsp;<code>constants.h</code>&nbsp;被包含的地方被初始化。同时，这些常数都会被链接到 <code>constants.cpp</code>中初始化的变量，因此当这些变量被修改时，只有 <code>constants.cpp</code>&nbsp;需要被重新编译。</p>
+<p>不过，这种方法也不是完美的。首先，这些常量现在只会在它们被定义的文件中被看做<a href="../glossary/compile-time.html" class="internal alias glossary-link" data-slug="词汇表/compile-time" title="词汇表：编译时">编译时</a>常量。而在其他文件中，编译器只能看到它们的声明，而看不到常量具体的中（必须有链接器进行解析）。因此，在&nbsp;<code>constants.cpp</code>以外的地方，这些常量都不能被看做是编译时常量，也就不能在要求使用编译时常量的地方使用它们。另外，因为编译时常量相对于运行时常量更容易优化，所以对于这些运行时常量，编译器可能无法对其进行足够的优化。</p>
+<aside class="callout callout-abstract" data-callout="abstract"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg></span><span class="callout-label">关键信息</span></div><div class="callout-body">
+<p>为了在编译时使用某些变量（例如，数组大小），编译器必须看到变量的定义（而不仅仅是前项声明）。</p>
+</div></aside>
+<p>因为编译器是独立编译各个源文件的，因此它只能对源文件中存在定义的变量进行编译。例如，定义在 <code>constants.cpp</code>&nbsp;的变量，在编译器编译 <code>main.cpp</code> 的时候是不可见的，出于这个原因<code>constexpr</code>&nbsp;的定义和声明不能被分散到头文件和源文件中，它必须被定义在对应的头文件里。</p>
+<p>出于上述原因，我们还是建议最好将常量定义在头文件中。如果因此导致了某些特定的问题，不妨到时候在把它们一起移动到.cpp文件去。</p>
+<h2 id="将全局常量作为内联变量c17">将全局常量作为内联变量&nbsp;(C++17)<a class="anchor" aria-label="本节链接" href="#将全局常量作为内联变量c17">#</a></h2>
+<p>C++17 引入了一个新的概念——<a href="../glossary/inline-variables.html" class="internal alias glossary-link" data-slug="词汇表/inline-variables" title="词汇表：内联变量">内联变量(inline variables)</a> 。在 C++ 中，<a href="https://hanxiaomax.github.io/Learncpp_CN/inline" class="internal alias external unresolved" data-slug="inline" target="_blank" rel="noopener noreferrer">内联</a>的意思逐渐引申成了“允许多处定义”。因此，内联变量可以在多个文件中被多次定义，且不会违反<a href="../glossary/one-definition-rule.html" class="internal alias glossary-link" data-slug="词汇表/one-definition-rule" title="词汇表：单一定义规则(one-definition-rule)">单一定义规则(one-definition-rule)</a>。内联的全局变量默认具有外部链接属性。</p>
+<p>链接器可以将所有的内联定义合并为一个单独的定义（这样就满足了单一定义规则）。这样一来，当我们把内联变量定义在头文件中的同时，还能够将它们在.cpp文件中的定义看做是一个定义。例如，如果一个普通的常量被定义在头文件中，同时被<code>#include</code>到了10个不同的源文件。如果它不是内联的，则此时会产生10个定义。如果是内联的，则编译器会选取一个定义作为主定义，这样一来就只会产生一个定义。这样可以帮助我们节省9个常量的内存空间。</p>
+<p>这些变量同时还保留了 constexpr 的特性，因此在任何包含它们的文件中，只要是 constexpr 可用的地方，这些变量也可用。同时，相比较于运行时常量（或非常量），编译器可以极大地优化 constexpr 类型的变量</p>
+<p>内联变量有两个主要的限制，需要我们遵循：</p>
+<ol>
+<li>内联变量的所有定义必须是完全一致的（否则会产生未定义行为）。</li>
+<li>内联变量的定义（而非声明）必须出现在任何使用它们的文件中。</li>
+</ol>
+<p>这样一来，我们就可以继续沿用将全局变量定义在头文件中的方式，同时还可以避免变量的重复定义：</p>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">constants.h</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#ifndef</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CONSTANTS_H</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#define</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> CONSTANTS_H</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// define your own namespace to hold constants</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    inline</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> pi </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3.14159</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // note: now inline constexpr</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    inline</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> avogadro </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 6.0221413</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">e</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">23</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    inline</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> double</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> myGravity </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 9.2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // m/s^2 -- gravity is light on this planet</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">    // ... other related constants</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#endif</span></span></code></pre></div></figure>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">main.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "constants.h"</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Enter a radius: "</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cin </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "The circumference is: "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2.0</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> *</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> radius </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> constants</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">pi </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> '</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">'</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>将&nbsp;<code>constants.h</code>&nbsp;包含到所有需要使用它的代码文件中，但是这些变量只会被初始化一次，并且在所有文件中共享使用。</p>
+<p>不过，这么做仍然不能避免文件重复编译的问题。当任何常量被修改时，每个包含它的文件都需要被重新编译。所以，如果你的常量经常需要修改（出于调优的目的），这无疑会导致很长的重新编译时间，此时你可以考虑将常量引入到单独的头文件中（减少include的数量）。</p>
+<aside class="callout callout-success" data-callout="success"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12 2.5 2.5 4.5-5"></path></svg></span><span class="callout-label">最佳实践</span></div><div class="callout-body">
+<p>如果你的编译器支持 C++17，最好将全局变量定义为 <code>inline constexpr</code> 类型并放置在头文件中。</p>
+</div></aside>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">提醒</span></div><div class="callout-body">
+<p>使用&nbsp;<code>std::string_view</code>&nbsp;定义&nbsp;<code>constexpr</code>&nbsp;字符串，我们在<a href="../c05/5-1-const-variables-and-symbolic-constants.html" class="internal alias" data-slug="05-常量与字符串/5-1-Const-variables-and-symbolic-constants">5.1 - const 变量和符号常量</a>中进行了介绍。</p>
+</div></aside></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c07/7-9-inline-functions.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">7.9 · 内联函数</span>
+      <span class="pn-chapter">第 07 章 · 作用域、生命周期和链接</span>
+    </a><a class="pn-card next" href="../c07/7-11-static-local-variables.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">7.11 · 静态局部变量</span>
+      <span class="pn-chapter">第 07 章 · 作用域、生命周期和链接</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/07-%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E9%93%BE%E6%8E%A5/7-10-Sharing-global-constants-across-multiple-files-using-inline-variables" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c07/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E5%B0%86%E5%85%A8%E5%B1%80%E5%B8%B8%E9%87%8F%E4%BD%9C%E4%B8%BA%E5%86%85%E9%83%A8%E5%8F%98%E9%87%8F">将全局常量作为内部变量</a></li><li class="lv2"><a href="#%E5%B0%86%E5%85%A8%E5%B1%80%E5%B8%B8%E9%87%8F%E4%BD%9C%E4%B8%BA%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F">将全局常量作为外部变量</a></li><li class="lv2"><a href="#%E5%B0%86%E5%85%A8%E5%B1%80%E5%B8%B8%E9%87%8F%E4%BD%9C%E4%B8%BA%E5%86%85%E8%81%94%E5%8F%98%E9%87%8Fc17">将全局常量作为内联变量 (C++17)</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

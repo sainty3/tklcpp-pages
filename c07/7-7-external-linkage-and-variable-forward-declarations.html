@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.7 · 外部链接和变量前向声明 · tklcpp</title>
+<meta name="description" content="Key Takeaway 具有外部链接的标识符，可以在定义它们的文件中被使用，也可以通过前向声明在其他文件中使用。 链接是标识符的选项，而不是变量的属性，因此函数也有链接属性 函数是默认外部链接的，可以用修改为内部链接 …">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c07/7-6-internal-linkage.html">
+<link rel="next" href="../c07/7-8-why-non-const-global-variables-are-evil.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c07/7-7-external-linkage-and-variable-forward-declarations.html" data-type="lesson" data-chapter="07" data-chapter-title="第 07 章 · 作用域、生命周期和链接" data-title="外部链接和变量前向声明" data-num="7.7">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c07/index.html">第 07 章 · 作用域、生命周期和链接</a><span class="sep">/</span><span class="current">7.7 · 外部链接和变量前向声明</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c07/index.html">第 07 章 · 作用域、生命周期和链接</a>
+        <h1><span class="h1-num">7.7</span>外部链接和变量前向声明</h1>
+        <div class="article-meta"><span>6 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">linkage</span> <span class="tag">declaration</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">5 节</span></summary>
+    <ul><li class="lv2"><a href="#%E5%87%BD%E6%95%B0%E9%BB%98%E8%AE%A4%E5%85%B7%E4%BD%93%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E5%B1%9E%E6%80%A7">函数默认具体外部链接属性</a></li><li class="lv2"><a href="#%E5%85%B7%E6%9C%89%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E7%9A%84%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F">具有外部链接的全局变量</a></li><li class="lv2"><a href="#%E4%BD%BF%E7%94%A8-extern-%E5%85%B3%E9%94%AE%E5%AD%97%E8%BF%9B%E8%A1%8C%E5%8F%98%E9%87%8F%E7%9A%84%E5%89%8D%E5%90%91%E5%A3%B0%E6%98%8E">使用 extern 关键字进行变量的前向声明</a></li><li class="lv2"><a href="#%E6%96%87%E4%BB%B6%E4%BD%9C%E7%94%A8%E5%9F%9F-vs-%E5%85%A8%E5%B1%80%E4%BD%9C%E7%94%A8%E5%9F%9F">文件作用域 vs. 全局作用域</a></li><li class="lv2"><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>具有外部链接的标识符，可以在定义它们的文件中被使用，也可以通过前向声明在其他文件中使用。</li>
+<li>链接是标识符的选项，而不是变量的属性，因此函数也有链接属性</li>
+<li>函数是默认外部链接的，可以用<code>static</code>修改为内部链接</li>
+<li>具有外部链接的全局变量有时候也称为外部变量。使用 <code>extern</code> 关键字可以将全局变量定义为外部变量（使其可以在其他文件中访问）。非常量的全局变量默认是外部变量。</li>
+<li>前向声明一个定义在其他文件中的外部变量，也需要使用 <code>extern</code> 关键字</li>
+<li>如果你希望定义一个未初始化的非const全局变量。请不要使用 <code>extern</code>关键字，否则 C++ 会认为你是在前向声明某个变量</li>
+<li>在C++中，<strong>所有</strong>全局变量都具有“文件作用域”，同时链接属性则决定了它们是否可以被其他文件使用。</li>
+</ul>
+</div></aside>
+<p>在前面的课程中 (<a href="../c07/7-6-internal-linkage.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-6-Internal-linkage">7.6 - 内部链接</a>)，我们讨论了如何使用<a href="../glossary/internal-linkage.html" class="internal alias glossary-link" data-slug="词汇表/internal-linkage" title="词汇表：内部链接">内部链接</a>将标识符限定在一个单独的文件中。在本节课中，我们会探讨<a href="../glossary/external-linkage.html" class="internal alias glossary-link" data-slug="词汇表/external-linkage" title="词汇表：外部链接">外部链接</a>。</p>
+<p>具有外部链接的标识符，可以在定义它们的文件中被使用，也可以在其他文件中被使用（通过<a href="../glossary/forward-declaration.html" class="internal alias glossary-link" data-slug="词汇表/forward-declaration" title="词汇表：前向声明">前向声明</a>）。从这个意义上来讲，具有外部链接的变量才是真正的*”全局“变量，因为它可以在程序的任何地方被使用。</p>
+<h2 id="函数默认具体外部链接属性">函数默认具体外部链接属性<a class="anchor" aria-label="本节链接" href="#函数默认具体外部链接属性">#</a></h2>
+<p>在<a href="../c02/2-8-programs-with-multiple-code-files.html" class="internal alias" data-slug="02-C++-基础——函数和文件/2-8-Programs-with-multiple-code-files">2.8 - 多文件程序</a>中我们介绍过，你可以在一个文件中调用另外一个文件中的函数，这是因为函数默认具有外部链接属性。</p>
+<p>为了能够调用其他文件中的函数，必须要在使用该函数的文件中进行前向声明。前向声明告诉编译器函数的存在，然后链接器可以将函数调用关联到实际的定义。</p>
+<p>例如：</p>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">a.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> sayHi</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 函数默认具有外部链接，在其他文件中可见</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Hi!"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">main.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">void</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> sayHi</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">();</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 对函数进行前向声明，使该函数在这个文件中可以被访问</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">    sayHi</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">();</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 调用其他文件中的函数，链接器会将调用关联到函数的定义</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>打印结果：</p>
+<div class="codeblock" data-lang="text"><div class="code-head"><span class="code-lang">代码</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre><code>Hi!
+</code></pre></div>
+<p>在上面的例子中，<code>sayHi()</code>&nbsp;被前向声明在&nbsp;<code>main.cpp</code>&nbsp;中，这使得&nbsp;<code>main.cpp</code>&nbsp;可以访问定义在<code>a.cpp</code> 中的 <code>sayHi()</code>&nbsp;。前向声明满足了编译器的需要，而链接器也能够将函数调用关联到函数定义。</p>
+<p>如果<code>sayHi()</code>具有内部链接属性，则链接器便不能够将函数调用关联到函数定义，会产生链接错误。</p>
+<h2 id="具有外部链接的全局变量">具有外部链接的全局变量<a class="anchor" aria-label="本节链接" href="#具有外部链接的全局变量">#</a></h2>
+<p>具有外部链接的全局变量有时候也称为<a href="../glossary/external-variable.html" class="internal alias glossary-link" data-slug="词汇表/external-variable" title="词汇表：外部变量">外部变量(external variable)</a>。使用 <code>extern</code> 关键字可以将全局变量定义为外部变量（使其可以在其他文件中访问）：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 非常量的全局变量默认是外部链接</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // const 全局变量可以被定义为 extern，使其成为外部变量</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_z </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // constexpr 全局变量可以被定义为 extern，使其成为外部变量 (但是没有意义)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>非常量的全局变量默认是外部链接（即使使用 <code>extern</code>也会被忽略）。</p>
+<h2 id="使用-extern-关键字进行变量的前向声明">使用 extern 关键字进行变量的前向声明<a class="anchor" aria-label="本节链接" href="#使用-extern-关键字进行变量的前向声明">#</a></h2>
+<p>为了使用定义在其他文件中的全局<a href="../glossary/external-variable.html" class="internal alias glossary-link" data-slug="词汇表/external-variable" title="词汇表：外部变量">外部变量</a>，你同样需要在使用它的文件中对其进行<a href="../glossary/forward-declaration.html" class="internal alias glossary-link" data-slug="词汇表/forward-declaration" title="词汇表：前向声明">前向声明</a>。对于变量来说，创建前向声明还需要使用<code>extern</code>关键字（不需要初始化值）。</p>
+<p>下面是一个前向声明的例子：</p>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">a.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// 全局变量定义</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 非常量的全局变量默认是外部链接</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 3</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // extern 为 g_y 创建外部链接</span></span></code></pre></div></figure>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">main.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 这个 extern 是变量 g_x的前向声明，g_x被定义在其他文件</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 这个 extern 是 const 变量 g_y 的前向声明，它也被定义在其他文件</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // prints 2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>在上面的例子中，<code>a.cpp</code> 和&nbsp;<code>main.cpp</code>&nbsp;都引用了一个相同的全局变量&nbsp;<code>g_x</code>。因此，即使&nbsp;<code>g_x</code>&nbsp;是在&nbsp;<code>a.cpp</code>中定义和初始化的，我们仍然可以在&nbsp;<code>main.cpp</code>&nbsp;中使用它（需要对<code>g_x</code>进行前向声明）。</p>
+<p>注意，<code>extern</code>&nbsp;关键字在不同的语境下有不同的含义。有些语境下，<code>extern</code>&nbsp;表示 “为变量创建外部链接”。而在另外的语句下，<code>extern</code>&nbsp;表示 “这是一个定义在其他地方的外部变量的前向声明”。的确有点绕，所以我们会在<a href="../c07/7-12-scope-duration-and-linkage-summary.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-12-Scope-duration-and-linkage-summary">7.12 - 作用域和链接小结</a>中对这些问题进行详细的总结。</p>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>如果你希望定义一个未初始化的非const全局变量。请不要使用 <code>extern</code>关键字，否则 C++ 会认为你是在前向声明某个变量。</p>
+</div></aside>
+<aside class="callout callout-warning" data-callout="warning"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.7 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span class="callout-label">注意</span></div><div class="callout-body">
+<p>尽管 constexpr 变量可以通过 <code>extern</code>&nbsp;关键字赋予外部链接属性，但是由于它们并不能被前向声明，所以这么做并无意义。
+这是因为编译器在<a href="../glossary/compile-time.html" class="internal alias glossary-link" data-slug="词汇表/compile-time" title="词汇表：编译时">编译时</a>就必须指定 constexpr 变量的值。如果该变量被定义在其他文件中，那么编译器将无法知道它的值。</p>
+</div></aside>
+
+<p>注意，函数的前向声明不需要使用&nbsp;<code>extern</code>&nbsp;关键字——编译器可以通过是否有函数体来判断此处是在定义一个新的函数，还是在进行前向声明。变量的前向声明是需要&nbsp;<code>extern</code>&nbsp;关键字的，它可以帮助区分变量定义和变量前向声明（看上去可能会完全一样）：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// 非常量</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 变量声明也是定义 (可以初始化也可以不初始化)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 前向声明 (无初始化值)</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// 常量</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 变量定义(const必须要初始化)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 前向声明 (无初始化值)</span></span></code></pre></div></figure>
+<h2 id="文件作用域-vs-全局作用域">文件作用域 vs. 全局作用域<a class="anchor" aria-label="本节链接" href="#文件作用域-vs-全局作用域">#</a></h2>
+<p>“文件作用域”和“全局作用域”这两个术语可能会令人感到困惑，这主要是因为在非正式场合它们的用法不够严谨。从技术上来讲，在 C++中，<strong>所有</strong>全局变量都具有“文件作用域”，同时链接属性则决定了它们是否可以被其他文件使用。</p>
+<p>考虑下面程序：</p>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">global.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 默认是外部链接</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// g_x 从这里离开作用域</span></span></code></pre></div></figure>
+<figure data-rehype-pretty-code-figure=""><figcaption data-rehype-pretty-code-title="" data-language="cpp" data-theme="catppuccin-mocha github-dark">main.cpp</figcaption><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 对 g_x 进行前向声明，从此时开始 g_x 可以被该文件使用。</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // should print 2</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">//  g_x 的前向声明从此离开作用域</span></span></code></pre></div></figure>
+<p>变量&nbsp;<code>g_x</code>&nbsp;具有文件作用域（<code>global.cpp</code>）—— 它可以被使用的范围从定义开始，到文件结束为止，但是它不能直接在&nbsp;<code>global.cpp</code> 以外的地方被使用。</p>
+<p>在&nbsp;<code>main.cpp</code> 中，<code>g_x</code>&nbsp;的前向声明具有文件作用域——它可以被使用的范围从声明开始，到文件结束为止。</p>
+<p>不过，我们通常非正式地将“文件作用域”用来描述具有内部链接的变量，而用“全局作用域”来描具有外部链接的变量（因为这类变量可以通过前向声明在整个程序中被使用）。</p>
+<h2 id="小结">小结<a class="anchor" aria-label="本节链接" href="#小结">#</a></h2>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// 外部全局变量定义</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                       // 定义外部全局变量但不初始化（默认初始化为0） </span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 1</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">     // 定义初始化的 const 外部全局变量</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_x</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 2</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // 定义初始化的 constexpr 外部全局变量</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// Forward declarations</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">                // 前向声明非常数的全局变量</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> const</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">          // 前向声明 const 的全局变量</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">extern</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> constexpr</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> g_y</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">      // 不允许这样做：constexpr 变量不能前向声明</span></span></code></pre></div></figure>
+<p>我们会在&nbsp;<a href="../c07/7-12-scope-duration-and-linkage-summary.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-12-Scope-duration-and-linkage-summary">7.12 - 作用域和链接小结</a>中对相关内容进行更详细的总结。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c07/7-6-internal-linkage.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">7.6 · 内部链接</span>
+      <span class="pn-chapter">第 07 章 · 作用域、生命周期和链接</span>
+    </a><a class="pn-card next" href="../c07/7-8-why-non-const-global-variables-are-evil.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">7.8 · 为什么非 const 全局变量是魔鬼</span>
+      <span class="pn-chapter">第 07 章 · 作用域、生命周期和链接</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/07-%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E9%93%BE%E6%8E%A5/7-7-External-linkage-and-variable-forward-declarations" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c07/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E5%87%BD%E6%95%B0%E9%BB%98%E8%AE%A4%E5%85%B7%E4%BD%93%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E5%B1%9E%E6%80%A7">函数默认具体外部链接属性</a></li><li class="lv2"><a href="#%E5%85%B7%E6%9C%89%E5%A4%96%E9%83%A8%E9%93%BE%E6%8E%A5%E7%9A%84%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F">具有外部链接的全局变量</a></li><li class="lv2"><a href="#%E4%BD%BF%E7%94%A8-extern-%E5%85%B3%E9%94%AE%E5%AD%97%E8%BF%9B%E8%A1%8C%E5%8F%98%E9%87%8F%E7%9A%84%E5%89%8D%E5%90%91%E5%A3%B0%E6%98%8E">使用 extern 关键字进行变量的前向声明</a></li><li class="lv2"><a href="#%E6%96%87%E4%BB%B6%E4%BD%9C%E7%94%A8%E5%9F%9F-vs-%E5%85%A8%E5%B1%80%E4%BD%9C%E7%94%A8%E5%9F%9F">文件作用域 vs. 全局作用域</a></li><li class="lv2"><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

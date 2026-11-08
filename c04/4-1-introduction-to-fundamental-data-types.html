@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.1 · 基础数据类型简介 · tklcpp</title>
+<meta name="description" content="Key Takeaway 变量只是一段可以存放信息的内存的名称 使用数据类型（通常简称为类型）告诉计算机如何将内存中的数据解析为有意义的值 一个byte通常等于8个bit “整数型的类型”，包括布尔类型、字符、整型和枚举…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c03/3-x-chapter-3-summary-and-quiz.html">
+<link rel="next" href="../c04/4-2-void.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c04/4-1-introduction-to-fundamental-data-types.html" data-type="lesson" data-chapter="04" data-chapter-title="第 04 章 · 基础数据类型" data-title="基础数据类型简介" data-num="4.1">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c04/index.html">第 04 章 · 基础数据类型</a><span class="sep">/</span><span class="current">4.1 · 基础数据类型简介</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c04/index.html">第 04 章 · 基础数据类型</a>
+        <h1><span class="h1-num">4.1</span>基础数据类型简介</h1>
+        <div class="article-meta"><span>4 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">data-type</span> <span class="tag">C++11</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">3 节</span></summary>
+    <ul><li class="lv2"><a href="#bitsbytes-%E5%92%8C%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80">Bits、bytes 和内存地址</a></li><li class="lv2"><a href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">基本数据类型</a></li><li class="lv2"><a href="#the-_t-suffix">The _t suffix</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><aside class="callout callout-note" data-callout="note"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"></path><path d="M8 7h8M8 11h6"></path></svg></span><span class="callout-label">Key Takeaway</span></div><div class="callout-body">
+<ul>
+<li>变量只是一段可以存放信息的内存的名称</li>
+<li>使用<strong>数据类型</strong>（通常简称为类型）告诉计算机如何将内存中的数据解析为有意义的值</li>
+<li>一个byte通常等于8个bit</li>
+<li>“整数型的类型”，包括布尔类型、字符、整型和枚举</li>
+<li>字符串不属于 C++ 的基本类型，它属于复合类型，由 <code>std::string</code> 定义</li>
+</ul>
+</div></aside>
+<h2 id="bitsbytes-和内存地址">Bits、bytes 和内存地址<a class="anchor" aria-label="本节链接" href="#bitsbytes-和内存地址">#</a></h2>
+<p>在<a href="../c01/1-3-introduction-to-objects-and-variables.html" class="internal alias" data-slug="01-C++-基础/1-3-Introduction-to-objects-and-variables">1.3 - 对象和变量</a>中我们介绍过，事实上变量只是一段可以存放信息的内存的名称。简单回忆一下，程序可以使用计算机提供的<a href="../glossary/random-access-memory.html" class="internal alias glossary-link" data-slug="词汇表/random-access-memory" title="词汇表：随机访问内存">随机访问内存(RAM)</a>。当变量被定义的时候，一块内存被关联到了该变量。</p>
+<p>内存的最小单元是一个二进制位（也称为 <a href="../glossary/bit.html" class="internal alias glossary-link" data-slug="词汇表/bit" title="词汇表：位">位</a>），它可以存储 0 或 1.你可以把一个比特看成是一个灯泡的开关——它只有开（1）和关（0）两种状态，没有其他任何中间状态。如果你去观察一段内存内容的话，你总能看到 …011010100101010… 或其他类似组合。</p>
+<p>我们将内存分割成一系列连续的单元，称为内存地址。类似于街道地址可以用来查找街道上某幢建筑，通过内存地址我们也可以找到特定地址中存放的内容。</p>
+<p>不够有件事可能出乎你的意料，对于现代计算机体系结构来说，计算机内存中的bit并不都具有一个唯一的地址。这是因为内存地址的数量是有限的，而且也并不需要为每个bit都指定一个唯一的地址。实际上，每个内存地址表示一个<a href="../glossary/byte.html" class="internal alias glossary-link" data-slug="词汇表/byte" title="词汇表：字节">字节</a>的地址。一个字节表示一组被作为一个单元操作的比特。一般来讲（现代计算机）一个字节包含8个连续的 bit。</p>
+<aside class="callout callout-abstract" data-callout="abstract"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg></span><span class="callout-label">关键信息</span></div><div class="callout-body">
+<p>在 C++，我们通常以 byte 为单位操作数据。</p>
+</div></aside>
+<p>下图显示了一些内存地址及其内部存放的数据（byte为单位）：</p>
+<p><img src="../assets/img/014426c88aa0.webp" alt="Memory Addressing" loading="lazy" decoding="async" class="zoomable" data-zoom="1"></p>
+<aside class="callout callout-quote" data-callout="quote"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 3-1 5-4 5zM14 21c3 0 7-1 7-8V5h-7v8h4c0 3-1 5-4 5z"></path></svg></span><span class="callout-label">题外话</span></div><div class="callout-body">
+<p>在一些老的或者非标的计算机上，一个字节可能表示不同长度的比特（1 到 48 比特都有可能）—— 不过，你通常不需要担心这个问题，因为现代计算机的事实标准就8比特，我们可以假设1个字节就是8个比特。</p>
+</div></aside>
+<p><strong>数据类型</strong></p>
+<p>由于计算机上所有的数据都只是一些连续的比特，我们必须要使用<strong>数据类型</strong>（通常简称为类型）告诉计算机如何将内存中的数据解析为有意义的值。我们已经学习了一种数据类型：整型。当一个整型变量被定义时，我们告诉计算机”该变量使用的这一段内存需要被解析为一个整型值“。</p>
+<p>当为一个对象进行赋值时，编译器和CPU会将这个值编码成一系列连续的 bit然后存放到内存中（注意：内存只能存放比特）。例如，如果你将一个整型的对象赋值为65，则该值会被转换为 0100 0001 后存放在内存关联的地址中。</p>
+<p>反过来，当对象被求值时，这些连续的 bit 会被重新组织成原来的值，即 0100 0001 会被转换为 65。</p>
+<p>幸运的是，编译器和CPU会帮助我们完成上述工作，我们通常不需要担心这些值是如何被转换的。</p>
+<p>我们的工作仅仅是为变量指定一个我们需要的值。</p>
+<h2 id="基本数据类型">基本数据类型<a class="anchor" aria-label="本节链接" href="#基本数据类型">#</a></h2>
+<p>C++ 具有很多内置的数据类型，称为基础数据类型，也经常被称为基本类型、原始类型或内置类型。</p>
+<p>下表是一些基本数据类型，有些可能你已经见过了：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>类型</th><th>分类</th><th>含义</th><th>例子</th></tr></thead><tbody><tr><td>float</td><td>Floating Point</td><td>a number with a fractional part</td><td>3.14159</td></tr><tr><td>double</td><td>Floating Point</td><td>a number with a fractional part</td><td>3.14159</td></tr><tr><td>long double</td><td>Floating Point</td><td>a number with a fractional part</td><td>3.14159</td></tr><tr><td>bool</td><td>Integral (Boolean)</td><td>true or false</td><td>true</td></tr><tr><td>char</td><td>Integral (Character)</td><td>a single character of text</td><td>‘c’</td></tr><tr><td>wchar_t</td><td>Integral (Character)</td><td>a single character of text</td><td>‘c’</td></tr><tr><td>char8_t (C++20)</td><td>Integral (Character)</td><td>a single character of text</td><td>‘c’</td></tr><tr><td>char16_t (C++11)</td><td>Integral (Character)</td><td>a single character of text</td><td>‘c’</td></tr><tr><td>char32_t (C++11)</td><td>Integral (Character)</td><td>a single character of text</td><td>‘c’</td></tr><tr><td>short</td><td>Integral (Integer)</td><td>positive and negative whole numbers, including 0</td><td>64</td></tr><tr><td>int</td><td>Integral (Integer)</td><td>positive and negative whole numbers, including 0</td><td>64</td></tr><tr><td>long</td><td>Integral (Integer)</td><td>positive and negative whole numbers, including 0</td><td>64</td></tr><tr><td>long long (C++11)</td><td>Integral (Integer)</td><td>positive and negative whole numbers, including 0</td><td>64</td></tr><tr><td>std::nullptr_t (C++11)</td><td>Null Pointer</td><td>a null pointer</td><td>nullptr</td></tr><tr><td>void</td><td>Void</td><td>no type</td><td>n/a</td></tr></tbody></table></div>
+<p>本章将相继介绍这些基本数据类型（除了 <code>std::nullptr_t</code>，我们会在讨论指针时讨论它）。C++  也支持很多复杂类型，称为<strong>复合类型</strong>，我们会在后续的章节中进行介绍。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>术语整型（interger）和整数的（integral）类似，但是意思并不完全相同。<strong>整型</strong>指的是一种用于存放非小数值的特定的数据结构，例如整数、0或者负整数。而<strong>整数型的</strong>则表示“像整型”。多数情况下，整型的一词被组成其他术语，例如“整数型的类型”，包括布尔类型、字符和整型（还包括枚举——在第九章会进行介绍）。“整数型的类型”之所以这么命名，是因为这些类型的数据在内存中是以整型数存放的，即使它们的行为可能不同（稍后我们会在讨论字符类型时了解其差异）。</p>
+</div></aside>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>大多数现代编程语言都包含基本的字符串类型（字符串指的是包含一系列字符的数据，通常用来表示文本）。在C++中，字符串并不属于基本类型（它属于复合类型）。但是因为字符串的使用方法很直接，而且也非常有用，因此在本章中我们也会介绍字符串类型（<a href="../c05/5-7-an-introduction-to-std-string.html" class="internal alias" data-slug="05-常量与字符串/5-7-an-introduction-to-std-string">5.7 - std::string 简介</a>）。</p>
+</div></aside>
+<h2 id="the-_t-suffix">The <code>_t</code> suffix<a class="anchor" aria-label="本节链接" href="#the-_t-suffix">#</a></h2>
+<p>很多在新版本 C++ 中定义的数据类型（例如 <code>std::nullptr_t</code>）都包含一个<code>_t</code>后缀。这个后缀表示 type（类型），这是一种常见的用于现代类型的命名方式。</p>
+<p>如果你遇到了带有<code>_t</code>后缀的标识符，它很可能是一个类型，但是也有很多类型是不包含该后缀的，所以该命名规则并不是被一贯遵守的。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c03/3-x-chapter-3-summary-and-quiz.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">3.x · 小结与测试 - 代码调试</span>
+      <span class="pn-chapter">第 03 章 · 调试 C++ 程序</span>
+    </a><a class="pn-card next" href="../c04/4-2-void.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">4.2 · Void</span>
+      <span class="pn-chapter">第 04 章 · 基础数据类型</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/04-%E5%9F%BA%E7%A1%80%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/4-1-Introduction-to-fundamental-data-types" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c04/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#bitsbytes-%E5%92%8C%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80">Bits、bytes 和内存地址</a></li><li class="lv2"><a href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">基本数据类型</a></li><li class="lv2"><a href="#the-_t-suffix">The _t suffix</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>16.1 · Introduction to containers and arrays · tklcpp</title>
+<meta name="description" content="The variable scalability challenge Consider a scenario where we want to record the test scores for 30 students…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c15/15-x-chapter-15-summary-and-quiz.html">
+<link rel="next" href="../c16/16-2-an-introduction-to-std-vector.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c16/16-1-introduction-to-containers-and-arrays.html" data-type="lesson" data-chapter="16" data-chapter-title="第 16 章 · std::vector 动态数组" data-title="Introduction to containers and arrays" data-num="16.1">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c16/index.html">第 16 章 · std::vector 动态数组</a><span class="sep">/</span><span class="current">16.1 · Introduction to containers and arrays</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c16/index.html">第 16 章 · std::vector 动态数组</a>
+        <h1><span class="h1-num">16.1</span>Introduction to containers and arrays</h1>
+        <div class="article-meta"><span>10 分钟</span><span class="dot">·</span><span class="badge badge-en">英文原文</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      <div class="translation-notice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><strong>本页尚未汉化。</strong>以下为英文原文；你可以结合站内搜索、词汇表阅读，或前往 <a href="https://hanxiaomax.github.io/Learncpp_CN/16-%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84Vector/16-1-introduction-to-containers-and-arrays" target="_blank" rel="noopener">源站页面</a> 查看最新版本。</div>
+  </div>
+      
+      <div class="article-body" id="article-body">
+<p>The variable scalability challenge</p>
+<p>Consider a scenario where we want to record the test scores for 30 students and calculate the average score for the class. To do so, we’ll need 30 variables. We could define those like this:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// allocate 30 integer variables (each with a different name)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore3 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// ...</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore30 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span></code></pre></div></figure>
+<p>That’s a lot of variables to define! And to calculate the average score for the class, we’d need to do something like this:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> average </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">testScore1 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore2 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore3 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore4 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore5</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">     +</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore6 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore7 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore8 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore9 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore10</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">     +</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore11 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore12 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore13 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore14 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore15</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">     +</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore16 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore17 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore18 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore19 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore20</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">     +</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore21 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore22 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore23 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore24 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore25</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">     +</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore26 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore27 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore28 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore29 </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">+</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> testScore30</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">)</span></span>
+<span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">     /</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 30</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span></code></pre></div></figure>
+<p>This is not only a lot of typing, it’s also very repetitive (and it wouldn’t be that hard to typo one of the numbers and not notice). And if we want to do anything with each of these values (like print them to the screen), we’d have to enter each of these variables names all over again.</p>
+<p>Now let’s say we need to modify our program to accommodate another student who was just added to the class. We’ll have to scan the entire codebase and manually add in <code>testScore31</code> wherever relevant. Any time we modify existing code, we risk introducing new bugs. For example, it wouldn’t be that hard to forget to update the divisor in the calculation of the average from <code>30</code> to <code>31</code>!</p>
+<p>And this is with only 30 variables. Think about the case where we have hundreds or thousands of objects. When we need more than a few objects of the same type, defining individual variables simply doesn’t scale.</p>
+<p>We could put our data inside a struct:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">struct</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> testScores</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// allocate 30 integer variables (each with a different name)</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> score1 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> score2 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> score3 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;">// ...</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> score30 </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{};</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>While this provides some additional organization for our scores (and allows us to pass them to functions more easily), it doesn’t solve the core problem: we still need to define and access each test score object individually.</p>
+<p>As you may have guessed, C++ has solutions to the above challenges. In this chapter, we’ll introduce one such solution. And in the following chapters, we’ll explore some other variants of that solution.</p>
+<p>Containers</p>
+<p>When you go to the grocery store to buy a dozen eggs, you (probably) aren’t selecting 12 eggs individually and putting them in your cart (you aren’t, right?). Instead, you’re likely to select a single carton of eggs. The carton is a type of container, holding some predefined number of eggs (likely 6, 12, or 24). Now consider breakfast cereal, containing many little pieces of cereal. You definitely wouldn’t want to store all these pieces in your pantry individually! Cereal often comes in a box, which is another container. We use containers all the time in real life because they make it easy to manage a collection of items.</p>
+<p>Containers also exist in programming, to make it easier to create and manage (potentially large) collections of objects. In general programming, a <strong>container</strong> is a data type that provides storage for a collection of unnamed objects (called <strong>elements</strong>).</p>
+<p>Key insight</p>
+<p>We typically use containers when we need to work with a set of related values.</p>
+<p>As it turns out, you’ve already been using one container type: strings! A string container provides storage for a collection of characters, which can then be output as text:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;string&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">string name</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Alex"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // strings are a container for characters</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> name</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span><span style="--shiki-light:#9CA0B0;--shiki-light-font-style:italic;--shiki-dark:#6A737D;--shiki-dark-font-style:inherit;"> // output our string as a sequence of characters</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>The elements of a container are unnamed</p>
+<p>While the container object itself typically has a name (otherwise how would we use it?), the elements of a container are unnamed. This is so that we can put as many elements in our container as we desire, without having to give each element a unique name! This lack of named elements is important, and is what distinguishes containers from other types of data structures. It is why plain structs (those that are just a collection of data members, like our <code>testScores</code> struct above) typically aren’t considered containers — their data members require unique names.</p>
+<p>In the example above, our string container has a name (<code>name</code>), but the characters inside the container (<code>'A'</code>, <code>'l'</code>, <code>'e'</code>, <code>'x'</code>) do not.</p>
+<p>But if the elements themselves are unnamed, how do we access them? Each container provides one or more methods to access its elements — but exactly how depends on the type of container. We’ll see our first example of this in the next lesson.</p>
+<p>Key insight</p>
+<p>The elements of a container do not have their own names, so that the container can have as many elements as we want without having to give each element a unique name.</p>
+<p>Each container provides some method to access these elements, but how depends on the specific type of container.</p>
+<p>The length of a container</p>
+<p>In programming, the number of elements in a container is often called it’s <strong>length</strong> (or sometimes <strong>count</strong>).</p>
+<p>In lesson <a href="https://www.learncpp.com/cpp-tutorial/introduction-to-stdstring/" class="external alias" target="_blank" rel="noopener noreferrer">5.7 — Introduction to std::string</a>, we showed how we could use the <code>length</code> member function of <code>std::string</code> to get the number of character elements in the string container:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;iostream&gt;</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;string&gt;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">int</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> main</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">string name</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "Alex"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span>
+<span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;">    std</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">::</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">cout </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> name </span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " has "</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> name</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">.</span><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">length</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">()</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> &lt;&lt;</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> " characters</span><span style="--shiki-light:#EA76CB;--shiki-dark:#79B8FF;">\n</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;">"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    return</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;"> 0</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>This prints:</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">Alex has </span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">4</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> characters</span></span></code></pre></div></figure>
+<p>In C++, the term <strong>size</strong> is also commonly used for the number of elements in a container. This is an unfortunate choice of nomenclature, as the term “size” can also refer to the number of bytes of memory used by an object (as returned by the <code>sizeof</code> operator).</p>
+<p>We’ll prefer the term “length” when referring to the number of elements in a container, and use the term “size” to refer to amount of storage required by an object.</p>
+<p>Container operations</p>
+<p>Back to our carton of eggs for a moment. What can you do with such a carton? Well, first you can acquire a carton of eggs. You can open the carton of eggs and select an egg, and then do whatever you want with that egg. You can remove an existing egg from the carton, or add a new egg to an empty space. You can also count the number of eggs in the carton.</p>
+<p>Similarly, containers typically implement a significant subset of the following operations:</p>
+<ul>
+<li>Create a container (e.g. empty, with storage for some initial number of elements, from a list of values).</li>
+<li>Access to elements (e.g. get first element, get last element, get any element).</li>
+<li>Insert and remove elements.</li>
+<li>Get the number of elements in the container.</li>
+</ul>
+<p>Containers may also provide other operations (or variations on the above) that assist in managing the collection of elements.</p>
+<p>Modern programming languages typically provide a variety of different container types. These container types differ in terms of which operations they actually support, and how performant those operations are. For example, one container type might provide fast access to any element in the container, but not support insertion or removal of elements. Another container type might provide fast insertion and removal of elements, but only allow access to elements in sequential order.</p>
+<p>Every container has a set of strengths and limitations. Picking the right container type for the task you are trying to solve can have a huge impact on both code maintainability and overall performance. We will discuss this topic further in a future lesson.</p>
+<p>Element types</p>
+<p>In most programming languages (including C++), containers are <strong>homogenous</strong>, meaning the elements of a container are required to have the same type.</p>
+<p>Some containers use a preset element type (e.g. a string typically has <code>char</code> elements), but more often the element type can be set by the user of the container. In C++, containers are typically implemented as class templates, so that the user can provide the desired element type as a template type argument. We’ll see an example of this next lesson.</p>
+<p>This makes containers flexible, as we do not need to create a new container type for each different element type. Instead, we just instantiate the class template with the desired element type, and we’re ready to go.</p>
+<p>As an aside…</p>
+<p>The opposite of a homogenous container is a <strong>heterogenous</strong> container, which allows elements to be different types. Heterogeneous containers are typically supported by scripting languages (such as Python).</p>
+<p>Containers in C++</p>
+<p>The <strong>Containers library</strong> is a part of the C++ standard library that contains various class types that implement some common types of containers. A class type that implements a container is sometimes called a <strong>container class</strong>. The full list of containers in the Containers library is documented <a href="https://en.cppreference.com/w/cpp/container" class="external alias" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<p>In C++, the definition of “container” is narrower than the general programming definition. Only the class types in the Containers library are considered to be containers in C++. We will use the term “container” when talking about containers in general, and “container class” when talking specifically about the container class types that are part of the Containers library.</p>
+<p>For advanced readers</p>
+<p>The following types are containers under the general programming definition, but are not considered to be containers by the C++ standard:</p>
+<ul>
+<li>C-style arrays</li>
+<li><code>std::string</code></li>
+<li><code>std::vector&lt;bool&gt;</code></li>
+</ul>
+<p>To be a container in C++, the container must implement all of the requirements listed <a href="https://en.cppreference.com/w/cpp/named_req/Container" class="external alias" target="_blank" rel="noopener noreferrer">here</a>. Note that these requirements include the implementation of certain member functions — this implies that C++ containers must be class types! The types listed above do not implement all of these requirements.</p>
+<p>However, because <code>std::string</code> and <code>std::vector&lt;bool&gt;</code> implement most of the requirements, they behave like containers in most circumstances. As a result, they are sometimes called “pseudo-containers”.</p>
+<p>Of the provided container classes, <code>std::vector</code> and <code>std::array</code> see by far the most use, and will be where we focus the bulk of our attention. The other containers classes are typically only used in more specialized situations.</p>
+<p>Introduction to arrays</p>
+<p>An <strong>array</strong> is a container data type that stores a sequence of values <strong>contiguously</strong> (meaning each element is placed in an adjacent memory location, with no gaps). Arrays allow fast, direct access to any element. They are conceptually simple and easy to use, making them the first choice when we need to create and work with a set of related values.</p>
+<p>C++ contains three primary array types: (C-style) arrays, the <code>std::vector</code> container class, and the <code>std::array</code> container class.</p>
+<p>(C-style) arrays were inherited from the C language. For backwards compatibility, these arrays are defined as part of the core C++ language (much like the fundamental data types). The C++ standard calls these “arrays”, but in modern C++ these are often called <strong>C arrays</strong> or <strong>C-style arrays</strong> in order to differentiate them from the similarly named <code>std::array</code>. C-style arrays are also sometimes called “naked arrays”, “fixed-sized arrays”, “fixed arrays”, or “built-in arrays”. We’ll prefer the term “C-style array”, and use “array” when discussing array types in general. By modern standards, C-style arrays behave strangely and they are dangerous. We will explore why in a future chapter.</p>
+<p>To help make arrays safer and easier to use in C++, the <code>std::vector</code> container class was introduced in C++03. <code>std::vector</code> is the most flexible of the three array types, and has a bunch of useful capabilities that the other array types don’t.</p>
+<p>Finally, the <code>std::array</code> container class was introduced in C++11 as a direct replacement for C-style arrays. It is more limited than <code>std::vector</code>, but can also be more efficient, especially for smaller arrays.</p>
+<p>All of these array types are still used in modern C++ in different capacities, so we will cover all three to varying degrees.</p>
+<p>Moving forward</p>
+<p>In the next lesson, we’ll introduce our first container class, <code>std::vector</code>, and begin our journey to show how it can efficiently solve the challenge we presented at the top of this lesson. We’ll spend a lot of time with <code>std::vector</code>, as we’ll need to introduce quite a few new concepts, and address some additional challenges along the way.</p>
+<p>One nice thing is that all of the container classes have similar interfaces. Thus, once you’ve learned how to use one container (e.g. <code>std::vector</code>), learning the others (e.g. <code>std::array</code>) is much simpler. For future containers (e.g. <code>std::array</code>), we’ll cover the notable differences (and reiterate the most important points).</p>
+<p>Author’s note</p>
+<p>A quick note on terminology:</p>
+<ul>
+<li>We will use <code>container classes</code> when we’re talking about something that applies to most or all the standard library containers classes.</li>
+<li>We will use <code>array</code> when we’re talking about something that generally applies to all array types, even ones implemented in other programming languages.</li>
+</ul>
+<p><code>std::vector</code> falls into both of these categories, so even though we may be using different terms, it’s still applicable to <code>std::vector</code>.</p>
+<p>Okay, ready?</p>
+<p>Let’s goooooooooooooooooooooooooooooooooooooooooooooooo.</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c15/15-x-chapter-15-summary-and-quiz.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">15.x · Chapter 15 summary and quiz</span>
+      <span class="pn-chapter">第 15 章 · 深入类</span>
+    </a><a class="pn-card next" href="../c16/16-2-an-introduction-to-std-vector.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">16.2 · 动态数组 std::vector 简介</span>
+      <span class="pn-chapter">第 16 章 · std::vector 动态数组</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/16-%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84Vector/16-1-introduction-to-containers-and-arrays" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c16/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

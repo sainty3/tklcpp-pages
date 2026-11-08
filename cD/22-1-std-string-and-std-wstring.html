@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>22.1 · std::string 和 std::wstring · tklcpp</title>
+<meta name="description" content="C++标准库提供了很多有用的类，但是其中最有用的，可能非 莫属了。 (和 ) 是一个字符串类，提供了字符串相关的多种操作，包括赋值、比较和修改，在本章中，我们将会一起深入学习字符串类。 注意：我们将C语言中的字符串称为C…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../cD/21-4-stl-algorithms-overview.html">
+<link rel="next" href="../cD/22-2-std-string-construction-and-destruction.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="cD/22-1-std-string-and-std-wstring.html" data-type="lesson" data-chapter="D" data-chapter-title="附录 D · 弃用文章" data-title="std::string 和 std::wstring" data-num="22.1">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../cD/index.html">附录 D · 弃用文章</a><span class="sep">/</span><span class="current">22.1 · std::string 和 std::wstring</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../cD/index.html">附录 D · 弃用文章</a>
+        <h1><span class="h1-num">22.1</span>std::string 和 std::wstring</h1>
+        <div class="article-meta"><span>5 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">string</span> <span class="tag">wstring</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">2 节</span></summary>
+    <ul><li class="lv2"><a href="#%E8%AE%BE%E8%AE%A1%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E7%9A%84%E5%88%9D%E8%A1%B7">设计字符串类的初衷</a></li><li class="lv2"><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%AE%80%E4%BB%8B">字符串简介</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><p>C++标准库提供了很多有用的类，但是其中最有用的，可能非 <code>std::string</code> 莫属了。<code>std::string</code> (和 <code>std::wstring</code>) 是一个字符串类，提供了字符串相关的多种操作，包括赋值、比较和修改，在本章中，我们将会一起深入学习字符串类。</p>
+<p>注意：我们将C语言中的字符串称为C语言风格字符串，而将 <code>std::string</code> (和 <code>std::wstring</code> 称为字符串)。</p>
+<aside class="callout callout-info" data-callout="info"><div class="callout-head"><span class="callout-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg></span><span class="callout-label">作者注</span></div><div class="callout-body">
+<p>注意，本章节的内容稍微有些过时，而且很可能会在将来进行更新。你可以浏览一下本章节，重点关注有关字符串的核心思想和例子。但如果是作为参考文档，专门的参考网站(例如 <a href="https://en.cppreference.com/w/cpp/string/basic_string" class="external alias" target="_blank" rel="noopener noreferrer">cppreference</a>) 会使更好的选择，在那里你可以找到更新、更准确的信息。</p>
+</div></aside>
+<h2 id="设计字符串类的初衷">设计字符串类的初衷<a class="anchor" aria-label="本节链接" href="#设计字符串类的初衷">#</a></h2>
+<p>在之前的课程中，我们介绍了<a href="../c17/17-10-c-style-strings.html" class="internal alias" data-slug="17-固定长度数组：stdarray和C风格数组/17-10-C-style-strings">C 语言风格字符串</a>，它的本质就是一个字符数组，存放了组成字符串的字符。如果你曾经使用过C风格字符串，你肯定也会觉得它用起来很困难、容易出错而且不容易调试。</p>
+<p>C语言风格字符串有很多缺陷，这主要是因为你必须自己管理它的内存。比方说，如果你需要将字符串”hello”赋值到一个缓存中，则你必须首先分配一个长度正确的缓存：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">*</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> strHello </span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span><span style="--shiki-light:#8839EF;--shiki-light-font-weight:bold;--shiki-dark:#F97583;--shiki-dark-font-weight:inherit;"> new</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> char</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">[</span><span style="--shiki-light:#FE640B;--shiki-dark:#79B8FF;">7</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">]</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> };</span></span></code></pre></div></figure>
+<p>不要忘记在计算长度时多加一个结束符的长度！</p>
+<p>然后你需要将值拷贝到这块缓存中：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#1E66F5;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">strcpy</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;">strHello</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> "hello!"</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">);</span></span></code></pre></div></figure>
+<p>只有当你计算的缓存长度正确时，才不会出现缓冲区溢出。</p>
+<p>当然，因为字符串是动态分配的，所以你还必须记得在使用完成后正确地释放它：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#179299;--shiki-dark:#F97583;">delete[]</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> strHello</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span></code></pre></div></figure>
+<p>不要忘记使用数组delete而不是普通delete。</p>
+<p>此外，C语言提供的许多用于处理数字的操作符，例如赋值和比较，根本无法用于处理C风格的字符串。有时，这些方法看似有效，但实际上会产生不正确的结果——例如，使用<code>==</code>比较两个C风格字符串时，实际上比较的是两个指针，而非字符串本身。使用<code>operator=</code>将一个C风格字符串赋值给另一个C风格字符串，乍一看似乎可行，但实际上是在进行指针的<a href="../glossary/shallow-copy.html" class="internal alias glossary-link" data-slug="词汇表/shallow-copy" title="词汇表：浅拷贝">浅拷贝</a>，这通常不是我们想要的结果。这类事情会导致程序崩溃，而且很难发现和调试！</p>
+<p>归根结底，使用C风格字符串需要记住许多关于安全/不安全的规则，记住一堆具有有趣名称的函数，如<code>strcat()</code>和<code>strcmp()</code>，而不是使用直观的操作符，而且还需要进行大量的手动内存管理。</p>
+<p>幸运的是，C++和标准库提供了处理字符串的更好的方法：<code>std::string</code>和<code>std::wstring</code>类。通过使用构造函数、析构函数和操作符重载等C++概念，<code>std::string</code> 使我们可以以一种直观和安全的方式创建和操作字符串！不再需要内存管理，不再需要奇怪的函数名，也大大降低了发生问题的可能性。</p>
+<h2 id="字符串简介">字符串简介<a class="anchor" aria-label="本节链接" href="#字符串简介">#</a></h2>
+<p>所有标准库字符串函数都位于头文件中，使用时只需要包含该头文件即可：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#DF8E1D;--shiki-dark:#F97583;">#include</span><span style="--shiki-light:#40A02B;--shiki-dark:#9ECBFF;"> &lt;string&gt;</span></span></code></pre></div></figure>
+<p>在字符串头文件中实际上有3个不同的字符串类。第一个是名为<code>basic_string</code>的模板基类：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    template</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> charT</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> traits</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> char_traits</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">charT</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&gt;,</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;"> class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> Allocator</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;"> =</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> allocator</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&lt;</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;">charT</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">&gt;</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;"> &gt;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">        class</span><span style="--shiki-light:#DF8E1D;--shiki-light-font-style:italic;--shiki-dark:#B392F0;--shiki-dark-font-style:inherit;"> basic_string</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>我们并不会直接使用这个类，所以暂时不要担心<code>trait</code>或<code>Allocator</code>这些乱七八糟的情况。在几乎所有可以想象到的情况下，默认值就足够了。</p>
+<p>标准库提供了两种类型的 <code>basic_string</code>：</p>
+<figure data-rehype-pretty-code-figure=""><div class="codeblock" data-lang="cpp"><div class="code-head"><span class="code-lang">C++</span><button class="copy-btn" type="button" aria-label="复制代码"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>复制</span></button></div><pre tabindex="0" data-language="cpp" data-theme="catppuccin-mocha github-dark"><code data-language="cpp" data-theme="catppuccin-mocha github-dark"><span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">namespace</span><span style="--shiki-light:#DF8E1D;--shiki-dark:#B392F0;"> std</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">{</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    typedef</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> basic_string</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">char</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> string</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">    typedef</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> basic_string</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&lt;</span><span style="--shiki-light:#8839EF;--shiki-dark:#F97583;">wchar_t</span><span style="--shiki-light:#179299;--shiki-dark:#F97583;">&gt;</span><span style="--shiki-light:#4C4F69;--shiki-dark:#E1E4E8;"> wstring</span><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line=""><span style="--shiki-light:#8C8FA1;--shiki-dark:#E1E4E8;">}</span></span></code></pre></div></figure>
+<p>这是你将实际使用的两个类。<code>string</code>用于标准的ASCII和utf-8字符串。<code>wstring</code>用于宽字符/unicode (utf-16)字符串。但是并没有用于utf-32字符串的内置类(不过，如果需要的话，您应该能够从<code>basic_string</code>自己扩展)。</p>
+<p>尽管你会直接使用的是<code>std::string</code>和<code>std::wstring</code>，但所有的字符串功能都是在<code>basic_string</code>类中实现的。<code>string</code>和<code>wstring</code>能够直接访问这些功能，因为它们是模板化的。因此，所提供的所有函数都适用于<code>string</code>和<code>wstring</code>。但是，由于<code>basic_string</code>是一个模板化类，这也意味着当你对<code>string</code>或<code>wstring</code>进行语法错误操作时，编译器将产生可怕的模板错误。不要被这些错误吓倒：它们只是看起来比较吓人罢了。</p>
+<p>这是<code>string</code>类中所有函数的列表。这些函数中的大多数都有多种变种用于处理不同类型的输入，我们将在接下来的课程中更深入地讨它们的具体用法。</p>
+<h4 id="构建和析构">构建和析构</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:center;"><a href="https://www.learncpp.com/cpp-tutorial/17-2-ststring-construction-and-destruction/" class="external alias" target="_blank" rel="noopener noreferrer">(constructor)</a></td><td style="text-align:left;">创建一个字符串的拷贝</td></tr><tr><td style="text-align:center;"><a href="https://www.learncpp.com/cpp-tutorial/17-2-ststring-construction-and-destruction/" class="external alias" target="_blank" rel="noopener noreferrer">(destructor)</a></td><td style="text-align:left;">销毁字符串</td></tr></tbody></table></div>
+<h4 id="长度和容量">长度和容量</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:left;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-tutorial/17-3-stdstring-length-and-capacity/" class="external alias" target="_blank" rel="noopener noreferrer">capacity()</a></td><td style="text-align:left;">在不重新分配内存情况下，能够存放的最多的字符个数</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-tutorial/17-3-stdstring-length-and-capacity/" class="external alias" target="_blank" rel="noopener noreferrer">empty()</a></td><td style="text-align:left;">返回布尔值表示字符串是否为空字符串</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-tutorial/17-3-stdstring-length-and-capacity/" class="external alias" target="_blank" rel="noopener noreferrer">length(), size()</a></td><td style="text-align:left;">返回字符串中字符的个数</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-tutorial/17-3-stdstring-length-and-capacity/" class="external alias" target="_blank" rel="noopener noreferrer">max_size()</a></td><td style="text-align:left;">返回可以分配的最长的字符串大小</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-tutorial/17-3-stdstring-length-and-capacity/" class="external alias" target="_blank" rel="noopener noreferrer">reserve()</a></td><td style="text-align:left;">扩大或缩小字符串的容量</td></tr></tbody></table></div>
+<h4 id="元素访问">元素访问</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:center;"><code>[]</code>, <code>at()</code></td><td style="text-align:left;">使用索引访问字符串中的字符</td></tr></tbody></table></div>
+<h4 id="修改字符串">修改字符串</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:left;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-programming/17-5-stdstring-assignment-and-swapping/" class="external alias" target="_blank" rel="noopener noreferrer">=, assign()</a></td><td style="text-align:left;">字符串赋值</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/uncategorized/17-6-stdstring-appending/" class="external alias" target="_blank" rel="noopener noreferrer">+=, append(), push_back()</a></td><td style="text-align:left;">字符串末尾添加</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-tutorial/17-7-stdstring-inserting/" class="external alias" target="_blank" rel="noopener noreferrer">insert()</a></td><td style="text-align:left;">在任意索引位置插入</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/clear" class="external alias" target="_blank" rel="noopener noreferrer">clear()</a></td><td style="text-align:left;">删除字符串中的所有字符</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/erase" class="external alias" target="_blank" rel="noopener noreferrer">erase()</a></td><td style="text-align:left;">清除字符</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/replace" class="external alias" target="_blank" rel="noopener noreferrer">replace()</a></td><td style="text-align:left;">替换字符串中的一部分</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/resize" class="external alias" target="_blank" rel="noopener noreferrer">resize()</a></td><td style="text-align:left;">调整字符串大小(在末尾截断或添加)</td></tr><tr><td style="text-align:left;"><a href="https://www.learncpp.com/cpp-programming/17-5-stdstring-assignment-and-swapping/" class="external alias" target="_blank" rel="noopener noreferrer">swap()</a></td><td style="text-align:left;">交换两个字符串</td></tr></tbody></table></div>
+<h4 id="输入输出">输入输出</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:center;"><code>&gt;&gt;</code>, <code>getline()</code></td><td style="text-align:left;">从输入流中获取输入</td></tr><tr><td style="text-align:center;"><code>&lt;&lt;</code></td><td style="text-align:left;">将字符串输出到输出流</td></tr><tr><td style="text-align:center;"><a href="https://www.learncpp.com/cpp-tutorial/17-4-stdstring-character-access-and-conversion-to-c-style-arrays/" class="external alias" target="_blank" rel="noopener noreferrer">c_str()</a></td><td style="text-align:left;">返回以空字符结尾的C语言风格字符串</td></tr><tr><td style="text-align:center;"><a href="https://www.learncpp.com/cpp-tutorial/17-4-stdstring-character-access-and-conversion-to-c-style-arrays/" class="external alias" target="_blank" rel="noopener noreferrer">copy()</a></td><td style="text-align:left;">拷贝字符串内容到字符数组(不包含结束符)</td></tr><tr><td style="text-align:center;"><a href="https://www.learncpp.com/cpp-tutorial/17-4-stdstring-character-access-and-conversion-to-c-style-arrays/" class="external alias" target="_blank" rel="noopener noreferrer">data()</a></td><td style="text-align:left;">类似<code>c_str()</code>。非const重载，允许写入返回的字符串。</td></tr></tbody></table></div>
+<h4 id="字符串比较">字符串比较</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:center;"><code>==</code>, <code>!=</code></td><td style="text-align:left;">比较两个字符串（返回布尔值）</td></tr><tr><td style="text-align:center;"><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code> ,<code>&gt;=</code></td><td style="text-align:left;">比较两个字符串大小关系（返回布尔值）</td></tr><tr><td style="text-align:center;"><code>compare()</code></td><td style="text-align:left;">比较两个字符串是否相等(返回 -1, 0, 或 1)</td></tr></tbody></table></div>
+<h4 id="子串和拼接">子串和拼接</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:center;"><code>+</code></td><td style="text-align:left;">连接两个字符串</td></tr><tr><td style="text-align:center;"><code>substr()</code></td><td style="text-align:left;">返回一个子串</td></tr></tbody></table></div>
+<h4 id="搜索">搜索</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:left;">Function</th><th style="text-align:left;">Effect</th></tr></thead><tbody><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/find" class="external alias" target="_blank" rel="noopener noreferrer">find()</a></td><td style="text-align:left;">搜索字符、子串第一次出现的索引位置</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/find_first_of" class="external alias" target="_blank" rel="noopener noreferrer">find_first_of()</a></td><td style="text-align:left;">找到字符第一次出现的索引位置</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/find_first_not_of" class="external alias" target="_blank" rel="noopener noreferrer">find_first_not_of()</a></td><td style="text-align:left;">找到第一个不在字符集中的字符出现的位置</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/find_last_of" class="external alias" target="_blank" rel="noopener noreferrer">find_last_of()</a></td><td style="text-align:left;">找到字符集中最后一个字符出现的索引位置</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/find_last_not_of" class="external alias" target="_blank" rel="noopener noreferrer">find_last_not_of()</a></td><td style="text-align:left;">找到最后一个不在字符集中的字符出现的位置</td></tr><tr><td style="text-align:left;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/rfind" class="external alias" target="_blank" rel="noopener noreferrer">rfind()</a></td><td style="text-align:left;">搜索字符、子串最后一次出现的索引位置</td></tr></tbody></table></div>
+<h4 id="迭代器和内存分配">迭代器和内存分配</h4>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th style="text-align:center;">Function</th><th style="text-align:center;">Effect</th></tr></thead><tbody><tr><td style="text-align:center;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/begin" class="external alias" target="_blank" rel="noopener noreferrer">begin()</a>, <a href="https://en.cppreference.com/w/cpp/string/basic_string/end" class="external alias" target="_blank" rel="noopener noreferrer">end()</a></td><td style="text-align:center;">正向迭代器，开头/结尾</td></tr><tr><td style="text-align:center;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/get_allocator" class="external alias" target="_blank" rel="noopener noreferrer">get_allocator()</a></td><td style="text-align:center;">返回分配器</td></tr><tr><td style="text-align:center;"><a href="https://en.cppreference.com/w/cpp/string/basic_string/rbegin" class="external alias" target="_blank" rel="noopener noreferrer">rbegin()</a>, <a href="https://en.cppreference.com/w/cpp/string/basic_string/rend" class="external alias" target="_blank" rel="noopener noreferrer">rend()</a></td><td style="text-align:center;">反向迭代器，开头/结尾</td></tr></tbody></table></div>
+<p>虽然标准库字符串类提供了很多功能，但有一些明显的遗漏：</p>
+<ul>
+<li>对于正则表达式的支持；</li>
+<li>从数字创建字符串的构造函数；</li>
+<li>大小写字母转换函数；</li>
+<li>忽略大小写的字符串比较方法；</li>
+<li>字符串分词(Tokenization)后存入数组；</li>
+<li>获取字符串左半部分或右半部分的函数；</li>
+<li>空白移除函数(trimming)；</li>
+<li><code>sprintf</code>风格的字符串格式化函数；</li>
+<li>utf-8 和 utf-16 转换。</li>
+</ul>
+<p>对于其中的大多数功能，你必须编写自己的函数，或者将字符串转换为C风格的字符串(使用<code>c_str()</code>)，并使用提供此功能的C函数。</p>
+<p>在接下来的课程中，我们将更深入地研究字符串类的各种功能。尽管我们将在示例中使用<code>string</code>，但所有内容都同样适用于<code>wstring</code>。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../cD/21-4-stl-algorithms-overview.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">21.4 · STL算法</span>
+      <span class="pn-chapter">附录 D · 弃用文章</span>
+    </a><a class="pn-card next" href="../cD/22-2-std-string-construction-and-destruction.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">22.2 · std-string 的构造和析构</span>
+      <span class="pn-chapter">附录 D · 弃用文章</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/D-%E5%BC%83%E7%94%A8%E6%96%87%E7%AB%A0/22-1-std-string-and-std-wstring" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../cD/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E8%AE%BE%E8%AE%A1%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B1%BB%E7%9A%84%E5%88%9D%E8%A1%B7">设计字符串类的初衷</a></li><li class="lv2"><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%AE%80%E4%BB%8B">字符串简介</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

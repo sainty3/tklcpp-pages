@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.12 · 作用域和链接小结 · tklcpp</title>
+<meta name="description" content="作用域、持续时间和链接这些概念很绕人，所以我们利用这节课对它们进行一次整理和总结。有些内容我们还没有介绍，但是我们仍然将其罗列在这里，在后续学习时可以进行参考。 作用域小结 变量标识符的作用域决定了标识符在哪里可以被访问…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c07/7-11-static-local-variables.html">
+<link rel="next" href="../c07/7-13-using-declarations-and-using-directives.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c07/7-12-scope-duration-and-linkage-summary.html" data-type="lesson" data-chapter="07" data-chapter-title="第 07 章 · 作用域、生命周期和链接" data-title="作用域和链接小结" data-num="7.12">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c07/index.html">第 07 章 · 作用域、生命周期和链接</a><span class="sep">/</span><span class="current">7.12 · 作用域和链接小结</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c07/index.html">第 07 章 · 作用域、生命周期和链接</a>
+        <h1><span class="h1-num">7.12</span>作用域和链接小结</h1>
+        <div class="article-meta"><span>3 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">linkage</span> <span class="tag">scope</span> <span class="tag">C++11</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">6 节</span></summary>
+    <ul><li class="lv2"><a href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%B0%8F%E7%BB%93">作用域小结</a></li><li class="lv2"><a href="#%E6%8C%81%E7%BB%AD%E6%97%B6%E9%97%B4%E5%B0%8F%E7%BB%93">持续时间小结</a></li><li class="lv2"><a href="#%E9%93%BE%E6%8E%A5%E5%B0%8F%E7%BB%93">链接小结</a></li><li class="lv2"><a href="#%E5%8F%98%E9%87%8F%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8C%81%E7%BB%AD%E6%97%B6%E9%97%B4%E5%92%8C%E9%93%BE%E6%8E%A5%E5%B0%8F%E7%BB%93">变量作用域、持续时间和链接小结</a></li><li class="lv2"><a href="#%E5%89%8D%E5%90%91%E5%A3%B0%E6%98%8E%E5%B0%8F%E7%BB%93">前向声明小结</a></li><li class="lv2"><a href="#%E5%AD%98%E5%82%A8%E7%B1%BB%E5%9E%8B%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88">存储类型说明符到底是什么？</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><p>作用域、持续时间和链接这些概念很绕人，所以我们利用这节课对它们进行一次整理和总结。有些内容我们还没有介绍，但是我们仍然将其罗列在这里，在后续学习时可以进行参考。</p>
+<h2 id="作用域小结">作用域小结<a class="anchor" aria-label="本节链接" href="#作用域小结">#</a></h2>
+<p>变量标识符的<strong>作用域</strong>决定了标识符在哪里可以被访问。</p>
+<ul>
+<li>具有<strong>块（局部）作用域</strong>的标识符，只能够在声明它们的块（及其嵌套块）中访问，这些变量包括：
+<ul>
+<li><a href="../c07/7-3-local-variables.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-3-Local-variables">局部变量</a></li>
+<li><a href="../glossary/parameters.html" class="internal alias glossary-link" data-slug="词汇表/parameters" title="词汇表：形参">函数形参</a></li>
+<li>定义在块中的用户自定义类型（包括枚举和类）</li>
+</ul>
+</li>
+<li>具有<strong>文件（全局）作用域</strong> 的变量和函数从声明位置开始，直到文件结尾都可以被访问， 包括：
+<ul>
+<li><a href="../glossary/global-variable.html" class="internal alias glossary-link" data-slug="词汇表/global-variable" title="词汇表：全局变量">全局变量</a></li>
+<li>函数</li>
+<li><strong>定义在全局作用域或命名空间中的用户自定义类型</strong>（包括枚举和类）</li>
+</ul>
+</li>
+</ul>
+<h2 id="持续时间小结">持续时间小结<a class="anchor" aria-label="本节链接" href="#持续时间小结">#</a></h2>
+<p>变量的持续时间决定了它合适被创建和销毁。</p>
+<ul>
+<li>具有<a href="../glossary/automatic-storage-duration.html" class="internal alias glossary-link" data-slug="词汇表/automatic-storage-duration" title="词汇表：自动存储持续时间">自动存储持续时间</a>的变量，在定义时被创建，而且在离开语句块时被销毁，包括：
+<ul>
+<li><a href="../c07/7-3-local-variables.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-3-Local-variables">局部变量</a></li>
+<li><a href="../glossary/parameters.html" class="internal alias glossary-link" data-slug="词汇表/parameters" title="词汇表：形参">函数形参</a></li>
+</ul>
+</li>
+<li>具有<a href="../glossary/static-storage-duration.html" class="internal alias glossary-link" data-slug="词汇表/static-storage-duration" title="词汇表：静态存储持续时间">静态存储持续时间</a>的变量，在程序开始时创建，在程序结束时销毁，包括：
+<ul>
+<li><a href="../glossary/global-variable.html" class="internal alias glossary-link" data-slug="词汇表/global-variable" title="词汇表：全局变量">全局变量</a></li>
+<li><a href="../glossary/static-variables.html" class="internal alias glossary-link" data-slug="词汇表/static-variables" title="词汇表：静态变量">静态局部变量</a></li>
+</ul>
+</li>
+<li>具有<a href="../glossary/dynamic-duration.html" class="internal alias glossary-link" data-slug="词汇表/dynamic-duration" title="词汇表：动态存储持续时间">动态存储持续时间</a>时间的变量在可以根据程序员的需要创建和销毁，包括：
+<ul>
+<li>动态分配的变量</li>
+</ul>
+</li>
+</ul>
+<h2 id="链接小结">链接小结<a class="anchor" aria-label="本节链接" href="#链接小结">#</a></h2>
+<p>标识符的链接属性，决定了标识符的多个声明是否被看做同一个表示符。</p>
+<ul>
+<li><strong>不具备链接属性</strong>的标识符，意味着该标识符只表示它自己，包括：
+<ul>
+<li><a href="../c07/7-3-local-variables.html" class="internal alias" data-slug="07-作用域、生命周期和链接/7-3-Local-variables">局部变量</a></li>
+<li>定义在块中的用户自定义类型（包括枚举和类）</li>
+</ul>
+</li>
+<li>**具备内部链接属性****的标识符可以在文件内部的任何位置被访问，包括：
+<ul>
+<li>静态全局变量(初始化或未初始化的)</li>
+<li>静态(<code>static</code>)函数</li>
+<li>const 全局变量</li>
+<li>定义在匿名命名空间中的函数</li>
+<li>定义在匿名命名空间中的用户自定义类型（包括枚举和类）</li>
+</ul>
+</li>
+<li><strong>具备外部链接属性</strong>的标识符可以在定义它的文件中访问，也可以在其他文件中（通过<a href="../glossary/forward-declaration.html" class="internal alias glossary-link" data-slug="词汇表/forward-declaration" title="词汇表：前向声明">前向声明</a>）访问，包括：
+<ul>
+<li>函数</li>
+<li>非常量全局变量(初始化或未初始化的)</li>
+<li>外部常量全局变量</li>
+<li>内联常量全局变量</li>
+<li><strong>定义在命名空间或全局作用域中的用户自定义类型</strong>（包括枚举和类）</li>
+</ul>
+</li>
+</ul>
+<p>具有外部链接的标识号如果在多个cpp文件中被编译，则会导致链接器报错（因为违反了<a href="../glossary/one-definition-rule.html" class="internal alias glossary-link" data-slug="词汇表/one-definition-rule" title="词汇表：单一定义规则(one-definition-rule)">单一定义规则(one-definition-rule)</a>）。不过，也有例外的情况（对于类型、目标、内联函数和内联变量）——我们会在后续的课程中介绍相关内容。</p>
+<p>同时，注意<strong>函数默认具有外部链接</strong>，必须要使用 <code>static</code> 才能使其具有内部链接。</p>
+<h2 id="变量作用域持续时间和链接小结">变量作用域、持续时间和链接小结<a class="anchor" aria-label="本节链接" href="#变量作用域持续时间和链接小结">#</a></h2>
+<p>因为变量具有作用域、持续时间和链接属性，这里我们使用表格对其进行总结：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>类型</th><th>例子</th><th>作用域</th><th>持续时间</th><th>链接属性</th><th>备注</th></tr></thead><tbody><tr><td>局部变量</td><td><code>int x;</code></td><td>块</td><td>自动</td><td>无</td><td></td></tr><tr><td>静态局部变量</td><td><code>static int s_x;</code></td><td>块</td><td>静态</td><td>无</td><td></td></tr><tr><td>动态变量</td><td><code>int *x { new int{} };</code></td><td>块</td><td>动态</td><td>无</td><td></td></tr><tr><td>函数形参</td><td><code>void foo(int x)</code></td><td>块</td><td>自动</td><td>无</td><td></td></tr><tr><td>外部非常量全局变量</td><td><code>int g_x;</code></td><td>文件</td><td>静态</td><td>外部</td><td>初始化或未初始化</td></tr><tr><td>内部非常量全局变量</td><td><code>static int g_x;</code></td><td>文件</td><td>静态</td><td>内部</td><td>初始化或未初始化</td></tr><tr><td>内部常量全局变量</td><td><code>constexpr int g_x { 1 };</code></td><td>文件</td><td>静态</td><td>内部</td><td>必须初始化</td></tr><tr><td>外部常量全局变量</td><td><code>extern const int g_x { 1 };</code></td><td>文件</td><td>静态</td><td>外部</td><td>必须初始化</td></tr><tr><td>内联常量全局变量(C++17)</td><td><code>inline constexpr int g_x { 1 };</code></td><td>文件</td><td>静态</td><td>外部</td><td>必须初始化</td></tr></tbody></table></div>
+<h2 id="前向声明小结">前向声明小结<a class="anchor" aria-label="本节链接" href="#前向声明小结">#</a></h2>
+<p>使用前向声明可以从其他文件中访问一个函数或者变量。声明变量的作用域与往常一样(全局变量具有文件作用域，局部变量具有块作用域)。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>类型</th><th>例子</th><th>备注</th></tr></thead><tbody><tr><td>函数前向声明</td><td><code>void foo(int x);</code></td><td>只需要函数原型，不能有函数体</td></tr><tr><td>非常量的变量前向声明</td><td><code>extern int g_x;</code></td><td>必须未初始化</td></tr><tr><td>常量的前向声明</td><td><code>extern const int g_x;</code></td><td>必须未初始化</td></tr><tr><td><code>Constexpr</code> 变量前向声明</td><td><code>extern constexpr int g_x;</code></td><td>不允许，<code>constexpr</code>不能前向声明</td></tr></tbody></table></div>
+<h2 id="存储类型说明符到底是什么">存储类型说明符到底是什么？<a class="anchor" aria-label="本节链接" href="#存储类型说明符到底是什么">#</a></h2>
+<p>当&nbsp;<code>static</code>&nbsp;和&nbsp;<code>extern</code>&nbsp;关键字（存储类型说明符）作为变量声明的一部分时，它们可以设定标识符的<a href="../glossary/storage-duration.html" class="internal alias glossary-link" data-slug="词汇表/storage-duration" title="词汇表：存储持续时间">存储持续时间</a>和链接属性。</p>
+<p>C++ 支持 4 种存储类型说明符：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container table-wrap"><table><thead><tr><th>说明符</th><th>含义</th><th>备注</th></tr></thead><tbody><tr><td><code>extern</code></td><td>static (或 thread_local) 存储持续时间和外部链接</td><td></td></tr><tr><td><code>static</code></td><td>static (或 thread_local) 存储持续时间和内部链接</td><td></td></tr><tr><td><code>thread_local</code></td><td>thread 存储持续时间</td><td></td></tr><tr><td><code>mutable</code></td><td>即使类是const类型的，变量也允许修改</td><td></td></tr><tr><td><code>auto</code></td><td>自动存储持续时间</td><td>在 C++11 中已经弃用</td></tr><tr><td><code>register</code></td><td>自动存储持续时间并且提示编译器将其存放在寄存器中</td><td>在 C++17 中已经弃用</td></tr></tbody></table></div>
+<p>术语 <em>存储类型说明符</em>&nbsp;通常只会在正式的文档中使用。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c07/7-11-static-local-variables.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">7.11 · 静态局部变量</span>
+      <span class="pn-chapter">第 07 章 · 作用域、生命周期和链接</span>
+    </a><a class="pn-card next" href="../c07/7-13-using-declarations-and-using-directives.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">7.13 · using 声明和 using 指令</span>
+      <span class="pn-chapter">第 07 章 · 作用域、生命周期和链接</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/07-%E4%BD%9C%E7%94%A8%E5%9F%9F%E3%80%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%92%8C%E9%93%BE%E6%8E%A5/7-12-Scope-duration-and-linkage-summary" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c07/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%B0%8F%E7%BB%93">作用域小结</a></li><li class="lv2"><a href="#%E6%8C%81%E7%BB%AD%E6%97%B6%E9%97%B4%E5%B0%8F%E7%BB%93">持续时间小结</a></li><li class="lv2"><a href="#%E9%93%BE%E6%8E%A5%E5%B0%8F%E7%BB%93">链接小结</a></li><li class="lv2"><a href="#%E5%8F%98%E9%87%8F%E4%BD%9C%E7%94%A8%E5%9F%9F%E6%8C%81%E7%BB%AD%E6%97%B6%E9%97%B4%E5%92%8C%E9%93%BE%E6%8E%A5%E5%B0%8F%E7%BB%93">变量作用域、持续时间和链接小结</a></li><li class="lv2"><a href="#%E5%89%8D%E5%90%91%E5%A3%B0%E6%98%8E%E5%B0%8F%E7%BB%93">前向声明小结</a></li><li class="lv2"><a href="#%E5%AD%98%E5%82%A8%E7%B1%BB%E5%9E%8B%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88">存储类型说明符到底是什么？</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>现代 C++ 中文课程 · tklcpp</title>
+<meta name="description" content="tklcpp：一份安静、完整的《Learn C++》中文课程。359 节系统课程、35 章与 287 个术语，支持全文搜索、深色模式与本地阅读进度，完全离线可用。">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/style.css">
+
+
+
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="home" data-root="" data-page="index.html" data-type="home" data-title="tklcpp">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+      <div class="topbar-inner">
+        <a class="topbar-brand" href="index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+        <nav class="home-nav" aria-label="主导航">
+          <a href="#chapters">课程目录</a>
+          <a href="catalog.html">完整目录</a>
+          <a href="glossary/index.html">词汇表</a>
+          <a href="quiz/">习题库</a>
+          <a href="app/moc.html">内容地图</a>
+        </nav>
+        <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+      </div>
+    </header>
+
+
+<main class="main" id="main">
+<div class="home-wrap">
+    <div class="hero-logo" data-logo-hero>
+      <div class="logo-paint"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg><canvas data-metal="hero" aria-hidden="true"></canvas></div>
+    </div>
+
+    <section class="home-hero reveal">
+      <div class="label">C++ 中文课程 · 本地精排版</div>
+      <h1 class="display-lg">从第一行代码，<br>到现代 C++。</h1>
+      <p class="lede">一份完整、系统、可离线阅读的 C++ 自学教程。覆盖语言基础、面向对象、模板与异常；无广告、可搜索，排版重新设计，只为长时间阅读。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="c00/index.html">开始阅读 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="text-link" href="catalog.html">浏览完整目录</a>
+        <span class="hero-note mono">359 lessons · 44h · offline</span>
+      </div>
+    </section>
+
+    <div class="continue-strip glow" id="continue-strip" hidden>
+    <span class="cs-label">继续学习</span>
+    <span class="cs-body"><strong id="continue-title"></strong><span id="continue-chapter"></span></span>
+    <a class="cs-link" id="continue-link" href="#">继续阅读 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+
+    <a class="continue-strip quiz-strip glow" href="quiz/">
+      <span class="cs-label">习题库</span>
+      <span class="cs-body"><strong>300 道课后习题与章节小测</strong><span>含答案、提示与中英对照 · 独立进度</span></span>
+      <span class="cs-link">打开习题库 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </a>
+
+    <section class="home-method" aria-label="怎么学">
+      <div class="method-media glow">
+        <div class="method-head"><span>hello.cpp</span><span class="mono">g++ -std=c++23</span></div>
+        <pre class="method-code"><span class="ln">1</span><span class="c-kw">#include</span> <span class="c-str">&lt;iostream&gt;</span>
+<span class="ln">2</span>
+<span class="ln">3</span><span class="c-kw">int</span> <span class="c-fn">main</span><span class="c-punc">()</span>
+<span class="ln">4</span><span class="c-punc">{</span>
+<span class="ln">5</span>    std<span class="c-punc">::</span>cout <span class="c-punc">&lt;&lt;</span> <span class="c-str">"Hello, C++!\n"</span><span class="c-punc">;</span>
+<span class="ln">6</span>    <span class="c-kw">return</span> <span class="c-str">0</span><span class="c-punc">;</span>
+<span class="ln">7</span><span class="c-punc">}</span></pre>
+        <div class="method-out"><span class="mono">$ ./hello</span><span>Hello, C++!</span></div>
+      </div>
+      <div class="method-copy">
+        <div class="label">怎么学</div>
+        <h2>顺着读，也可以跳着查。</h2>
+        <div class="method-steps">
+          <div class="method-step">
+            <span class="ms-num mono">01</span>
+            <div><h3>从第 00 章顺着读</h3><p>每节 5–15 分钟，代码块可以直接复制到本地编译器。</p></div>
+          </div>
+          <div class="method-step">
+            <span class="ms-num mono">02</span>
+            <div><h3>用搜索和词汇表</h3><p>Ctrl K 搜标题、正文与代码标识符；术语页会列出它出现的课程。</p></div>
+          </div>
+          <div class="method-step">
+            <span class="ms-num mono">03</span>
+            <div><h3>标记学完，随时继续</h3><p>阅读进度只保存在浏览器本地，下次打开会从上次的位置继续。</p></div>
+          </div>
+        </div>
+        <div class="method-facts">
+          <div><strong class="mono">359</strong><span>节课程</span></div>
+          <div><strong class="mono">35</strong><span>章</span></div>
+          <div><strong class="mono">287</strong><span>个术语</span></div>
+          <div><strong class="mono">44</strong><span>小时</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-catalog" id="chapters">
+      <div class="section-head">
+        <div>
+          <div class="label">课程目录</div>
+          <h2>35 章，按顺序学</h2>
+          <p>共 359 节 · 约 44 小时阅读量 · 已汉化 254 节</p>
+        </div>
+        <a class="text-link" href="catalog.html">完整目录</a>
+      </div>
+      <section class="part-group" aria-label="基础">
+      <div class="part-head"><span class="label">基础</span><span class="part-range mono">00–11</span></div>
+      <div class="chapter-rows">
+        <a class="chapter-row glow" href="c00/index.html">
+          <span class="cr-code mono">00</span>
+          <span class="cr-body"><span class="cr-title">简介与入门</span><span class="cr-desc">从零认识 C++：语言的历史、程序如何运行，以及如何装好编译器写下第一个程序。</span></span>
+          <span class="cr-meta mono">13 节</span>
+          <span class="cr-bar"><span data-chapter-progress="00"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="00"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c01/index.html">
+          <span class="cr-code mono">01</span>
+          <span class="cr-body"><span class="cr-title">C++ 基础</span><span class="cr-desc">变量、语句、函数、输入输出与命名空间——构成一个 C++ 程序的最小零件。</span></span>
+          <span class="cr-meta mono">12 节</span>
+          <span class="cr-bar"><span data-chapter-progress="01"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="01"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c02/index.html">
+          <span class="cr-code mono">02</span>
+          <span class="cr-body"><span class="cr-title">函数和文件</span><span class="cr-desc">参数与返回值、局部作用域、头文件、头文件保护，以及多文件项目的组织方式。</span></span>
+          <span class="cr-meta mono">14 节</span>
+          <span class="cr-bar"><span data-chapter-progress="02"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="02"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c03/index.html">
+          <span class="cr-code mono">03</span>
+          <span class="cr-body"><span class="cr-title">调试 C++ 程序</span><span class="cr-desc">区分语法错误与语义错误，学会用断点、单步、监视和调用栈定位问题。</span></span>
+          <span class="cr-meta mono">11 节</span>
+          <span class="cr-bar"><span data-chapter-progress="03"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="03"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c04/index.html">
+          <span class="cr-code mono">04</span>
+          <span class="cr-body"><span class="cr-title">基础数据类型</span><span class="cr-desc">整型、浮点、布尔与字符，sizeof、无符号数的陷阱，以及字面量的写法。</span></span>
+          <span class="cr-meta mono">13 节</span>
+          <span class="cr-bar"><span data-chapter-progress="04"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="04"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c05/index.html">
+          <span class="cr-code mono">05</span>
+          <span class="cr-body"><span class="cr-title">常量与字符串</span><span class="cr-desc">const 与 constexpr、std::string 与 std::string_view，以及对字符串的处理。</span></span>
+          <span class="cr-meta mono">11 节</span>
+          <span class="cr-bar"><span data-chapter-progress="05"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="05"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c06/index.html">
+          <span class="cr-code mono">06</span>
+          <span class="cr-body"><span class="cr-title">运算符</span><span class="cr-desc">算术、取模、自增自减、逗号、条件与逻辑运算符，以及优先级和结合性。</span></span>
+          <span class="cr-meta mono">9 节</span>
+          <span class="cr-bar"><span data-chapter-progress="06"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="06"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c07/index.html">
+          <span class="cr-code mono">07</span>
+          <span class="cr-body"><span class="cr-title">作用域、生命周期和链接</span><span class="cr-desc">局部与全局变量、静态存储期、内部/外部链接，以及命名空间的最佳实践。</span></span>
+          <span class="cr-meta mono">15 节</span>
+          <span class="cr-bar"><span data-chapter-progress="07"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="07"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c08/index.html">
+          <span class="cr-code mono">08</span>
+          <span class="cr-body"><span class="cr-title">控制流</span><span class="cr-desc">if、switch、循环、break/continue，以及用控制流写出清晰的程序逻辑。</span></span>
+          <span class="cr-meta mono">16 节</span>
+          <span class="cr-bar"><span data-chapter-progress="08"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="08"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c09/index.html">
+          <span class="cr-code mono">09</span>
+          <span class="cr-body"><span class="cr-title">错误检测与处理</span><span class="cr-desc">断言、静态分析、防御式编程，以及如何设计可靠的错误处理策略。</span></span>
+          <span class="cr-meta mono">7 节</span>
+          <span class="cr-bar"><span data-chapter-progress="09"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="09"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c10/index.html">
+          <span class="cr-code mono">10</span>
+          <span class="cr-body"><span class="cr-title">类型转换、别名与推导</span><span class="cr-desc">隐式与显式转换、类型别名、auto 与 decltype——让类型系统为你服务。</span></span>
+          <span class="cr-meta mono">10 节</span>
+          <span class="cr-bar"><span data-chapter-progress="10"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="10"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c11/index.html">
+          <span class="cr-code mono">11</span>
+          <span class="cr-body"><span class="cr-title">函数重载和函数模板</span><span class="cr-desc">函数重载解析、默认参数、函数模板与泛型编程的第一课。</span></span>
+          <span class="cr-meta mono">11 节</span>
+          <span class="cr-bar"><span data-chapter-progress="11"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="11"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section><section class="part-group" aria-label="类型与类">
+      <div class="part-head"><span class="label">类型与类</span><span class="part-range mono">12–17</span></div>
+      <div class="chapter-rows">
+        <a class="chapter-row glow" href="c12/index.html">
+          <span class="cr-code mono">12</span>
+          <span class="cr-body"><span class="cr-title">引用和指针</span><span class="cr-desc">引用、指针、nullptr、const 指针与内存地址——理解 C++ 的核心模型。</span></span>
+          <span class="cr-meta mono">16 节</span>
+          <span class="cr-bar"><span data-chapter-progress="12"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="12"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c13/index.html">
+          <span class="cr-code mono">13</span>
+          <span class="cr-body"><span class="cr-title">枚举和结构体</span><span class="cr-desc">枚举类、结构体、联合、成员访问，以及用类型别名组织自定义数据。</span></span>
+          <span class="cr-meta mono">17 节</span>
+          <span class="cr-bar"><span data-chapter-progress="13"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="13"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c14/index.html">
+          <span class="cr-code mono">14</span>
+          <span class="cr-body"><span class="cr-title">类简介</span><span class="cr-desc">类的成员、访问控制、构造函数、this 指针，以及面向对象的第一步。</span></span>
+          <span class="cr-meta mono">19 节</span>
+          <span class="cr-bar"><span data-chapter-progress="14"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="14"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c15/index.html">
+          <span class="cr-code mono">15</span>
+          <span class="cr-body"><span class="cr-title">深入类</span><span class="cr-desc">静态成员、友元、嵌套类型、析构函数与 RAII，写出真正好用的类。</span></span>
+          <span class="cr-meta mono">11 节</span>
+          <span class="cr-bar"><span data-chapter-progress="15"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="15"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c16/index.html">
+          <span class="cr-code mono">16</span>
+          <span class="cr-body"><span class="cr-title">std::vector 动态数组</span><span class="cr-desc">std::vector 的容量、栈行为、下标与越界，以及动态数组的正确用法。</span></span>
+          <span class="cr-meta mono">13 节</span>
+          <span class="cr-bar"><span data-chapter-progress="16"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="16"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c17/index.html">
+          <span class="cr-code mono">17</span>
+          <span class="cr-body"><span class="cr-title">std::array 与 C 风格数组</span><span class="cr-desc">std::array、C 风格数组、多维数组、数组与指针的关系，以及范围 for。</span></span>
+          <span class="cr-meta mono">16 节</span>
+          <span class="cr-bar"><span data-chapter-progress="17"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="17"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section><section class="part-group" aria-label="进阶">
+      <div class="part-head"><span class="label">进阶</span><span class="part-range mono">18–28</span></div>
+      <div class="chapter-rows">
+        <a class="chapter-row glow" href="c18/index.html">
+          <span class="cr-code mono">18</span>
+          <span class="cr-body"><span class="cr-title">迭代器与算法</span><span class="cr-desc">迭代器类别、标准库算法与 ranges——用算法代替手写循环。</span></span>
+          <span class="cr-meta mono">4 节</span>
+          <span class="cr-bar"><span data-chapter-progress="18"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="18"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c19/index.html">
+          <span class="cr-code mono">19</span>
+          <span class="cr-body"><span class="cr-title">动态内存分配</span><span class="cr-desc">new/delete、动态数组、内存泄漏与 RAII，以及智能指针的引入。</span></span>
+          <span class="cr-meta mono">5 节</span>
+          <span class="cr-bar"><span data-chapter-progress="19"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="19"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c20/index.html">
+          <span class="cr-code mono">20</span>
+          <span class="cr-body"><span class="cr-title">函数</span><span class="cr-desc">函数指针、lambda、闭包捕获、递归，以及高阶函数式的 C++ 写法。</span></span>
+          <span class="cr-meta mono">8 节</span>
+          <span class="cr-bar"><span data-chapter-progress="20"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="20"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c21/index.html">
+          <span class="cr-code mono">21</span>
+          <span class="cr-body"><span class="cr-title">操作符重载</span><span class="cr-desc">为自定义类型重载运算符，理解拷贝赋值、深浅拷贝与三/五法则。</span></span>
+          <span class="cr-meta mono">15 节</span>
+          <span class="cr-bar"><span data-chapter-progress="21"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="21"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c22/index.html">
+          <span class="cr-code mono">22</span>
+          <span class="cr-body"><span class="cr-title">移动语义与智能指针</span><span class="cr-desc">右值引用、std::move、移动构造与 unique_ptr / shared_ptr。</span></span>
+          <span class="cr-meta mono">8 节</span>
+          <span class="cr-bar"><span data-chapter-progress="22"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="22"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c23/index.html">
+          <span class="cr-code mono">23</span>
+          <span class="cr-body"><span class="cr-title">对象关系</span><span class="cr-desc">组合、聚合、关联与依赖——用对象之间的关系来建模真实世界。</span></span>
+          <span class="cr-meta mono">8 节</span>
+          <span class="cr-bar"><span data-chapter-progress="23"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="23"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c24/index.html">
+          <span class="cr-code mono">24</span>
+          <span class="cr-body"><span class="cr-title">继承</span><span class="cr-desc">派生类、构造函数顺序、访问控制与多重继承的取舍。</span></span>
+          <span class="cr-meta mono">10 节</span>
+          <span class="cr-bar"><span data-chapter-progress="24"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="24"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c25/index.html">
+          <span class="cr-code mono">25</span>
+          <span class="cr-body"><span class="cr-title">虚函数</span><span class="cr-desc">虚函数、多态、抽象类、override/final 与虚函数表。</span></span>
+          <span class="cr-meta mono">12 节</span>
+          <span class="cr-bar"><span data-chapter-progress="25"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="25"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c26/index.html">
+          <span class="cr-code mono">26</span>
+          <span class="cr-body"><span class="cr-title">模板和类</span><span class="cr-desc">类模板、模板特化、非类型模板参数与模板元编程入门。</span></span>
+          <span class="cr-meta mono">7 节</span>
+          <span class="cr-bar"><span data-chapter-progress="26"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="26"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c27/index.html">
+          <span class="cr-code mono">27</span>
+          <span class="cr-body"><span class="cr-title">异常</span><span class="cr-desc">throw/try/catch、栈展开、异常安全与 noexcept 的正确使用。</span></span>
+          <span class="cr-meta mono">11 节</span>
+          <span class="cr-bar"><span data-chapter-progress="27"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="27"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="c28/index.html">
+          <span class="cr-code mono">28</span>
+          <span class="cr-body"><span class="cr-title">输入输出</span><span class="cr-desc">流的状态、格式化输出、文件 I/O 与随机数生成。</span></span>
+          <span class="cr-meta mono">7 节</span>
+          <span class="cr-bar"><span data-chapter-progress="28"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="28"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section><section class="part-group" aria-label="附录与专题">
+      <div class="part-head"><span class="label">附录与专题</span><span class="part-range mono">A · B · C · D · F · O</span></div>
+      <div class="chapter-rows">
+        <a class="chapter-row glow" href="cA/index.html">
+          <span class="cr-code mono">A</span>
+          <span class="cr-body"><span class="cr-title">其他话题</span><span class="cr-desc">静态库与动态库、Visual Studio / Code::Blocks 配置，以及 C++ FAQ。</span></span>
+          <span class="cr-meta mono">4 节</span>
+          <span class="cr-bar"><span data-chapter-progress="A"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="A"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="cB/index.html">
+          <span class="cr-code mono">B</span>
+          <span class="cr-body"><span class="cr-title">C++ 标准更新</span><span class="cr-desc">C++11 / 14 / 17 / 20 / 23 带来了什么，快速了解每个版本的新特性。</span></span>
+          <span class="cr-meta mono">5 节</span>
+          <span class="cr-bar"><span data-chapter-progress="B"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="B"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="cC/index.html">
+          <span class="cr-code mono">C</span>
+          <span class="cr-body"><span class="cr-title">结束语</span><span class="cr-desc">课程到此结束——接下来可以学什么，以及一些值得长期收藏的资源。</span></span>
+          <span class="cr-meta mono">1 节</span>
+          <span class="cr-bar"><span data-chapter-progress="C"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="C"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="cD/index.html">
+          <span class="cr-code mono">D</span>
+          <span class="cr-body"><span class="cr-title">弃用文章</span><span class="cr-desc">已经从主线课程中移除的旧内容，保留仅供查阅。</span></span>
+          <span class="cr-meta mono">11 节</span>
+          <span class="cr-bar"><span data-chapter-progress="D"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="D"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="cF/index.html">
+          <span class="cr-code mono">F</span>
+          <span class="cr-body"><span class="cr-title">constexpr 函数</span><span class="cr-desc">constexpr 与 consteval 的深入讨论：编译期计算与函数求值。</span></span>
+          <span class="cr-meta mono">5 节</span>
+          <span class="cr-bar"><span data-chapter-progress="F"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="F"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a><a class="chapter-row glow" href="cO/index.html">
+          <span class="cr-code mono">O</span>
+          <span class="cr-body"><span class="cr-title">位运算</span><span class="cr-desc">位标志、位运算符、位掩码，以及二进制与十进制之间的转换。</span></span>
+          <span class="cr-meta mono">4 节</span>
+          <span class="cr-bar"><span data-chapter-progress="O"></span></span>
+          <span class="cr-pct mono" data-chapter-pct="O"></span>
+          <span class="cr-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
+    </section>
+    </section>
+
+    <section class="home-about glow">
+      <div class="about-copy">
+        <div class="label">关于</div>
+        <h2>一份可以慢慢读完的 C++ 教程。</h2>
+        <p>课程内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译项目</a>，原文由 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a> 编写。感谢译者长期维护这份免费、细致的中文教程。</p>
+        <p>tklcpp 重新设计了排版与导航，并加入全文搜索、深色模式、阅读进度、代码复制与逐节标记；所有页面都能直接离线打开，没有广告与跟踪脚本。</p>
+        <p>105 节课程在原项目中尚未翻译，页面会标注「英文原文」；词汇表另有部分词条仍在补充中。</p>
+      </div>
+      <div class="about-facts">
+        <div class="fact"><strong class="mono" data-stat-read>0</strong><span>你已学完 / 359 节</span></div>
+        <div class="fact"><strong class="mono">44</strong><span>小时总阅读量</span></div>
+        <div class="fact"><strong class="mono">287</strong><span>个术语</span></div>
+        <div class="fact"><strong class="mono">105</strong><span>节英文原文</span></div>
+      </div>
+    </section>
+  </div>
+  <div class="side-logo" data-logo-target="side" aria-hidden="true">
+    <div class="logo-paint"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg><canvas data-metal="side"></canvas></div>
+  </div>
+  <canvas class="logo-cloud" data-logo-canvas aria-hidden="true"></canvas>
+  <noscript><style>.home .brand-mark{opacity:1!important}</style></noscript>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="assets/nav-data.js"></script>
+<script src="assets/design.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>25.x · 小结与测试 - 虚函数 · tklcpp</title>
+<meta name="description" content="复习 25.1 - 基类的指针和引用 C++ 允许你将基类类型的指针或引用指向派生类的对象。当我们需要编写代码使其能够配合从同一个基类继承的派生类工作时，这个特性非常有用； 25.2 - 虚函数和多态 如果没有虚函数的帮…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c25/25-11-printing-inherited-classes-using-insertion-operator.html">
+<link rel="next" href="../c26/26-1-template-classes.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c25/25-x-chapter-25-comprehensive-quiz.html" data-type="lesson" data-chapter="25" data-chapter-title="第 25 章 · 虚函数" data-title="小结与测试 - 虚函数" data-num="25.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c25/index.html">第 25 章 · 虚函数</a><span class="sep">/</span><span class="current">25.x · 小结与测试 - 虚函数</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c25/index.html">第 25 章 · 虚函数</a>
+        <h1><span class="h1-num">25.x</span>小结与测试 - 虚函数</h1>
+        <div class="article-meta"><span>3 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><h2 id="复习">复习<a class="anchor" aria-label="本节链接" href="#复习">#</a></h2>
+<p><a href="../c25/25-1-pointers-and-references-to-the-base-class-of-derived-objects.html" class="internal alias" data-slug="25-虚函数/25-1-pointers-and-references-to-the-base-class-of-derived-objects">25.1 - 基类的指针和引用</a></p>
+<ul>
+<li>C++ 允许你将基类类型的指针或引用指向派生类的对象。当我们需要编写代码使其能够配合从同一个基类继承的派生类工作时，这个特性非常有用；</li>
+</ul>
+<p><a href="../c25/25-2-virtual-functions-and-polymorphism.html" class="internal alias" data-slug="25-虚函数/25-2-virtual-functions-and-polymorphism">25.2 - 虚函数和多态</a></p>
+<ul>
+<li>如果没有虚函数的帮助，指向派生类的基类指针和引用就只能访问基类的成员变量和基类中对应的函数；</li>
+<li>虚函数是一种特殊类型的函数，它会解析为基类和派生类中共同存在的最后派生的函数（称为<a href="../glossary/override.html" class="internal alias glossary-link" data-slug="词汇表/override" title="词汇表：重写">重载</a>）。为了实现重载。派生类的函数和基类中的虚函数必须具有相同的函数签名和返回值类型。一个例外的情况是<a href="../glossary/covariant.html" class="internal alias glossary-link" data-slug="词汇表/covariant" title="词汇表：协变返回值类型">协变返回值类型</a>，这种情况下重载函数的返回值可以返回派生类类型的指针或引用，而不必和基类中的函数一样也返回基类类型的指针和引用；</li>
+</ul>
+<p><a href="../c25/25-3-the-override-and-final-specifiers-and-covariant-return-types.html" class="internal alias" data-slug="25-虚函数/25-3-the-override-and-final-specifiers-and-covariant-return-types">25.3 - override、final标识符以及协变返回类型</a></p>
+<ul>
+<li>如果一个函数的目的是被另外一个函数重载，我们应该使用<code>override</code>来修饰它以便确保它被重载；</li>
+<li><code>final</code> 关键字可以用来指明某个函数不可以被重载或某个类不能被继承；</li>
+</ul>
+<p><a href="../c25/25-4-virtual-destructors-virtual-assignment-and-overriding-virtualization.html" class="internal alias" data-slug="25-虚函数/25-4-virtual-destructors-virtual-assignment-and-overriding-virtualization">25.4 - 虚构造函数、虚赋值和重载虚拟化</a></p>
+<ul>
+<li>如果一个类的功能是作为基类使用，那应该将其析构函数设为虚函数，这样才能确保一个指向派生类的基类类型的指针被 <code>delete</code> 的时候，能够调用正确的析构函数（子类的析构函数）；</li>
+<li>使用<a href="../glossary/scope-resolution-operator.html" class="internal alias glossary-link" data-slug="词汇表/scope-resolution-operator" title="词汇表：作用域解析运算符">作用域解析运算符</a>可以规避虚函数解析，它可以直接显式地指定你希望使用哪个类中的函数：例如：&nbsp;<code>base.Base::getName()</code>；</li>
+</ul>
+<p><a href="../c25/25-5-early-binding-and-late-binding.html" class="internal alias" data-slug="25-虚函数/25-5-early-binding-and-late-binding">25.5 - 早期绑定和后期绑定</a></p>
+<ul>
+<li>当编译器解析到函数的直接调用时，会进行<a href="../glossary/early-binding.html" class="internal alias glossary-link" data-slug="词汇表/Early-binding" title="词汇表：早期绑定">早期绑定</a>。编译器或者链接器可以直接解析该函数调用。 <a href="../glossary/late-binding.html" class="internal alias glossary-link" data-slug="词汇表/Late-binding" title="词汇表：后期绑定">后期绑定</a> 则发生在通过函数指针进行调用时。在这种情况下，实际的函数调用只有在运行时才能确定。虚函数使用<a href="../glossary/late-binding.html" class="internal alias glossary-link" data-slug="词汇表/Late-binding" title="词汇表：后期绑定">后期绑定</a>和虚函数表来确定实际调用的函数。</li>
+</ul>
+<p><a href="../c25/25-6-the-virtual-table.html" class="internal alias" data-slug="25-虚函数/25-6-the-virtual-table">25.6 - 虚函数表</a></p>
+<ul>
+<li>使用虚函数是有开销的：虚函数的调用更耗时，而且虚函数表也会使每一个包含虚函数的对象其大小增加一个指针的大小。</li>
+</ul>
+<p><a href="../c25/25-7-pure-virtual-functions-abstract-base-classes-and-interface-classes.html" class="internal alias" data-slug="25-虚函数/25-7-pure-virtual-functions-abstract-base-classes-and--interface-classes">25.7 - 纯虚函数，抽象基类和接口类</a></p>
+<ul>
+<li>虚函数可以被定义为<a href="../glossary/pure-virtual.html" class="internal alias glossary-link" data-slug="词汇表/pure-virtual" title="词汇表：纯虚函数">纯虚函数</a>或抽象函数，只需在其函数原型的结尾添加”=0“即可。包含纯虚函数的类称为<a href="../glossary/abstract-class.html" class="internal alias glossary-link" data-slug="词汇表/abstract-class" title="词汇表：抽象类">抽象类</a>，它 不能被实例化。一个继承了纯虚函数的类，必须实现这些虚函数，否则该类也是抽象类。纯虚函数也可以有函数体，但即便这样它仍然是抽象的。</li>
+<li><a href="../glossary/interface-class.html" class="internal alias glossary-link" data-slug="词汇表/interface-class" title="词汇表：接口类">接口类</a>是那些没有成员变量，且所有函数均为<strong>纯虚函数</strong>的类，通常在命名它们的时候会使用大写字母I开头。</li>
+</ul>
+<p><a href="../c25/25-8-virtual-base-classes.html" class="internal alias" data-slug="25-虚函数/25-8-virtual-base-classes">25.8 - 虚基类</a></p>
+<ul>
+<li><a href="../glossary/virtual-base-class.html" class="internal alias glossary-link" data-slug="词汇表/virtual-base-class" title="词汇表：虚基类">虚基类</a>是一种基类，不论它被继承多少次，它始终只会被构造一次。</li>
+</ul>
+<p><a href="../c25/25-9-object-slicing.html" class="internal alias" data-slug="25-虚函数/25-9-object-slicing">25.9 - 对象切片</a></p>
+<ul>
+<li>当一个派生类被赋值给一个基类对象时，基类只会得到一份包含了派生类中基类部分的拷贝。这个现象被称为<a href="../glossary/object-slicing.html" class="internal alias glossary-link" data-slug="词汇表/object-slicing" title="词汇表：对象切片">对象切片</a>。</li>
+<li><em>所以函数<a href="../glossary/pass-by-value.html" class="internal alias glossary-link" data-slug="词汇表/pass-by-value" title="词汇表：按值传递">按值传递</a>派生对象时会出现切片，导致派生类虚函数没办法被实际调用</em></li>
+</ul>
+<p><a href="../c25/25-10-dynamic-casting.html" class="internal alias" data-slug="25-虚函数/25-10-dynamic-casting">25.10 - 动态类型转换</a></p>
+<ul>
+<li><a href="../glossary/dynamic-casts.html" class="internal alias glossary-link" data-slug="词汇表/dynamic-casts" title="词汇表：动态类型转换">动态类型转换</a>可以用来将一个指向基类对象的指针转换为指向派生类对象的指针，即<a href="../glossary/downcasting.html" class="internal alias glossary-link" data-slug="词汇表/downcasting" title="词汇表：向下转换">向下转换</a>。如果转换失败，则会返回一个空指针。</li>
+</ul>
+<p><a href="../c25/25-11-printing-inherited-classes-using-insertion-operator.html" class="internal alias" data-slug="25-虚函数/25-11-printing-inherited-classes-using-insertion-operator">25.11 - 使用 &lt;&lt; 运算符打印继承类</a></p>
+<ul>
+<li>为派生类重载<code>&lt;&lt;</code> 运算符的最简单的办法，是重载最基础的基类的<code>&lt;&lt;</code>运算符，然后调用虚成员函数来进行打印。</li>
+</ul></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c25/25-11-printing-inherited-classes-using-insertion-operator.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">25.11 · 使用 &lt;&lt; 运算符打印继承类</span>
+      <span class="pn-chapter">第 25 章 · 虚函数</span>
+    </a><a class="pn-card next" href="../c26/26-1-template-classes.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">26.1 · Template classes</span>
+      <span class="pn-chapter">第 26 章 · 模板和类</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/25-%E8%99%9A%E5%87%BD%E6%95%B0/25-x-Chapter-25-comprehensive-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c25/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

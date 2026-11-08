@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.x · 小结与测试 - C++基础 · tklcpp</title>
+<meta name="description" content="章节回顾 语句是一种指令，让程序执行某些操作。语句通常以分号结尾。 函数是一组序列执行的语句。每个 C++程序都必须包含一个 函数。当你执行程序的时候，首先会从 函数开始执行。 这些控制 C++ 元素组织形式的规则，称为…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c01/1-11-developing-your-first-program.html">
+<link rel="next" href="../c02/2-1-introduction-to-functions.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c01/1-x-chapter-1-summary-and-quiz.html" data-type="lesson" data-chapter="01" data-chapter-title="第 01 章 · C++ 基础" data-title="小结与测试 - C++基础" data-num="1.x">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c01/index.html">第 01 章 · C++ 基础</a><span class="sep">/</span><span class="current">1.x · 小结与测试 - C++基础</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c01/index.html">第 01 章 · C++ 基础</a>
+        <h1><span class="h1-num">1.x</span>小结与测试 - C++基础</h1>
+        <div class="article-meta"><span>2 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">summary</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      
+      <div class="article-body" id="article-body"><h2 id="章节回顾">章节回顾<a class="anchor" aria-label="本节链接" href="#章节回顾">#</a></h2>
+<p><strong>语句</strong>是一种指令，让程序执行某些操作。语句通常以分号结尾。</p>
+<p><strong>函数</strong>是一组序列执行的语句。每个 C++程序都必须包含一个 <code>main</code> 函数。当你执行程序的时候，首先会从 <code>main</code> 函数开始执行。</p>
+<p>这些控制 C++ 元素组织形式的规则，称为<strong>语法</strong>。当你违反语言的语法规则时，就会产生语法错误。</p>
+<p><strong>注释</strong>允许你在代码中留下笔记。C++ 支持两种类型的注释。行内注释以&nbsp;<code>//</code> 开头。段落注释则以 <code>/*</code> 开头，以 <code>*/</code> 结束。请不要嵌套注释。</p>
+<p>你可以通过注释来临时屏蔽一行或一段代码，上述操作称为注释掉（commenting out）代码。</p>
+<p><strong>数据</strong>是一系列符号并可以被解析为某种含义。一段被存放在内存中的数据称为<strong>值</strong>。</p>
+<p><strong>变量</strong>是一段命名的内存，现在我们便可以使用它来存放值了。变量的名称为<a href="../glossary/identifier.html" class="internal alias glossary-link" data-slug="词汇表/identifier" title="词汇表：标识符(identifier)">标识符(identifier)</a>。创建变量需要通过声明语句。当程序开始运行的时候，变量就会被<strong>实例化</strong>，即它会被关联到某个内存地址&nbsp;。</p>
+<p><strong>数据类型</strong>可以告诉编译器如何将一段数据解释为具有含义的值。整型指的是不包含小数部分的值，例如 4、27、0、-2 或-12。</p>
+<p><strong>拷贝赋值</strong>&nbsp;(通过 <code>operator=</code>) 可以被用来向某个已经被创建的变量赋值。</p>
+<p><a href="../glossary/initialization.html" class="internal alias glossary-link" data-slug="词汇表/initialization" title="词汇表：初始化">初始化</a>用于在变量被创建的同时为其指定。C++ 支持三种类型的初始化：<a href="../glossary/copy-initialization.html" class="internal alias glossary-link" data-slug="词汇表/copy-initialization" title="词汇表：拷贝初始化">拷贝初始化</a>、<a href="../glossary/direct-initialization.html" class="internal alias glossary-link" data-slug="词汇表/direct-initialization" title="词汇表：直接初始化">直接初始化</a>和<a href="../glossary/uniform-initialization.html" class="internal alias glossary-link" data-slug="词汇表/uniform-initialization" title="词汇表：统一初始化">统一初始化</a>（也称为<a href="../glossary/list-initialization.html" class="internal alias glossary-link" data-slug="词汇表/list-initialization" title="词汇表：列表初始化">列表初始化</a>或<a href="../glossary/term-74460d.html" class="internal alias glossary-link" data-slug="词汇表/括号初始化" title="词汇表：括号初始化">括号初始化</a>）。</p>
+<p>你应该优先使用统一初始化而不是其他初始化方式，此外，使用初始化也优于赋值。</p>
+<p>尽管在一个语句中可以定义多个变量，但是最好还是每行定义并初始化一个变量。</p>
+<p><code>std:: cout</code>&nbsp;和 <code>operator&lt;&lt;</code> 可以将表达式的结果作为文本输出到控制台。<code>std:: endl</code>&nbsp;会输出一个换行符，控制控制台光标移动到下一行。<code>std:: cin</code>&nbsp;和 <code>operator&gt;&gt;</code> 可以从键盘获取输入值。</p>
+<p>没有被指定值的变量，称为未初始化变量。尝试获取未初始化变量的值，会产生<a href="../glossary/undefined-behavior.html" class="internal alias glossary-link" data-slug="词汇表/undefined-behavior" title="词汇表：未定义行为">未定义行为</a>，未定义行为有多种表现形式。</p>
+<p>C++ 预留了一组名称，称为<strong>关键字</strong>。这些关键字在 C++中具有特殊的含义，不能被用作变量名。</p>
+<p><a href="../glossary/literals.html" class="internal alias glossary-link" data-slug="词汇表/literals" title="词汇表：字面量">字面量</a>指的是直接插入源码中的固定值。例如 5 和 “Hello world!”。</p>
+<p>运算指的是一次数学计算，这个过程中涉及到0个或多个输入值，称为<strong>操作数</strong>。具体的运算通过运算符来指定。运算的结果会产生一个输出值。</p>
+<p><strong>一元</strong>运算符使用一个操作数。<strong>二元</strong>运算符使用两个操作数，通常称为左操作数和右操作数。<strong>三元</strong>运算符使用三个操作数。</p>
+<p><strong>表达式</strong>是一组字面量、变量、运算符和函数调用的组合，它经过求值后，会得到一个单一值。计算得到该单一值的过程称之为<a href="../glossary/evaluation.html" class="internal alias glossary-link" data-slug="词汇表/evaluation" title="词汇表：求值">求值(evaluation)</a>，而该值称为表达式的<strong>结果</strong>。</p>
+<p>通过在表达式结尾添加分号，可以将其转换为<strong>表达式语句</strong>。</p>
+<p>编程不是件容易事，你的程序的第一个版本不可能是完美的。让程序能够运行起来，是编程的首要任务，然后你可以通过优化使其变得更好。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c01/1-11-developing-your-first-program.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">1.11 · 开发你的第一个程序</span>
+      <span class="pn-chapter">第 01 章 · C++ 基础</span>
+    </a><a class="pn-card next" href="../c02/2-1-introduction-to-functions.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">2.1 · 函数简介</span>
+      <span class="pn-chapter">第 02 章 · 函数和文件</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/01-C++-%E5%9F%BA%E7%A1%80/1-x-Chapter-1-summary-and-quiz" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c01/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-hidden="true"></aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

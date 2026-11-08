@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-font="m">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>28.1 · 输入输出流 · tklcpp</title>
+<meta name="description" content="输入输出并没有被定义为C++语言的核心功能，它是通过C++的标准库提供的（因此位于std命名空间中）。在之前的课程中，我们在代码中包含了库的头文件并使用了和对象进行简单的输入输出。在本节课中，我们会进一步研究其细节。 库…">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/fonts/anthropic-serif-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/anthropic-mono-roman.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/style.css">
+
+<link rel="prev" href="../c27/27-x-chapter-27-comprehensive-quiz.html">
+<link rel="next" href="../c28/28-2-input-with-istream.html">
+<script>(function(){try{var t=localStorage.getItem('lcpp:theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;var f=localStorage.getItem('lcpp:font');if(f)document.documentElement.dataset.font=f;}catch(e){}})();</script>
+</head>
+<body class="doc" data-root="../" data-page="c28/28-1-input-and-output-io-streams.html" data-type="lesson" data-chapter="28" data-chapter-title="第 28 章 · 输入输出" data-title="输入输出流" data-num="28.1">
+<a class="skip-link" href="#main">跳到正文</a>
+<div class="flux-veil" aria-hidden="true"><canvas class="flux-canvas" data-flux></canvas></div>
+<header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn menu-btn" id="menu-toggle" type="button" aria-label="打开课程目录" aria-controls="sidebar" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+      <a class="topbar-brand" href="../index.html" aria-label="tklcpp 首页">
+    <span class="brand-mark" data-logo-target="header"><svg class="tk-mark" viewBox="0 0 96 74.3" fill="currentColor" aria-hidden="true" focusable="false"><path d="M78.00 2.86 L33.43 24.86 L34.57 15.72 L25.14 15.15 L12.00 46.58 L16.00 50.01 L26.86 34.86 L93.14 71.44 L48.29 37.15 L38.57 31.15 L38.86 28.29 L70.86 11.43 Z M6.86 19.72 L46.86 20.29 L50.29 14.57 L45.71 10.57 L6.86 12.86 L2.86 17.43 Z"/></svg></span>
+    <span class="brand-text">tklcpp</span>
+  </a>
+      <nav class="topbar-crumbs" aria-label="面包屑"><a href="../index.html">首页</a><span class="sep">/</span><a class="crumb-chapter" href="../c28/index.html">第 28 章 · 输入输出</a><span class="sep">/</span><span class="current">28.1 · 输入输出流</span></nav>
+      <div class="topbar-actions">
+    <button class="search-btn" id="search-open" type="button" aria-label="搜索全站"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><span>搜索</span><kbd>Ctrl K</kbd></button>
+    <div class="font-wrap">
+      <button class="icon-btn font-btn" id="font-toggle" type="button" aria-label="调整阅读字号" aria-expanded="false">Aa</button>
+      <div class="font-menu" id="font-menu" hidden>
+        <p>阅读字号</p>
+        <button type="button" data-font="s" aria-checked="false"><span>小</span><small>13</small></button>
+        <button type="button" data-font="m" aria-checked="true"><span>标准</span><small>14</small></button>
+        <button type="button" data-font="l" aria-checked="false"><span>大</span><small>15.5</small></button>
+        <button type="button" data-font="xl" aria-checked="false"><span>特大</span><small>17</small></button>
+      </div>
+    </div>
+    <button class="icon-btn" id="theme-toggle" type="button" aria-label="切换主题"><svg class="theme-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="theme-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+    </div>
+  </header>
+<div class="reading-progress"><span id="reading-bar"></span></div>
+<div class="sidebar-backdrop"></div>
+  <aside class="sidebar" id="sidebar" aria-label="课程目录">
+    <div class="sidebar-scroll"><div id="sidebar-nav"></div></div>
+    <div class="sidebar-foot" id="sidebar-progress"></div>
+  </aside>
+<main class="main" id="main">
+
+  <div class="content-grid">
+    <article class="article">
+      <header class="article-header">
+        <a class="article-kicker" href="../c28/index.html">第 28 章 · 输入输出</a>
+        <h1><span class="h1-num">28.1</span>输入输出流</h1>
+        <div class="article-meta"><span>3 分钟</span><span class="dot">·</span><span class="badge badge-zh">中文精译</span><span class="dot">·</span><span class="tag">io</span><button class="mark-pill" type="button" data-read-toggle aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记已读</span></button></div>
+      </header>
+      
+      <details class="article-toc-mobile">
+    <summary>本页目录 <span class="toc-count">4 节</span></summary>
+    <ul><li class="lv2"><a href="#iostream-%E5%BA%93">iostream 库</a></li><li class="lv2"><a href="#%E6%B5%81streams">流（Streams）</a></li><li class="lv2"><a href="#c%E4%B8%AD%E7%9A%84-inputoutput">C++中的 Input/output</a></li><li class="lv2"><a href="#c-%E4%B8%AD%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81">C++ 中的标准流</a></li></ul>
+  </details>
+      <div class="article-body" id="article-body"><p>输入输出并没有被定义为C++语言的核心功能，它是通过C++的标准库提供的（因此位于std命名空间中）。在之前的课程中，我们在代码中包含了<code>iostream</code>库的头文件并使用了<code>cin</code>和<code>cout</code>对象进行简单的输入输出。在本节课中，我们会进一步研究其细节。</p>
+<h2 id="iostream-库"><code>iostream</code> 库<a class="anchor" aria-label="本节链接" href="#iostream-库">#</a></h2>
+<p>当我们包含 <code>iostream</code> 头文件后，你就可以访问提供输入输出功能的全部类了（包括一个称为<code>iostream</code>的类）。所有非文件IO的类的继承图可以在<a href="https://en.cppreference.com/w/cpp/io" class="external alias" target="_blank" rel="noopener noreferrer">这里</a> 找到。</p>
+<p>关于这个层次结构，您可能注意到的第一件事是它使用了多重继承(这是我们多次提醒你要避免的事情)。但是，<code>iostream</code> 库经过了广泛的设计和测试，以避免任何典型的多重继承问题，因此你可以放心大胆地使用它。</p>
+<h2 id="流streams">流（Streams）<a class="anchor" aria-label="本节链接" href="#流streams">#</a></h2>
+<p>你可能注意到的第二件事是“流(stream)”这个词被使用得非常频繁。在最基本的情况下，C++中的I/O是通过流实现的。抽象地说，一个<strong>流</strong>只是一个可以按顺序访问的字节序列。随着时间的推移，流可能产生或消耗无限数量的数据。</p>
+<p>通常情况下我们需要处理两种类型的流。<strong>输入流</strong>用来保存从数据生产者得到的输入，例如键盘、文件或网络。举例来说，用户可以通过按下键盘上的按键来产生输出（即便程序没有要求任何输入），该输入数据并没有被直接忽略，而是被送入了输入流中，它只是在那里等待程序去读取它。</p>
+<p>另一方面，<strong>输出流</strong>用于保存数据消费者需要的数据，例如显示器、文件或打印机。当向输出设备写数据时，该设备可能并没有准备好接收该数据——例如：当数据被写到输出流时，打印机的可能还在准备。数据就会在输出流中等待打印机去消费它。</p>
+<p>有些设备，如文件和网络，可以同时作为输入和输出源。</p>
+<p>流的好处是，程序员只需学习如何与流交互，以便向许多不同类型的设备读写数据。关于流如何与它们所连接的实际设备进行接口的细节由环境或操作系统决定。</p>
+<h2 id="c中的-inputoutput">C++中的 Input/output<a class="anchor" aria-label="本节链接" href="#c中的-inputoutput">#</a></h2>
+<p>尽管<code>ios</code>类通常派生自<code>ios_base</code>，但<code>ios</code>通常是你会直接使用的最上层的基类。<code>ios</code>类定义了一堆对输入和输出流都通用的东西。我们将在以后的课程中使用这些内容。</p>
+<p><code>istream</code>&nbsp;类是处理输入流时需要用到的主要类。我们可以使用  <a href="../glossary/extraction-operator.html" class="internal alias glossary-link" data-slug="词汇表/extraction-operator" title="词汇表：提取运算符">提取运算符&gt;&gt;</a>&nbsp;从流中提取值。当用户按键时，对应的数据会被放置在输入流中，此时你的程序可以从流中提取该值以便使用该数据。</p>
+<p><code>ostream</code>&nbsp;类则是处理输出流的主要类。我们可以使用<a href="../glossary/insertion-operator.html" class="internal alias glossary-link" data-slug="词汇表/insertion-operator" title="词汇表：插入运算符">插入运算符&lt;&lt;</a> 流中插入数据。我们需要将数据插入流中，这样数据消费者（例如显示器）才能访问该数据。</p>
+<p><code>iostream</code> 类可以处理输入和输出，实现双向 I/O.</p>
+<h2 id="c-中的标准流">C++ 中的标准流<a class="anchor" aria-label="本节链接" href="#c-中的标准流">#</a></h2>
+<p><a href="../glossary/standard-stream.html" class="internal alias glossary-link" data-slug="词汇表/standard-stream" title="词汇表：标准流">标准流</a>是系统环境提供给程序的预先连接好的流。C++有四个预定义的标准流对象，你可以直接使用它们，其中前三个你之前已经见过了：</p>
+<ol>
+<li><code>cin</code> — 绑定到标准输入流(例如键盘)的 <code>istream</code>  对象；</li>
+<li><code>cout</code>&nbsp;— 绑定到标准输出流(通常是显示器)的 <code>ostream</code> 对象 ；</li>
+<li><code>cerr</code>&nbsp;— 绑定到标准错误流(通常是显示器)的 <code>ostream</code> 对象，提供无缓冲输出；</li>
+<li><code>clog</code>&nbsp;— 绑定到标准错误流(通常是显示器)的 <code>ostream</code> 对象，提供缓冲输出。</li>
+</ol>
+<p>无缓冲输出通常立即处理，而缓冲输出通常作为块存储和写入。因为clog不经常使用，所以它经常从标准流列表中被省略。</p>
+<p>在下一课中，我们将更详细地了解更多与I/O相关的功能。</p></div>
+      <div class="article-end">
+        <div class="read-action">
+          <p><strong>学完这一节了吗？</strong>阅读进度只保存在本地浏览器，不会上传。</p>
+          <button class="btn btn-read" type="button" data-read-toggle data-read-long="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg><span data-read-label>标记为已学完</span></button>
+        </div>
+        <div class="prevnext"><a class="pn-card prev" href="../c27/27-x-chapter-27-comprehensive-quiz.html" rel="prev">
+      <span class="pn-label">上一节</span>
+      <span class="pn-title">27.x · 小结与测试 - 异常</span>
+      <span class="pn-chapter">第 27 章 · 异常</span>
+    </a><a class="pn-card next" href="../c28/28-2-input-with-istream.html" rel="next">
+      <span class="pn-label">下一节</span>
+      <span class="pn-title">28.2 · 使用istream处理输入</span>
+      <span class="pn-chapter">第 28 章 · 输入输出</span>
+    </a></div>
+        <div class="article-source">
+          <span>源站页面：<a href="https://hanxiaomax.github.io/Learncpp_CN/28-%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/28-1-Input-and-output-IO-streams" target="_blank" rel="noopener">hanxiaomax.github.io/Learncpp_CN</a></span>
+          <span><a href="../c28/index.html">返回本章目录</a> · 内容版权归原作者与译者所有</span>
+        </div>
+      </div>
+    </article>
+    <aside class="toc" aria-label="本页目录">
+    <div class="toc-inner">
+      <p class="toc-title">本页目录</p>
+      <ul><li class="lv2"><a href="#iostream-%E5%BA%93">iostream 库</a></li><li class="lv2"><a href="#%E6%B5%81streams">流（Streams）</a></li><li class="lv2"><a href="#c%E4%B8%AD%E7%9A%84-inputoutput">C++中的 Input/output</a></li><li class="lv2"><a href="#c-%E4%B8%AD%E7%9A%84%E6%A0%87%E5%87%86%E6%B5%81">C++ 中的标准流</a></li></ul>
+    </div>
+  </aside>
+  </div>
+  <button class="to-top" id="to-top" type="button" aria-label="回到顶部"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+<footer class="site-footer">
+    <span>tklcpp · 内容来自 <a href="https://hanxiaomax.github.io/Learncpp_CN/" target="_blank" rel="noopener">LearnCpp 中文翻译</a> · 原作者 <a href="https://www.learncpp.com/" target="_blank" rel="noopener">Alex</a></span>
+    <span><a href="../quiz/">习题库</a> · 本地版 2026-11 · 源站 2025-04 · <span class="mono">offline</span></span>
+  </footer>
+</main>
+<div class="search-modal" id="search-modal" hidden>
+    <div class="search-dialog" role="dialog" aria-modal="true" aria-label="全站搜索">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="search-input" type="search" placeholder="搜索课程、术语、代码标识符…" autocomplete="off" spellcheck="false" aria-label="搜索">
+        <button class="search-close" type="button" aria-label="关闭搜索">Esc</button>
+      </div>
+      <div class="search-results" id="search-results"></div>
+      <div class="search-foot"><span>↑↓ 选择</span><span>Enter 打开</span><span>Esc 关闭</span></div>
+    </div>
+  </div>
+<script src="../assets/nav-data.js"></script>
+<script src="../assets/design.js"></script>
+<script src="../assets/app.js"></script>
+</body>
+</html>

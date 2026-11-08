@@ -38,7 +38,7 @@ node serve.js
 
 ## 部署
 
-- 私有源码与构建仓库：<https://github.com/sainty3/tklcpp>（私有）
+- 私有主仓库（构建产物）：<https://github.com/sainty3/tklcpp>（私有）
 - 公开部署镜像：<https://github.com/sainty3/tklcpp-pages>（仅含构建产物，用于 GitHub Pages）
 - 页面通过 GitHub Pages 从部署镜像的 `main` 分支根目录发布
 
